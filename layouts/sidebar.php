@@ -639,11 +639,7 @@ $page = end($link_array);
 							<a href="javascript:void(0);">
 								<i class="ti ti-login"></i><span>Login</span><span class="menu-arrow"></span>
 							</a>
-							<ul>
-								<li><a href="login.php">Cover</a></li>
-								<li><a href="login-2.php">Illustration</a></li>
-								<li><a href="login-3.php">Basic</a></li>
-							</ul>
+							
 						</li>
 						<li class="submenu">
 							<a href="javascript:void(0);">
@@ -1471,11 +1467,6 @@ $page = end($link_array);
 							<ul>
 								<li class="submenu">
 									<a href="javascript:void(0);" class="">Login<span class="menu-arrow"></span></a>
-									<ul>
-										<li><a href="login.php" class="<?php echo ($page == 'login.php') ? 'active' : ''; ?>">Cover</a></li>
-										<li><a href="login-2.php" class="<?php echo ($page == 'login-2.php') ? 'active' : ''; ?>">Illustration</a></li>
-										<li><a href="login-3.php" class="<?php echo ($page == 'login-3.php') ? 'active' : ''; ?>">Basic</a></li>
-									</ul>
 								</li>
 								<li class="submenu">
 									<a href="javascript:void(0);" class="">Register<span class="menu-arrow"></span></a>
@@ -2370,11 +2361,7 @@ $page = end($link_array);
 								<a href="javascript:void(0);">
 									Login<span class="menu-arrow"></span>
 								</a>
-								<ul>
-									<li><a href="login.php" class="<?php echo ($page == 'login.php') ? 'active' : ''; ?>">Cover</a></li>
-									<li><a href="login-2.php" class="<?php echo ($page == 'login-2.php') ? 'active' : ''; ?>">Illustration</a></li>
-									<li><a href="login-3.php" class="<?php echo ($page == 'login-3.php') ? 'active' : ''; ?>">Basic</a></li>
-								</ul>
+								
 							</li>
 							<li class="submenu">
 								<a href="javascript:void(0);">
@@ -3158,11 +3145,6 @@ $page = end($link_array);
 							<ul class="stack-submenu">
 								<li class="submenu">
 									<a href="javascript:void(0);" class="">Login<span class="menu-arrow"></span></a>
-									<ul>
-										<li><a href="login.php" class="<?php echo ($page == 'login.php') ? 'active' : ''; ?>">Cover</a></li>
-										<li><a href="login-2.php" class="<?php echo ($page == 'login-2.php') ? 'active' : ''; ?>">Illustration</a></li>
-										<li><a href="login-3.php" class="<?php echo ($page == 'login-3.php') ? 'active' : ''; ?>">Basic</a></li>
-									</ul>
 								</li>
 								<li class="submenu">
 									<a href="javascript:void(0);" class="">Register<span class="menu-arrow"></span></a>

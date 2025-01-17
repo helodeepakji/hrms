@@ -594,11 +594,7 @@
 													<ul>
 														<li class="submenu">
 															<a href="javascript:void(0);" class="">Login<span class="menu-arrow"></span></a>
-															<ul>
-																<li><a href="login.php" class="<?php echo ($page == 'login.php') ? 'active' : ''; ?>">Cover</a></li>
-																<li><a href="login-2.php" class="<?php echo ($page == 'login-2.php') ? 'active' : ''; ?>">Illustration</a></li>
-																<li><a href="login-3.php" class="<?php echo ($page == 'login-3.php') ? 'active' : ''; ?>">Basic</a></li>
-															</ul>
+															
 														</li>
 														<li class="submenu">
 															<a href="javascript:void(0);" class="">Register<span class="menu-arrow"></span></a>
@@ -1170,11 +1166,11 @@
 										<div class="card-header">
 											<div class="d-flex align-items-center">
 												<span class="avatar avatar-lg me-2 avatar-rounded">
-													<img src="assets/img/profiles/avatar-12.jpg" alt="img">
+													<img src="<?php echo $_SESSION['userDetails']['profile'] ?? 'assets/img/profiles/avatar-12.jpg' ?>" alt="img">
 												</span>
 												<div>
-													<h5 class="mb-0">Kevin Larry</h5>
-													<p class="fs-12 fw-medium mb-0">warren@example.com</p>
+													<h5 class="mb-0"><?php echo $_SESSION['userDetails']['name'] ?></h5>
+													<p class="fs-12 fw-medium mb-0"><?php echo $_SESSION['userDetails']['email'] ?></p>
 												</div>
 											</div>
 										</div>
@@ -1196,7 +1192,7 @@
 											</a>
 										</div>
 										<div class="card-footer">
-											<a class="dropdown-item d-inline-flex align-items-center p-0 py-2" href="login.php">
+											<a class="dropdown-item d-inline-flex align-items-center p-0 py-2" href="logout.php">
 												<i class="ti ti-login me-2"></i>Logout
 											</a>
 										</div>
@@ -1213,7 +1209,7 @@
 					<div class="dropdown-menu dropdown-menu-end">
 						<a class="dropdown-item" href="profile.php">My Profile</a>
 						<a class="dropdown-item" href="profile-settings.php">Settings</a>
-						<a class="dropdown-item" href="login.php">Logout</a>
+						<a class="dropdown-item" href="logout.php">Logout</a>
 					</div>
 				</div>
 				<!-- /Mobile Menu -->
