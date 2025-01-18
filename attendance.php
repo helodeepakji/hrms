@@ -21,6 +21,9 @@ $sql = $conn->prepare('
 $sql->execute();
 $attendance = $sql->fetchAll(PDO::FETCH_ASSOC);
 
+$sql = $conn->prepare("SELECT * FROM `role`");
+$sql->execute();
+$role = $sql->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <?php include 'layouts/head-main.php'; ?>
@@ -61,12 +64,6 @@ $attendance = $sql->fetchAll(PDO::FETCH_ASSOC);
 					</div>
 					<div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
 						<div class="me-2 mb-2">
-							<div class="d-flex align-items-center border bg-white rounded p-1 me-2 icon-list">
-								<a href="attendance-admin.php" class="btn btn-icon btn-sm active bg-primary text-white me-1"><i class="ti ti-brand-days-counter"></i></a>
-								<a href="attendance-admin.php" class="btn btn-icon btn-sm"><i class="ti ti-calendar-event"></i></a>
-							</div>
-						</div>
-						<div class="me-2 mb-2">
 							<div class="dropdown">
 								<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
 									<i class="ti ti-file-export me-1"></i>Export
@@ -81,14 +78,6 @@ $attendance = $sql->fetchAll(PDO::FETCH_ASSOC);
 								</ul>
 							</div>
 						</div>
-						<div class="mb-2">
-							<a href="#" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#attendance_report"><i class="ti ti-file-analytics me-2"></i>Report</a>
-						</div>
-						<div class="ms-2 head-icons">
-							<a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
-								<i class="ti ti-chevrons-up"></i>
-							</a>
-						</div>
 					</div>
 				</div>
 				<!-- /Breadcrumb -->
@@ -99,25 +88,31 @@ $attendance = $sql->fetchAll(PDO::FETCH_ASSOC);
 						<div class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
 							<div class="me-3">
 								<div class="input-icon-end position-relative">
-									<input type="text" class="form-control date-range bookingrange" placeholder="dd/mm/yyyy - dd/mm/yyyy">
+									<input id="dateRange" type="text" class="form-control date-range bookingrange" placeholder="dd/mm/yyyy - dd/mm/yyyy">
 									<span class="input-icon-addon">
 										<i class="ti ti-chevron-down"></i>
 									</span>
 								</div>
 							</div>
-							<div class="dropdown me-3">
-								<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-									Select Status
-								</a>
-								<ul class="dropdown-menu  dropdown-menu-end p-3">
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1">Present</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1">Absent</a>
-									</li>
-								</ul>
+							<div class="me-3">
+								<select id="selectedStatus" class="form-select">
+									<option value="">Select Status</option>
+									<option value="present">Present</option>
+									<option value="absent">Absent</option>
+								</select>
 							</div>
+							<div class="me-3">
+								<select id="selectedRole" class="form-select">
+									<option value="">Select Role</option>
+									<?php
+									foreach ($role as $value) {
+										echo '  <option value=' . $value['id'] . '>' . ucfirst(str_replace('_',' ',$value['name'])) . '</option>';
+									}
+									?>
+
+								</select>
+							</div>
+
 						</div>
 					</div>
 					<div class="card-body p-0">
@@ -137,39 +132,39 @@ $attendance = $sql->fetchAll(PDO::FETCH_ASSOC);
 								<tbody>
 									<?php foreach ($attendance as $key => $value) {
 									?>
-									<tr>
-										<td>
-											<?php echo date('d M, Y',strtotime($value['date'])) ?>
-										</td>
-										
-										<td>
-										<?php echo $value['user_name'] ?>
-										<br>
-											<span class="badge badge-success-transparent d-inline-flex align-items-center">
-											<?php echo ucfirst($value['role_name']) ?>
-											</span>
-											<?php if($value['not_allowed'] == 1){
-												echo '<span class="badge badge-danger-transparent d-inline-flex align-items-center">Absent</span>';
-											} ?>
-											
-											
-										</td>
-										<td><?php echo date('h:i A',strtotime($value['clock_in_time'])) ?></td>
-										<td>
-										<?php echo date('h:i A',strtotime($value['clock_out_time'])) ?>
-										</td>
-										<td>30 Min</td>
-										<td>20 Min</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center">
-												<i class="ti ti-clock-hour-11 me-1"></i><?php echo $value['hours'] ?> Hrs
-											</span>
-										</td>
-									</tr>
+										<tr>
+											<td>
+												<?php echo date('d M, Y', strtotime($value['date'])) ?>
+											</td>
+
+											<td>
+												<?php echo $value['user_name'] ?>
+												<br>
+												<span class="badge badge-success-transparent d-inline-flex align-items-center">
+													<?php echo ucfirst($value['role_name']) ?>
+												</span>
+												<?php if ($value['not_allowed'] == 1) {
+													echo '<span class="badge badge-danger-transparent d-inline-flex align-items-center">Absent</span>';
+												} ?>
+
+
+											</td>
+											<td><?php echo date('h:i A', strtotime($value['clock_in_time'])) ?></td>
+											<td>
+												<?php echo date('h:i A', strtotime($value['clock_out_time'])) ?>
+											</td>
+											<td>30 Min</td>
+											<td>20 Min</td>
+											<td>
+												<span class="badge badge-success d-inline-flex align-items-center">
+													<i class="ti ti-clock-hour-11 me-1"></i><?php echo $value['hours'] ?> Hrs
+												</span>
+											</td>
+										</tr>
 									<?php
 									} ?>
-									
-									
+
+
 								</tbody>
 							</table>
 						</div>
@@ -306,6 +301,49 @@ $attendance = $sql->fetchAll(PDO::FETCH_ASSOC);
 	<!-- JAVASCRIPT -->
 	<?php include 'layouts/vendor-scripts.php'; ?>
 	<script src="assets/js/circle-progress.js"></script>
+	<script>
+		$(document).ready(function() {
+			// Handle date range input change
+			$('#dateRange').on('change', function() {
+				fetchFilteredData();
+			});
+
+			// Handle status filter click
+			$('#selectedStatus').on('click', function() {
+				fetchFilteredData();
+			});
+
+			$('#selectedRole').on('click', function() {
+				fetchFilteredData();
+			});
+
+			// Fetch data based on filters
+			function fetchFilteredData() {
+				const dateRange = $('#dateRange').val();
+				const status = $('#selectedStatus').val();
+				const role = $('#selectedRole').val();
+
+				$.ajax({
+					url: 'settings/api/attendanceApi.php',
+					method: 'POST',
+					data: {
+						dateRange: dateRange,
+						status: status,
+						role:role,
+						type: 'filterAttandace',
+					},
+					success: function(response) {
+						$('.datatable').DataTable().destroy();
+						$('tbody').html(response);
+						$('.datatable').DataTable();
+					},
+					error: function() {
+						alert('Error fetching data.');
+					},
+				});
+			}
+		});
+	</script>
 </body>
 
 </html>

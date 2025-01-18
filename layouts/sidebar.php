@@ -238,7 +238,7 @@ $page = end($link_array);
 							</a>
 						</li>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-file-time"></i><span>Attendance</span>
 								<span class="menu-arrow"></span>
 							</a>
@@ -251,7 +251,6 @@ $page = end($link_array);
 										<li><a href="leave-settings.php" class="<?php echo ($page == 'leave-settings.php') ? 'active' : ''; ?>">Leave Settings</a></li>
 									</ul>
 								</li>
-								<li><a href="attendance-admin.php" class="<?php echo ($page == 'attendance-admin.php') ? 'active' : ''; ?>">Attendance (Admin)</a></li>
 								<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>
 								<li><a href="timesheets.php" class="<?php echo ($page == 'timesheets.php') ? 'active' : ''; ?>">Timesheets</a></li>
 								<li><a href="schedule-timing.php" class="<?php echo ($page == 'schedule-timing.php') ? 'active' : ''; ?>">Shift & Schedule</a></li>
@@ -1175,7 +1174,7 @@ $page = end($link_array);
 						</li>
 						<li><a href="holidays.php" class="<?php echo ($page == 'holidays.php') ? 'active' : ''; ?>"><span>Holidays</span></a></li>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>"><span>Attendance</span>
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>"><span>Attendance</span>
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
@@ -1187,7 +1186,7 @@ $page = end($link_array);
 										<li><a href="leave-settings.php" class="<?php echo ($page == 'leave-settings.php') ? 'active' : ''; ?>">Leave Settings</a></li>
 									</ul>
 								</li>
-								<li><a href="attendance-admin.php" class="<?php echo ($page == 'attendance-admin.php') ? 'active' : ''; ?>">Attendance (Admin)</a></li>
+								
 								<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>
 								<li><a href="timesheets.php" class="<?php echo ($page == 'timesheets.php') ? 'active' : ''; ?>">Timesheets</a></li>
 								<li><a href="schedule-timing.php" class="<?php echo ($page == 'schedule-timing.php') ? 'active' : ''; ?>">Shift & Schedule</a></li>
@@ -1907,7 +1906,7 @@ $page = end($link_array);
 						<i class="ti ti-user-shield"></i>
 					</a>
 					<a href="#" class="nav-link  <?php echo ($page == 'employees.php' || $page == 'employees-grid.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'designations.php' || $page == 'policy.php' || $page == 'tickets.php' || $page == 'ticket-details.php'
-														|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
+														|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
 														|| $page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'performance-appraisal.php' || $page == 'goal-tracking.php' || $page == 'goal-type.php'
 														|| $page == 'training.php' || $page == 'trainers.php' || $page == 'training-type.php' || $page == 'promotion.php' || $page == 'resignation.php' || $page == 'training-type.php') ? '  active ' : ''; ?></a>" title="Hrm" data-bs-toggle="tab" data-bs-target="#hrm">
 						<i class="ti ti-user"></i>
@@ -2051,7 +2050,7 @@ $page = end($link_array);
 						</ul>
 					</div>
 					<div class="tab-pane fade <?php echo ($page == 'employees.php' || $page == 'employees-grid.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'designations.php' || $page == 'policy.php' || $page == 'tickets.php' || $page == 'ticket-details.php'
-													|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
+													|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' ||  $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
 													|| $page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'performance-appraisal.php' || $page == 'goal-tracking.php' || $page == 'goal-type.php'
 													|| $page == 'training.php' || $page == 'trainers.php' || $page == 'training-type.php' || $page == 'promotion.php' || $page == 'resignation.php' || $page == 'training-type.php') ? ' show active ' : ''; ?></li>" id="hrm">
 						<ul>
@@ -2080,7 +2079,7 @@ $page = end($link_array);
 							</li>
 							<li><a href="holidays.php" class="<?php echo ($page == 'holidays.php') ? 'active' : ''; ?>"><span>Holidays</span></a></li>
 							<li class="submenu">
-								<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>"><span>Attendance</span>
+								<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>"><span>Attendance</span>
 									<span class="menu-arrow"></span>
 								</a>
 								<ul>
@@ -2093,7 +2092,7 @@ $page = end($link_array);
 											<li><a href="leave-settings.php" class="<?php echo ($page == 'leave-settings.php') ? 'active' : ''; ?>">Leave Settings</a></li>
 										</ul>
 									</li>
-									<li><a href="attendance-admin.php" class="<?php echo ($page == 'attendance-admin.php') ? 'active' : ''; ?>">Attendance (Admin)</a></li>
+									
 									<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>
 									<li><a href="timesheets.php" class="<?php echo ($page == 'timesheets.php') ? 'active' : ''; ?>">Timesheets</a></li>
 									<li><a href="schedule-timing.php" class="<?php echo ($page == 'schedule-timing.php') ? 'active' : ''; ?>">Shift & Schedule</a></li>
@@ -2706,7 +2705,7 @@ $page = end($link_array);
 							</div>
 							<div class="col-6">
 								<a href="#menu-hrm" role="tab" class="nav-link <?php echo ($page == 'employees.php' || $page == 'employees-grid.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'designations.php' || $page == 'policy.php' || $page == 'tickets.php' || $page == 'ticket-details.php'
-																					|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
+																					|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
 																					|| $page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'performance-appraisal.php' || $page == 'goal-tracking.php' || $page == 'goal-type.php'
 																					|| $page == 'training.php' || $page == 'trainers.php' || $page == 'training-type.php' || $page == 'promotion.php' || $page == 'resignation.php' || $page == 'training-type.php') ? '  active ' : ''; ?>" title="HRM" data-bs-toggle="tab" data-bs-target="#menu-hrm" aria-selected="false">
 									<span><i class="ti ti-users"></i></span>
@@ -2850,7 +2849,7 @@ $page = end($link_array);
 							</ul>
 						</div>
 						<div class="tab-pane fade <?php echo ($page == 'employees.php' || $page == 'employees-grid.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'designations.php' || $page == 'policy.php' || $page == 'tickets.php' || $page == 'ticket-details.php'
-														|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
+														|| $page == 'holidays.php' || $page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php'
 														|| $page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'performance-appraisal.php' || $page == 'goal-tracking.php' || $page == 'goal-type.php'
 														|| $page == 'training.php' || $page == 'trainers.php' || $page == 'training-type.php' || $page == 'promotion.php' || $page == 'resignation.php' || $page == 'training-type.php') ? ' show active ' : ''; ?>" id="menu-hrm">
 							<ul class="stack-submenu">
@@ -2878,7 +2877,7 @@ $page = end($link_array);
 								</li>
 								<li><a href="holidays.php" class="<?php echo ($page == 'holidays.php') ? 'active' : ''; ?>"><span>Holidays</span></a></li>
 								<li class="submenu">
-									<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance-admin.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>"><span>Attendance</span>
+									<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>"><span>Attendance</span>
 										<span class="menu-arrow"></span>
 									</a>
 									<ul>
@@ -2890,7 +2889,7 @@ $page = end($link_array);
 												<li><a href="leave-settings.php" class="<?php echo ($page == 'leave-settings.php') ? 'active' : ''; ?>">Leave Settings</a></li>
 											</ul>
 										</li>
-										<li><a href="attendance-admin.php" class="<?php echo ($page == 'attendance-admin.php') ? 'active' : ''; ?>">Attendance (Admin)</a></li>
+										
 										<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>
 										<li><a href="timesheets.php" class="<?php echo ($page == 'timesheets.php') ? 'active' : ''; ?>">Timesheets</a></li>
 										<li><a href="schedule-timing.php" class="<?php echo ($page == 'schedule-timing.php') ? 'active' : ''; ?>">Shift & Schedule</a></li>
