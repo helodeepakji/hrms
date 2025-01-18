@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 18, 2025 at 12:44 PM
+-- Generation Time: Jan 18, 2025 at 04:08 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,6 +47,39 @@ CREATE TABLE `attendance` (
 
 INSERT INTO `attendance` (`id`, `user_id`, `date`, `clock_in_time`, `clock_out_time`, `regularisation`, `remark`, `hours`, `not_allowed`, `created_at`, `updated_at`) VALUES
 (1, 1, '2025-01-18', '16:22:44', '16:45:51', 0, NULL, 0.39, 1, '2025-01-18 10:52:44', '2025-01-18 10:52:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `holiday`
+--
+
+CREATE TABLE `holiday` (
+  `id` int(11) NOT NULL,
+  `holiday` varchar(250) NOT NULL,
+  `date` date NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `holiday`
+--
+
+INSERT INTO `holiday` (`id`, `holiday`, `date`, `image`, `created_at`, `updated_at`) VALUES
+(1, 'New Year', '2025-04-30', '_Gray minimalist trip to holiday instagram post.png', '2025-01-18 14:16:09', '2025-01-18 14:16:09'),
+(26, 'REPUBLIC DAY', '2025-01-31', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(27, 'MAHA-SHIVARATRI', '2025-03-14', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(28, 'HOLI', '2025-03-31', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(29, 'INDEPENDENCE DAY', '2025-08-21', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(30, 'RAKSHA-BANDHAN(RAKHI)', '2025-08-25', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(31, 'GANESH CHATURTHI', '2025-09-13', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(32, 'MAHATMA GANDHI JAYANTI', '2025-10-08', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(33, 'DUSSEHRA', '2025-10-18', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(34, 'KUMAR PURNIMA', '2025-10-21', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(35, 'DIWALI', '2025-11-06', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15'),
+(36, 'CHRISTMAS DAY', '2025-12-31', '', '2025-01-18 15:07:15', '2025-01-18 15:07:15');
 
 -- --------------------------------------------------------
 
@@ -116,6 +149,12 @@ ALTER TABLE `attendance`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `holiday`
+--
+ALTER TABLE `holiday`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
@@ -137,6 +176,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `attendance`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `holiday`
+--
+ALTER TABLE `holiday`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `role`
