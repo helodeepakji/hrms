@@ -11,10 +11,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		if ($user && password_verify($password, $user['password'])) {
 			session_start();
 			$_SESSION['loggedin'] = true;
-			$_SESSION['user_id'] = $user['id'];
+			$_SESSION['userId'] = $user['id'];
 			$_SESSION['userDetails'] = $user;
 			$_SESSION['employee_id'] = $user['employee_id'];
-			$_SESSION['role_id'] = $user['role_id'];
+			$_SESSION['roleId'] = $user['role_id'];
+
+			$check = $conn->prepare("SELECT * FROM `attendance` WHERE `date` = ?  AND `user_id` = ?");
+			$check->execute([date("Y-m-d"), $user['id']]);
+			$check = $check->fetch(PDO::FETCH_ASSOC);
+			if (!$check) {
+				$attendance = $conn->prepare("INSERT INTO `attendance`(`user_id`) VALUES ( ? )");
+				$attendance->execute([$user['id']]);
+			}
+
 			header("Location: index.php");
 			exit;
 		} else {
@@ -66,11 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					</div>
 					<div class="col-lg-7 col-md-12 col-sm-12">
 						<?php
-							if(isset($error) && $error != ''){
-								echo '<div class="alert alert-danger" role="alert">
-							'.$error.'
+						if (isset($error) && $error != '') {
+							echo '<div class="alert alert-danger" role="alert">
+							' . $error . '
 						</div>';
-							}
+						}
 						?>
 						<div class="row justify-content-center align-items-center vh-100 overflow-auto flex-wrap">
 							<div class="col-md-7 mx-auto vh-100">

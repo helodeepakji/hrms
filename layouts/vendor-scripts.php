@@ -31,6 +31,7 @@
 
 	<!-- Datetimepicker JS -->
 	<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="assets/js/notify.js"></script>
 
 	<!-- Select2 JS -->
 	<script src="assets/plugins/select2/js/select2.min.js"></script>
@@ -131,4 +132,7 @@
 	<!-- Custom JS -->
 	<script src="assets/js/script.js"></script>
 	<script src="assets/js/theme-colorpicker.js"></script>
+	<script>
+		var notyf = new Notyf({ position: { x: 'right', y: 'top'} });
+	</script>
 	

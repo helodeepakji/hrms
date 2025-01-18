@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 18, 2025 at 02:46 AM
+-- Generation Time: Jan 18, 2025 at 12:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,33 @@ SET time_zone = "+00:00";
 --
 -- Database: `uniquemaps`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attendance`
+--
+
+CREATE TABLE `attendance` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `date` date NOT NULL DEFAULT current_timestamp(),
+  `clock_in_time` time NOT NULL DEFAULT current_timestamp(),
+  `clock_out_time` time DEFAULT NULL,
+  `regularisation` tinyint(1) NOT NULL,
+  `remark` varchar(250) DEFAULT NULL,
+  `hours` float DEFAULT NULL,
+  `not_allowed` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `attendance`
+--
+
+INSERT INTO `attendance` (`id`, `user_id`, `date`, `clock_in_time`, `clock_out_time`, `regularisation`, `remark`, `hours`, `not_allowed`, `created_at`, `updated_at`) VALUES
+(1, 1, '2025-01-18', '16:22:44', '16:45:51', 0, NULL, 0.39, 1, '2025-01-18 10:52:44', '2025-01-18 10:52:44');
 
 -- --------------------------------------------------------
 
@@ -83,6 +110,12 @@ INSERT INTO `users` (`id`, `employee_id`, `profile`, `name`, `role_id`, `mobile`
 --
 
 --
+-- Indexes for table `attendance`
+--
+ALTER TABLE `attendance`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
@@ -98,6 +131,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `attendance`
+--
+ALTER TABLE `attendance`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `role`

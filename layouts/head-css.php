@@ -42,6 +42,7 @@
 
 	<!-- Summernote CSS -->
 	<link rel="stylesheet" href="assets/plugins/summernote/summernote-lite.min.css">
+	<link rel="stylesheet" href="assets/css/notify.css" rel="stylesheet" />
 
 	<!-- Datetimepicker CSS -->
 	<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
