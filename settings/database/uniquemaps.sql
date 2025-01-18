@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 17, 2025 at 05:33 PM
+-- Generation Time: Jan 18, 2025 at 02:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `role`
+--
+
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `role`
+--
+
+INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'admin', '2025-01-18 01:41:06', '2025-01-18 01:41:06'),
+(2, 'project_manager', '2025-01-18 01:41:06', '2025-01-18 01:41:06');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -32,6 +53,7 @@ CREATE TABLE `users` (
   `employee_id` varchar(250) NOT NULL,
   `profile` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `role_id` int(11) NOT NULL,
   `mobile` varchar(15) NOT NULL,
   `email` varchar(255) NOT NULL,
   `correspondence_address` text NOT NULL,
@@ -41,10 +63,10 @@ CREATE TABLE `users` (
   `gender` enum('Male','Female','Other') NOT NULL,
   `religion` varchar(100) DEFAULT NULL,
   `department` varchar(100) DEFAULT NULL,
-  `designation` varchar(100) DEFAULT NULL,
   `emergency_contact` varchar(15) NOT NULL,
   `reporting_manager` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `is_terminated` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -53,12 +75,18 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `employee_id`, `profile`, `name`, `mobile`, `email`, `correspondence_address`, `permanent_address`, `dob`, `marital_status`, `gender`, `religion`, `department`, `designation`, `emergency_contact`, `reporting_manager`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'E001', '', 'Deepak Morya', '8076763204', 'admin@test.com', '', '', '0000-00-00', 'Single', 'Male', NULL, NULL, NULL, '', NULL, '$2y$10$o0oV2WCH5q0vdtaO1oQpTOTW1ppsgAOPw7PvkeMnRVf1tLBJkuOYG', '2025-01-17 16:05:37', '2025-01-17 16:05:37');
+INSERT INTO `users` (`id`, `employee_id`, `profile`, `name`, `role_id`, `mobile`, `email`, `correspondence_address`, `permanent_address`, `dob`, `marital_status`, `gender`, `religion`, `department`, `emergency_contact`, `reporting_manager`, `password`, `is_terminated`, `created_at`, `updated_at`) VALUES
+(1, 'E001', '', 'Deepak Morya', 1, '8076763204', 'admin@test.com', '', '', '2025-01-01', 'Single', 'Male', NULL, NULL, '', NULL, '$2y$10$o0oV2WCH5q0vdtaO1oQpTOTW1ppsgAOPw7PvkeMnRVf1tLBJkuOYG', 0, '2025-01-17 16:05:37', '2025-01-18 01:41:59');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -70,6 +98,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `role`
+--
+ALTER TABLE `role`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`

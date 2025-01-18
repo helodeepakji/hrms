@@ -1,20 +1,28 @@
-<?php include 'layouts/session.php'; ?>
+<?php
+include 'layouts/session.php';
+$sql = $conn->prepare("SELECT `users`.*, `role`.`name` AS `role` FROM `users` JOIN `role` ON `role`.`id` = `users`.`role_id` WHERE `is_terminated` = 0 ORDER BY `users`.`name` ASC");
+$sql->execute();
+$users = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+?>
 <?php include 'layouts/head-main.php'; ?>
+
 <head>
-<title>Smarthr Admin Template</title>
- <?php include 'layouts/title-meta.php'; ?>
- <?php include 'layouts/head-css.php'; ?>
+	<title>Smarthr Admin Template</title>
+	<?php include 'layouts/title-meta.php'; ?>
+	<?php include 'layouts/head-css.php'; ?>
 </head>
+
 <body>
-<div id="global-loader" style="display: none;">
+	<div id="global-loader" style="display: none;">
 		<div class="page-loader"></div>
 	</div>
 
-    <div class="main-wrapper">
-    <?php include 'layouts/menu.php'; ?>
+	<div class="main-wrapper">
+		<?php include 'layouts/menu.php'; ?>
 
-	<!-- Page Wrapper -->
-	<div class="page-wrapper">
+		<!-- Page Wrapper -->
+		<div class="page-wrapper">
 			<div class="content">
 
 				<!-- Breadcrumb -->
@@ -82,12 +90,12 @@
 										<h4>1007</h4>
 									</div>
 								</div>
-								<div>                                    
+								<div>
 									<span class="badge badge-soft-purple badge-sm fw-normal">
 										<i class="ti ti-arrow-wave-right-down"></i>
 										+19.01%
 									</span>
-                                </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -106,12 +114,12 @@
 										<h4>1007</h4>
 									</div>
 								</div>
-								<div>                                    
+								<div>
 									<span class="badge badge-soft-primary badge-sm fw-normal">
 										<i class="ti ti-arrow-wave-right-down"></i>
 										+19.01%
 									</span>
-                                </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -130,12 +138,12 @@
 										<h4>1007</h4>
 									</div>
 								</div>
-								<div>                                    
+								<div>
 									<span class="badge badge-soft-dark badge-sm fw-normal">
 										<i class="ti ti-arrow-wave-right-down"></i>
 										+19.01%
 									</span>
-                                </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -154,12 +162,12 @@
 										<h4>67</h4>
 									</div>
 								</div>
-								<div>                                    
+								<div>
 									<span class="badge badge-soft-secondary badge-sm fw-normal">
 										<i class="ti ti-arrow-wave-right-down"></i>
 										+19.01%
 									</span>
-                                </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -234,52 +242,41 @@
 										<th>Name</th>
 										<th>Email</th>
 										<th>Phone</th>
-										<th>Designation</th>
+										<th>Date Of Birth</th>
 										<th>Joining Date</th>
 										<th>Status</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
+									<?php foreach ($users as $user) { ?>
 									<tr>
-                                        <td>
+										<td>
 											<div class="form-check form-check-md">
 												<input class="form-check-input" type="checkbox">
 											</div>
 										</td>
-										<td><a href="employee-details.php">Emp-001</a></td>
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-32.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Anthony Lewis</a></p>
-													<span class="fs-12">Finance</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>anthony@example.com</td>
-                                        <td>(123) 4567 890</td>
+										<td><a href="employee-details.php?id=<?php echo base64_encode($user['id']) ?>"><?php echo $user['employee_id'] ?></a></td>
 										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Finance
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Developer</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Executive</a>
-													</li>
-												</ul>
+											<div class="d-flex align-items-center">
+												<a href="employee-details.php?id=<?php echo base64_encode($user['id']) ?>" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
+														src="assets/img/users/user-32.jpg" class="img-fluid rounded-circle" alt="img"></a>
+												<div class="ms-2">
+													<p class="text-dark mb-0"><a href="employee-details.php?id=<?php echo base64_encode($user['id']) ?>" data-bs-toggle="modal"
+															data-bs-target="#view_details"><?php echo $user['name'] ?></a></p>
+													<span class="fs-12"><?php echo ucfirst($user['role']) ?></span>
+												</div>
 											</div>
 										</td>
-                                        <td>12 Sep 2024</td>
-                                        <td>
+										<td><?php echo $user['email'] ?></td>
+										<td><?php echo $user['mobile'] ?></td>
+										<td>
+										<?php echo date('d M, y',strtotime($user['dob'])) ?>
+										</td>
+										<td><?php echo date('d M, y',strtotime($user['created_at'])) ?></td>
+										<td>
 											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
+												<i class="ti ti-point-filled me-1"></i>Active
 											</span>
 										</td>
 										<td>
@@ -289,438 +286,7 @@
 											</div>
 										</td>
 									</tr>
-									<tr>	
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-002</a></td>						
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-09.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Brian Villalobos</a></p>
-													<span class="fs-12">Developer</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>brian@example.com</td>
-                                        <td>(179) 7382 829</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Developer
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Executive</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>24 Oct 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-003</a></td>									
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-01.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Harvey Smith</a></p>
-													<span class="fs-12">Developer</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>harvey@example.com</td>                                     
-                                        <td>(184) 2719 738</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Developer
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Executive</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>18 Feb 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-004</a></td>									
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-33.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Stephan Peralt</a></p>
-													<span class="fs-12">Executive Officer</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>peral@example.com</td>
-                                        <td>(193) 7839 748</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Executive
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Developer</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>17 Oct 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-005</a></td>							
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-33.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Doglas Martini</a></p>
-													<span class="fs-12">Manager</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>martniwr@example.com</td>
-                                        <td>(183) 9302 890</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Manager
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Developer</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>20 Jul 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-006</a></td>									
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-02.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Linda Ray</a></p>
-													<span class="fs-12">Finance</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>ray456@example.com</td>
-                                        <td>(120) 3728 039</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Finance
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Executive</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Developer</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>10 Apr 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-007</a></td>							
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-35.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Elliot Murray</a></p>
-													<span class="fs-12">Finance</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>murray@example.com</td>
-                                        <td>(102) 8480 832</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Developer
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Executive</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>29 Aug 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-008</a></td>							
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-36.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Rebecca Smtih</a></p>
-													<span class="fs-12">Executive</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>smtih@example.com</td>
-                                        <td>(162) 8920 713</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Executive
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Developer</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>22 Feb 2024</td>
-                                        <td>
-											<span class="badge badge-danger d-inline-flex align-items-center badge-sm">
-                                                <i class="ti ti-point-filled me-1"></i>Inactive
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-009</a></td>							
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-37.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Connie Waters</a></p>
-													<span class="fs-12">Developer</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>connie@example.com</td>
-                                        <td>(189) 0920 723</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Developer
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Executive</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>03 Nov 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-                                        <td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><a href="employee-details.php">Emp-010</a></td>									
-                                        <td>
-											<div class="d-flex align-items-center">
-                                                <a href="employee-details.php" class="avatar avatar-md" data-bs-toggle="modal" data-bs-target="#view_details"><img
-                                                    src="assets/img/users/user-38.jpg" class="img-fluid rounded-circle" alt="img"></a>
-                                                <div class="ms-2">
-													<p class="text-dark mb-0"><a href="employee-details.php" data-bs-toggle="modal"
-														data-bs-target="#view_details">Lori Broaddus</a></p>
-													<span class="fs-12">Finance</span>
-												</div>
-                                            </div>
-										</td>
-                                        <td>broaddus@example.com</td>
-                                        <td>(168) 8392 823</td>
-										<td>
-											<div class="dropdown me-3">
-												<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-													Finance
-												</a>
-												<ul class="dropdown-menu  dropdown-menu-end p-3">
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Executive</a>
-													</li>
-													<li>
-														<a href="javascript:void(0);" class="dropdown-item rounded-1">Developer</a>
-													</li>
-												</ul>
-											</div>
-										</td>
-                                        <td>17 Dec 2024</td>
-                                        <td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-                                                <i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-												<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
+									<?php } ?>
 								</tbody>
 							</table>
 						</div>
@@ -743,7 +309,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<div class="d-flex align-items-center">
-							<h4 class="modal-title me-2">Add New Employee</h4><span>Employee  ID : EMP -0024</span>
+							<h4 class="modal-title me-2">Add New Employee</h4><span>Employee ID : EMP -0024</span>
 						</div>
 						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
 							<i class="ti ti-x"></i>
@@ -753,154 +319,154 @@
 						<div class="contact-grids-tab">
 							<ul class="nav nav-underline" id="myTab" role="tablist">
 								<li class="nav-item" role="presentation">
-								  <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#basic-info" type="button" role="tab" aria-selected="true">Basic Information</button>
+									<button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#basic-info" type="button" role="tab" aria-selected="true">Basic Information</button>
 								</li>
 								<li class="nav-item" role="presentation">
-								  <button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address" type="button" role="tab" aria-selected="false">Permissions</button>
+									<button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address" type="button" role="tab" aria-selected="false">Permissions</button>
 								</li>
 							</ul>
 						</div>
 						<div class="tab-content" id="myTabContent">
 							<div class="tab-pane fade show active" id="basic-info" role="tabpanel" aria-labelledby="info-tab" tabindex="0">
-									<div class="modal-body pb-0 ">	
-										<div class="row">
-											<div class="col-md-12">
-												<div class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">                                                
-													<div class="d-flex align-items-center justify-content-center avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0 text-dark frames">
-														<i class="ti ti-photo text-gray-2 fs-16"></i>
-													</div>                                              
-													<div class="profile-upload">
-														<div class="mb-2">
-															<h6 class="mb-1">Upload Profile Image</h6>
-															<p class="fs-12">Image should be below 4 mb</p>
+								<div class="modal-body pb-0 ">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">
+												<div class="d-flex align-items-center justify-content-center avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0 text-dark frames">
+													<i class="ti ti-photo text-gray-2 fs-16"></i>
+												</div>
+												<div class="profile-upload">
+													<div class="mb-2">
+														<h6 class="mb-1">Upload Profile Image</h6>
+														<p class="fs-12">Image should be below 4 mb</p>
+													</div>
+													<div class="profile-uploader d-flex align-items-center">
+														<div class="drag-upload-btn btn btn-sm btn-primary me-2">
+															Upload
+															<input type="file" class="form-control image-sign" multiple="">
 														</div>
-														<div class="profile-uploader d-flex align-items-center">
-															<div class="drag-upload-btn btn btn-sm btn-primary me-2">
-																Upload
-																<input type="file" class="form-control image-sign" multiple="">
-															</div>
-															<a href="javascript:void(0);" class="btn btn-light btn-sm">Cancel</a>
-														</div>
-														
+														<a href="javascript:void(0);" class="btn btn-light btn-sm">Cancel</a>
 													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">First Name <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Last Name</label>
-													<input type="email" class="form-control">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Employee ID <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Joining Date <span class="text-danger"> *</span></label>
-													<div class="input-icon-end position-relative">
-														<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-														<span class="input-icon-addon">
-															<i class="ti ti-calendar text-gray-7"></i>
-														</span>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Username <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Email <span class="text-danger"> *</span></label>
-													<input type="email" class="form-control">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3 ">
-													<label class="form-label">Password <span class="text-danger"> *</span></label>
-													<div class="pass-group">
-														<input type="password" class="pass-input form-control">
-														<span class="ti toggle-password ti-eye-off"></span>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3 ">
-													<label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
-													<div class="pass-group">
-														<input type="password" class="pass-inputs form-control">
-														<span class="ti toggle-passwords ti-eye-off"></span>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Phone Number <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Company<span class="text-danger"> *</span></label>
-													<input type="text" class="form-control">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Department</label>
-													<select class="select">
-														<option>Select</option>
-														<option>All Department</option>
-														<option>Finance</option>
-														<option>Developer</option>
-														<option>Executive</option>
-													</select>
-												</div>		
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Designation</label>
-													<select class="select">
-														<option>Select</option>
-														<option>Finance</option>
-														<option>Developer</option>
-														<option>Executive</option>
-													</select>
-												</div>		
-											</div>
-											<div class="col-md-12">
-												<div class="mb-3">
-													<label class="form-label">About <span class="text-danger"> *</span></label>
-													<textarea class="form-control" rows="3"></textarea>
+
 												</div>
 											</div>
 										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">First Name <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Last Name</label>
+												<input type="email" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Employee ID <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Joining Date <span class="text-danger"> *</span></label>
+												<div class="input-icon-end position-relative">
+													<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
+													<span class="input-icon-addon">
+														<i class="ti ti-calendar text-gray-7"></i>
+													</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Username <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Email <span class="text-danger"> *</span></label>
+												<input type="email" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3 ">
+												<label class="form-label">Password <span class="text-danger"> *</span></label>
+												<div class="pass-group">
+													<input type="password" class="pass-input form-control">
+													<span class="ti toggle-password ti-eye-off"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3 ">
+												<label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
+												<div class="pass-group">
+													<input type="password" class="pass-inputs form-control">
+													<span class="ti toggle-passwords ti-eye-off"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Phone Number <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Company<span class="text-danger"> *</span></label>
+												<input type="text" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Department</label>
+												<select class="select">
+													<option>Select</option>
+													<option>All Department</option>
+													<option>Finance</option>
+													<option>Developer</option>
+													<option>Executive</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Designation</label>
+												<select class="select">
+													<option>Select</option>
+													<option>Finance</option>
+													<option>Developer</option>
+													<option>Executive</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="mb-3">
+												<label class="form-label">About <span class="text-danger"> *</span></label>
+												<textarea class="form-control" rows="3"></textarea>
+											</div>
+										</div>
 									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
-										<button type="submit" class="btn btn-primary">Save </button>
-									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
+									<button type="submit" class="btn btn-primary">Save </button>
+								</div>
 							</div>
 							<div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab" tabindex="0">
-								<div class="modal-body">	
+								<div class="modal-body">
 									<div class="card bg-light-500 shadow-none">
 										<div class="card-body d-flex align-items-center justify-content-between flex-wrap row-gap-3">
 											<h6>Enable Options</h6>
 											<div class="d-flex align-items-center justify-content-end">
 												<div class="form-check form-switch me-2">
 													<label class="form-check-label mt-0">
-													<input class="form-check-input me-2" type="checkbox" role="switch">
+														<input class="form-check-input me-2" type="checkbox" role="switch">
 														Enable all Module
 													</label>
 												</div>
@@ -920,7 +486,7 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch" checked>
+																<input class="form-check-input me-2" type="checkbox" role="switch" checked>
 																Holidays
 															</label>
 														</div>
@@ -978,8 +544,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Leaves
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Leaves
 															</label>
 														</div>
 													</td>
@@ -1036,8 +602,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Clients
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Clients
 															</label>
 														</div>
 													</td>
@@ -1094,8 +660,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Projects
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Projects
 															</label>
 														</div>
 													</td>
@@ -1152,8 +718,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Tasks
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Tasks
 															</label>
 														</div>
 													</td>
@@ -1210,8 +776,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Chats
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Chats
 															</label>
 														</div>
 													</td>
@@ -1268,8 +834,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch" checked>
-															Assets
+																<input class="form-check-input me-2" type="checkbox" role="switch" checked>
+																Assets
 															</label>
 														</div>
 													</td>
@@ -1326,8 +892,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Timing Sheets
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Timing Sheets
 															</label>
 														</div>
 													</td>
@@ -1402,7 +968,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<div class="d-flex align-items-center">
-							<h4 class="modal-title me-2">Edit Employee</h4><span>Employee  ID : EMP -0024</span>
+							<h4 class="modal-title me-2">Edit Employee</h4><span>Employee ID : EMP -0024</span>
 						</div>
 						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
 							<i class="ti ti-x"></i>
@@ -1412,154 +978,154 @@
 						<div class="contact-grids-tab">
 							<ul class="nav nav-underline" id="myTab2" role="tablist">
 								<li class="nav-item" role="presentation">
-								  <button class="nav-link active" id="info-tab2" data-bs-toggle="tab" data-bs-target="#basic-info2" type="button" role="tab" aria-selected="true">Basic Information</button>
+									<button class="nav-link active" id="info-tab2" data-bs-toggle="tab" data-bs-target="#basic-info2" type="button" role="tab" aria-selected="true">Basic Information</button>
 								</li>
 								<li class="nav-item" role="presentation">
-								  <button class="nav-link" id="address-tab2" data-bs-toggle="tab" data-bs-target="#address2" type="button" role="tab" aria-selected="false">Permissions</button>
+									<button class="nav-link" id="address-tab2" data-bs-toggle="tab" data-bs-target="#address2" type="button" role="tab" aria-selected="false">Permissions</button>
 								</li>
 							</ul>
 						</div>
 						<div class="tab-content" id="myTabContent2">
 							<div class="tab-pane fade show active" id="basic-info2" role="tabpanel" aria-labelledby="info-tab2" tabindex="0">
-									<div class="modal-body pb-0 ">	
-										<div class="row">
-											<div class="col-md-12">
-												<div class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">                                                
-													<div class="d-flex align-items-center justify-content-center avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0 text-dark frames">
-														<img src="assets/img/users/user-13.jpg" alt="img" class="rounded-circle">
-													</div>                                              
-													<div class="profile-upload">
-														<div class="mb-2">
-															<h6 class="mb-1">Upload Profile Image</h6>
-															<p class="fs-12">Image should be below 4 mb</p>
+								<div class="modal-body pb-0 ">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">
+												<div class="d-flex align-items-center justify-content-center avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0 text-dark frames">
+													<img src="assets/img/users/user-13.jpg" alt="img" class="rounded-circle">
+												</div>
+												<div class="profile-upload">
+													<div class="mb-2">
+														<h6 class="mb-1">Upload Profile Image</h6>
+														<p class="fs-12">Image should be below 4 mb</p>
+													</div>
+													<div class="profile-uploader d-flex align-items-center">
+														<div class="drag-upload-btn btn btn-sm btn-primary me-2">
+															Upload
+															<input type="file" class="form-control image-sign" multiple="">
 														</div>
-														<div class="profile-uploader d-flex align-items-center">
-															<div class="drag-upload-btn btn btn-sm btn-primary me-2">
-																Upload
-																<input type="file" class="form-control image-sign" multiple="">
-															</div>
-															<a href="javascript:void(0);" class="btn btn-light btn-sm">Cancel</a>
-														</div>
-														
+														<a href="javascript:void(0);" class="btn btn-light btn-sm">Cancel</a>
 													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">First Name <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control" value="Anthony">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Last Name</label>
-													<input type="email" class="form-control" value="Lewis">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Employee ID <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control" value="Emp-001">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Joining Date <span class="text-danger"> *</span></label>
-													<div class="input-icon-end position-relative">
-														<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy" value="17-10-2022">
-														<span class="input-icon-addon">
-															<i class="ti ti-calendar text-gray-7"></i>
-														</span>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Username <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control" value="Anthony">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Email <span class="text-danger"> *</span></label>
-													<input type="email" class="form-control" value="anthony@example.com	">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3 ">
-													<label class="form-label">Password <span class="text-danger"> *</span></label>
-													<div class="pass-group">
-														<input type="password" class="pass-input form-control">
-														<span class="ti toggle-password ti-eye-off"></span>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3 ">
-													<label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
-													<div class="pass-group">
-														<input type="password" class="pass-inputs form-control">
-														<span class="ti toggle-passwords ti-eye-off"></span>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Phone Number <span class="text-danger"> *</span></label>
-													<input type="text" class="form-control" value="(123) 4567 890">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Company<span class="text-danger"> *</span></label>
-													<input type="text" class="form-control" value="Abac Company">
-												</div>									
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Department</label>
-													<select class="select">
-														<option>Select</option>
-														<option>All Department</option>
-														<option selected>Finance</option>
-														<option>Developer</option>
-														<option>Executive</option>
-													</select>
-												</div>		
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label class="form-label">Designation</label>
-													<select class="select">
-														<option>Select</option>
-														<option selected>Finance</option>
-														<option>Developer</option>
-														<option>Executive</option>
-													</select>
-												</div>		
-											</div>
-											<div class="col-md-12">
-												<div class="mb-3">
-													<label class="form-label">About <span class="text-danger"> *</span></label>
-													<textarea class="form-control" rows="3"></textarea>
+
 												</div>
 											</div>
 										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">First Name <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control" value="Anthony">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Last Name</label>
+												<input type="email" class="form-control" value="Lewis">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Employee ID <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control" value="Emp-001">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Joining Date <span class="text-danger"> *</span></label>
+												<div class="input-icon-end position-relative">
+													<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy" value="17-10-2022">
+													<span class="input-icon-addon">
+														<i class="ti ti-calendar text-gray-7"></i>
+													</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Username <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control" value="Anthony">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Email <span class="text-danger"> *</span></label>
+												<input type="email" class="form-control" value="anthony@example.com	">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3 ">
+												<label class="form-label">Password <span class="text-danger"> *</span></label>
+												<div class="pass-group">
+													<input type="password" class="pass-input form-control">
+													<span class="ti toggle-password ti-eye-off"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3 ">
+												<label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
+												<div class="pass-group">
+													<input type="password" class="pass-inputs form-control">
+													<span class="ti toggle-passwords ti-eye-off"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Phone Number <span class="text-danger"> *</span></label>
+												<input type="text" class="form-control" value="(123) 4567 890">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Company<span class="text-danger"> *</span></label>
+												<input type="text" class="form-control" value="Abac Company">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Department</label>
+												<select class="select">
+													<option>Select</option>
+													<option>All Department</option>
+													<option selected>Finance</option>
+													<option>Developer</option>
+													<option>Executive</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Designation</label>
+												<select class="select">
+													<option>Select</option>
+													<option selected>Finance</option>
+													<option>Developer</option>
+													<option>Executive</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="mb-3">
+												<label class="form-label">About <span class="text-danger"> *</span></label>
+												<textarea class="form-control" rows="3"></textarea>
+											</div>
+										</div>
 									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
-										<button type="submit" class="btn btn-primary">Save </button>
-									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
+									<button type="submit" class="btn btn-primary">Save </button>
+								</div>
 							</div>
 							<div class="tab-pane fade" id="address2" role="tabpanel" aria-labelledby="address-tab2" tabindex="0">
-								<div class="modal-body">	
+								<div class="modal-body">
 									<div class="card bg-light-500 shadow-none">
 										<div class="card-body d-flex align-items-center justify-content-between flex-wrap row-gap-3">
 											<h6>Enable Options</h6>
 											<div class="d-flex align-items-center justify-content-end">
 												<div class="form-check form-switch me-2">
 													<label class="form-check-label mt-0">
-													<input class="form-check-input me-2" type="checkbox" role="switch">
+														<input class="form-check-input me-2" type="checkbox" role="switch">
 														Enable all Module
 													</label>
 												</div>
@@ -1579,7 +1145,7 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch" checked>
+																<input class="form-check-input me-2" type="checkbox" role="switch" checked>
 																Holidays
 															</label>
 														</div>
@@ -1637,8 +1203,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Leaves
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Leaves
 															</label>
 														</div>
 													</td>
@@ -1695,8 +1261,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Clients
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Clients
 															</label>
 														</div>
 													</td>
@@ -1753,8 +1319,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Projects
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Projects
 															</label>
 														</div>
 													</td>
@@ -1811,8 +1377,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Tasks
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Tasks
 															</label>
 														</div>
 													</td>
@@ -1869,8 +1435,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Chats
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Chats
 															</label>
 														</div>
 													</td>
@@ -1927,8 +1493,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch" checked>
-															Assets
+																<input class="form-check-input me-2" type="checkbox" role="switch" checked>
+																Assets
 															</label>
 														</div>
 													</td>
@@ -1985,8 +1551,8 @@
 													<td>
 														<div class="form-check form-switch me-2">
 															<label class="form-check-label mt-0">
-															<input class="form-check-input me-2" type="checkbox" role="switch">
-															Timing Sheets
+																<input class="form-check-input me-2" type="checkbox" role="switch">
+																Timing Sheets
 															</label>
 														</div>
 													</td>
@@ -2102,9 +1668,10 @@
 		</div>
 		<!-- /Delete Modal -->
 
-    </div>
-<!-- end main wrapper-->
-<!-- JAVASCRIPT -->
-<?php include 'layouts/vendor-scripts.php'; ?>
+	</div>
+	<!-- end main wrapper-->
+	<!-- JAVASCRIPT -->
+	<?php include 'layouts/vendor-scripts.php'; ?>
 </body>
+
 </html>
