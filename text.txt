@@ -303,3 +303,435 @@
 			</div>
 		</div>
 		<!-- /Add Leaves -->
+
+
+
+					
+				<li class="menu-title"><span>Extras</span></li>
+				<li>
+					<ul>
+						<li>
+							<a href="javascript:void(0);"><i class="ti ti-file-text"></i><span>Documentation</span></a>
+						</li>
+						<li>
+							<a href="javascript:void(0);"><i class="ti ti-exchange"></i><span>Changelog</span><span class="badge bg-pink badge-xs text-white fs-10 ms-s">v4.0.2</span></a>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);"><i class="ti ti-menu-2"></i><span>Multi Level</span><span class="menu-arrow"></span></a>
+							<ul>
+								<li><a href="javascript:void(0);">Multilevel 1</a></li>
+								<li class="submenu submenu-two">
+									<a href="javascript:void(0);">Multilevel 2<span class="menu-arrow inside-submenu"></span></a>
+									<ul>
+										<li><a href="javascript:void(0);">Multilevel 2.1</a></li>
+										<li class="submenu submenu-two submenu-three">
+											<a href="javascript:void(0);">Multilevel 2.2<span class="menu-arrow inside-submenu inside-submenu-two"></span></a>
+											<ul>
+												<li><a href="javascript:void(0);">Multilevel 2.2.1</a></li>
+												<li><a href="javascript:void(0);">Multilevel 2.2.2</a></li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a href="javascript:void(0);">Multilevel 3</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+
+
+
+					<li class="menu-title"><span>UI INTERFACE</span></li>
+				<li>
+					<ul>
+						<li class="submenu">
+							<a href="javascript:void(0);" class="<?php echo ($page == 'ui-alerts.php' || $page == 'ui-accordion.php' || $page == 'ui-avatar.php' || $page == 'ui-badges.php' || $page == 'ui-borders.php'
+																		|| $page == 'ui-buttons.php' || $page == 'ui-buttons-group.php' || $page == 'ui-breadcrumb.php' || $page == 'ui-cards.php' || $page == 'ui-carousel.php'
+																		|| $page == 'ui-colors.php' || $page == 'ui-dropdowns.php' || $page == 'ui-grid.php' || $page == 'ui-images.php' || $page == 'ui-lightbox.php'
+																		|| $page == 'ui-media.php' || $page == 'ui-modals.php' || $page == 'ui-offcanvas.php' || $page == 'ui-pagination.php' || $page == 'ui-popovers.php'
+																		|| $page == 'ui-progress.php' || $page == 'ui-placeholders.php'  || $page == 'ui-spinner.php'
+																		|| $page == 'ui-sweetalerts.php' || $page == 'ui-nav-tabs.php' || $page == 'ui-toasts.php' || $page == 'ui-tooltips.php'
+																		|| $page == 'ui-typography.php' || $page == 'ui-video.php'
+																	)
+																		? 'subdrop active'
+																		: ''; ?>">
+								<i class="ti ti-hierarchy-2"></i>
+								<span>Base UI</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li>
+									<a href="ui-alerts.php" class="<?php echo ($page == 'ui-alerts.php') ? 'active' : ''; ?>">Alerts</a>
+								</li>
+								<li>
+									<a href="ui-accordion.php" class="<?php echo ($page == 'ui-accordion.php') ? 'active' : ''; ?>">Accordion</a>
+								</li>
+								<li>
+									<a href="ui-avatar.php" class="<?php echo ($page == 'ui-avatar.php') ? 'active' : ''; ?>">Avatar</a>
+								</li>
+								<li>
+									<a href="ui-badges.php" class="<?php echo ($page == 'ui-badges.php') ? 'active' : ''; ?>">Badges</a>
+								</li>
+								<li>
+									<a href="ui-borders.php" class="<?php echo ($page == 'ui-borders.php') ? 'active' : ''; ?>">Border</a>
+								</li>
+								<li>
+									<a href="ui-buttons.php" class="<?php echo ($page == 'ui-buttons.php') ? 'active' : ''; ?>">Buttons</a>
+								</li>
+								<li>
+									<a href="ui-buttons-group.php" class="<?php echo ($page == 'ui-buttons-group.php') ? 'active' : ''; ?>">Button Group</a>
+								</li>
+								<li>
+									<a href="ui-breadcrumb.php" class="<?php echo ($page == 'ui-breadcrumb.php') ? 'active' : ''; ?>">Breadcrumb</a>
+								</li>
+								<li>
+									<a href="ui-cards.php" class="<?php echo ($page == 'ui-cards.php') ? 'active' : ''; ?>">Card</a>
+								</li>
+								<li>
+									<a href="ui-carousel.php" class="<?php echo ($page == 'ui-carousel.php') ? 'active' : ''; ?>">Carousel</a>
+								</li>
+								<li>
+									<a href="ui-colors.php" class="<?php echo ($page == 'ui-colors.php') ? 'active' : ''; ?>">Colors</a>
+								</li>
+								<li>
+									<a href="ui-dropdowns.php" class="<?php echo ($page == 'ui-dropdowns.php') ? 'active' : ''; ?>">Dropdowns</a>
+								</li>
+								<li>
+									<a href="ui-grid.php" class="<?php echo ($page == 'ui-grid.php') ? 'active' : ''; ?>">Grid</a>
+								</li>
+								<li>
+									<a href="ui-images.php" class="<?php echo ($page == 'ui-images.php') ? 'active' : ''; ?>">Images</a>
+								</li>
+								<li>
+									<a href="ui-lightbox.php" class="<?php echo ($page == 'ui-lightbox.php') ? 'active' : ''; ?>">Lightbox</a>
+								</li>
+								<li>
+									<a href="ui-media.php" class="<?php echo ($page == 'ui-media.php') ? 'active' : ''; ?>">Media</a>
+								</li>
+								<li>
+									<a href="ui-modals.php" class="<?php echo ($page == 'ui-modals.php') ? 'active' : ''; ?>">Modals</a>
+								</li>
+								<li>
+									<a href="ui-offcanvas.php" class="<?php echo ($page == 'ui-offcanvas.php') ? 'active' : ''; ?>">Offcanvas</a>
+								</li>
+								<li>
+									<a href="ui-pagination.php" class="<?php echo ($page == 'ui-pagination.php') ? 'active' : ''; ?>">Pagination</a>
+								</li>
+								<li>
+									<a href="ui-popovers.php" class="<?php echo ($page == 'ui-popovers.php') ? 'active' : ''; ?>">Popovers</a>
+								</li>
+								<li>
+									<a href="ui-progress.php" class="<?php echo ($page == 'ui-progress.php') ? 'active' : ''; ?>">Progress</a>
+								</li>
+								<li>
+									<a href="ui-placeholders.php" class="<?php echo ($page == 'ui-placeholders.php') ? 'active' : ''; ?>">Placeholders</a>
+								</li>
+								<li>
+									<a href="ui-spinner.php" class="<?php echo ($page == 'ui-spinner.php') ? 'active' : ''; ?>">Spinner</a>
+								</li>
+								<li>
+									<a href="ui-sweetalerts.php" class="<?php echo ($page == 'ui-sweetalerts.php') ? 'active' : ''; ?>">Sweet Alerts</a>
+								</li>
+								<li>
+									<a href="ui-nav-tabs.php" class="<?php echo ($page == 'ui-nav-tabs.php') ? 'active' : ''; ?>">Tabs</a>
+								</li>
+								<li>
+									<a href="ui-toasts.php" class="<?php echo ($page == 'ui-toasts.php') ? 'active' : ''; ?>">Toasts</a>
+								</li>
+								<li>
+									<a href="ui-tooltips.php" class="<?php echo ($page == 'ui-tooltips.php') ? 'active' : ''; ?>">Tooltips</a>
+								</li>
+								<li>
+									<a href="ui-typography.php" class="<?php echo ($page == 'ui-typography.php') ? 'active' : ''; ?>">Typography</a>
+								</li>
+								<li>
+									<a href="ui-video.php" class="<?php echo ($page == 'ui-video.php') ? 'active' : ''; ?>">Video</a>
+								</li>
+								<li>
+									<a href="ui-sortable.php" class="<?php echo ($page == 'ui-sortable.php') ? 'active' : ''; ?>">Sortable</a>
+								</li>
+								<li>
+									<a href="ui-swiperjs.php" class="<?php echo ($page == 'ui-swiperjs.php') ? 'active' : ''; ?>">Swiperjs</a>
+								</li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);" class="<?php echo ($page == 'ui-ribbon.php' || $page == 'ui-clipboard.php' || $page == 'ui-drag-drop.php' || $page == 'ui-rangeslider.php' || $page == 'ui-rating.php' || $page == 'ui-text-editor.php' || $page == 'ui-counter.php' || $page == 'ui-scrollbar.php' || $page == 'ui-stickynote.php' || $page == 'ui-timeline.php') ? 'subdrop active' : ''; ?>">
+								<i class="ti ti-hierarchy-3"></i>
+								<span>Advanced UI</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li>
+									<a href="ui-ribbon.php" class="<?php echo ($page == 'ui-ribbon.php') ? 'active' : ''; ?>">Ribbon</a>
+								</li>
+								<li>
+									<a href="ui-clipboard.php" class="<?php echo ($page == 'ui-clipboard.php') ? 'active' : ''; ?>">Clipboard</a>
+								</li>
+								<li>
+									<a href="ui-drag-drop.php" class="<?php echo ($page == 'ui-drag-drop.php') ? 'active' : ''; ?>">Drag & Drop</a>
+								</li>
+								<li>
+									<a href="ui-rangeslider.php" class="<?php echo ($page == 'ui-rangeslider.php') ? 'active' : ''; ?>">Range Slider</a>
+								</li>
+								<li>
+									<a href="ui-rating.php" class="<?php echo ($page == 'ui-rating.php') ? 'active' : ''; ?>">Rating</a>
+								</li>
+								<li>
+									<a href="ui-text-editor.php" class="<?php echo ($page == 'ui-text-editor.php') ? 'active' : ''; ?>">Text Editor</a>
+								</li>
+								<li>
+									<a href="ui-counter.php" class="<?php echo ($page == 'ui-counter.php') ? 'active' : ''; ?>">Counter</a>
+								</li>
+								<li>
+									<a href="ui-scrollbar.php" class="<?php echo ($page == 'ui-swiperjs.php') ? 'active' : ''; ?>">Scrollbar</a>
+								</li>
+								<li>
+									<a href="ui-stickynote.php" class="<?php echo ($page == 'ui-stickynote.php') ? 'active' : ''; ?>">Sticky Note</a>
+								</li>
+								<li>
+									<a href="ui-timeline.php" class="<?php echo ($page == 'ui-timeline.php') ? 'active' : ''; ?>">Timeline</a>
+								</li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);" class="<?php echo ($page == 'form-basic-inputs.php' || $page == 'form-checkbox-radios.php' || $page == 'form-input-groups.php' || $page == 'form-grid-gutters.php' || $page == 'form-select.php' || $page == 'form-mask.php' || $page == 'form-fileupload.php' || $page == 'form-horizontal.php' || $page == 'form-vertical.php' || $page == 'form-floating-labels.php' || $page == 'form-validation.php' || $page == 'form-wizard.php' || $page == 'form-select2.php') ? 'subdrop active' : ''; ?>">
+								<i class="ti ti-input-search"></i>
+								<span>Forms</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li class="submenu submenu-two">
+									<a href="javascript:void(0);" class="<?php echo ($page == 'form-basic-inputs.php' || $page == 'form-checkbox-radios.php' || $page == 'form-input-groups.php' || $page == 'form-grid-gutters.php' || $page == 'form-select.php' || $page == 'form-mask.php' || $page == 'form-fileupload.php') ? 'subdrop active' : ''; ?>">Form Elements <span class="menu-arrow inside-submenu"></span>
+									</a>
+									<ul>
+										<li>
+											<a href="form-basic-inputs.php" class="<?php echo ($page == 'form-basic-inputs.php') ? 'active' : ''; ?>">Basic Inputs</a>
+										</li>
+										<li>
+											<a href="form-checkbox-radios.php" class="<?php echo ($page == 'form-checkbox-radios.php') ? 'active' : ''; ?>">Checkbox & Radios</a>
+										</li>
+										<li>
+											<a href="form-input-groups.php" class="<?php echo ($page == 'form-input-groups.php') ? 'active' : ''; ?>">Input Groups</a>
+										</li>
+										<li>
+											<a href="form-grid-gutters.php" class="<?php echo ($page == 'form-grid-gutters.php') ? 'active' : ''; ?>">Grid & Gutters</a>
+										</li>
+										<li>
+											<a href="form-select.php" class="<?php echo ($page == 'form-select.php') ? 'active' : ''; ?>">Form Select</a>
+										</li>
+										<li>
+											<a href="form-mask.php" class="<?php echo ($page == 'form-mask.php') ? 'active' : ''; ?>">Input Masks</a>
+										</li>
+										<li>
+											<a href="form-fileupload.php" class="<?php echo ($page == 'form-fileupload.php') ? 'active' : ''; ?>">File Uploads</a>
+										</li>
+									</ul>
+								</li>
+								<li class="submenu submenu-two">
+									<a href="javascript:void(0);" class="<?php echo ($page == 'form-horizontal.php' || $page == 'form-vertical.php' || $page == 'form-floating-labels.php') ? 'subdrop active' : ''; ?>">Layouts <span class="menu-arrow inside-submenu"></span>
+									</a>
+									<ul>
+										<li>
+											<a href="form-horizontal.php" class="<?php echo ($page == 'form-horizontal.php') ? 'active' : ''; ?>">Horizontal Form</a>
+										</li>
+										<li>
+											<a href="form-vertical.php" class="<?php echo ($page == 'form-vertical.php') ? 'active' : ''; ?>">Vertical Form</a>
+										</li>
+										<li>
+											<a href="form-floating-labels.php" class="<?php echo ($page == 'form-floating-labels.php') ? 'active' : ''; ?>">Floating Labels</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href="form-validation.php" class="<?php echo ($page == 'form-validation.php') ? 'active' : ''; ?>">Form Validation</a>
+								</li>
+
+								<li>
+									<a href="form-select2.php" class="<?php echo ($page == 'form-select2.php') ? 'active' : ''; ?>">Select2</a>
+								</li>
+								<li>
+									<a href="form-wizard.php" class="<?php echo ($page == 'form-wizard.php') ? 'active' : ''; ?>">Form Wizard</a>
+								</li>
+								<li>
+									<a href="form-pickers.php" class="<?php echo ($page == 'form-pickers.php') ? 'active' : ''; ?>">Form Picker</a>
+								</li>
+
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);" class="<?php echo ($page == 'tables-basic.php' || $page == 'data-tables.php') ? 'subdrop active' : ''; ?>">
+								<i class="ti ti-table-plus"></i>
+								<span>Tables</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li>
+									<a href="tables-basic.php" class="<?php echo ($page == 'tables-basic.php') ? 'active' : ''; ?>">Basic Tables </a>
+								</li>
+								<li>
+									<a href="data-tables.php" class="<?php echo ($page == 'data-tables.php') ? 'active' : ''; ?>">Data Table </a>
+								</li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);" class="<?php echo ($page == 'chart-apex.php' || $page == 'chart-js.php' || $page == 'chart-morris.php' || $page == 'chart-flot.php' || $page == 'chart-peity.php' || $page == 'chart-c3.php') ? 'subdrop active' : ''; ?>">
+								<i class="ti ti-chart-line"></i>
+								<span>Charts</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li>
+									<a href="chart-apex.php" class="<?php echo ($page == 'chart-apex.php') ? 'active' : ''; ?>">Apex Charts</a>
+								</li>
+								<li>
+									<a href="chart-c3.php" class="<?php echo ($page == 'chart-c3.php') ? 'active' : ''; ?>">Chart C3</a>
+								</li>
+								<li>
+									<a href="chart-js.php" class="<?php echo ($page == 'chart-js.php') ? 'active' : ''; ?>">Chart Js</a>
+								</li>
+								<li>
+									<a href="chart-morris.php" class="<?php echo ($page == 'chart-morris.php') ? 'active' : ''; ?>">Morris Charts</a>
+								</li>
+								<li>
+									<a href="chart-flot.php" class="<?php echo ($page == 'chart-flot.php') ? 'active' : ''; ?>">Flot Charts</a>
+								</li>
+								<li>
+									<a href="chart-peity.php" class="<?php echo ($page == 'chart-peity.php') ? 'active' : ''; ?>">Peity Charts</a>
+								</li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);" class="<?php echo ($page == 'icon-fontawesome.php' || $page == 'icon-feather.php' || $page == 'icon-ionic.php' || $page == 'icon-material.php' || $page == 'icon-pe7.php' || $page == 'icon-simpleline.php' || $page == 'icon-themify.php' || $page == 'icon-weather.php' || $page == 'icon-typicon.php' || $page == 'icon-flag.php') ? 'subdrop active' : ''; ?>">
+								<i class="ti ti-icons"></i>
+								<span>Icons</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li>
+									<a href="icon-fontawesome.php" class="<?php echo ($page == 'icon-fontawesome.php') ? 'active' : ''; ?>">Fontawesome Icons</a>
+								</li>
+								<li>
+									<a href="icon-tabler.php" class="<?php echo ($page == 'icon-tabler.php') ? 'active' : ''; ?>">Tabler Icons</a>
+								</li>
+								<li>
+									<a href="icon-bootstrap.php" class="<?php echo ($page == 'icon-bootstrap.php') ? 'active' : ''; ?>">Bootstrap Icons</a>
+								</li>
+								<li>
+									<a href="icon-remix.php" class="<?php echo ($page == 'icon-remix.php') ? 'active' : ''; ?>">Remix Icons</a>
+								</li>
+								<li>
+									<a href="icon-feather.php" class="<?php echo ($page == 'icon-feather.php') ? 'active' : ''; ?>">Feather Icons</a>
+								</li>
+								<li>
+									<a href="icon-ionic.php" class="<?php echo ($page == 'icon-ionic.php') ? 'active' : ''; ?>">Ionic Icons</a>
+								</li>
+								<li>
+									<a href="icon-material.php" class="<?php echo ($page == 'icon-material.php') ? 'active' : ''; ?>">Material Icons</a>
+								</li>
+								<li>
+									<a href="icon-pe7.php" class="<?php echo ($page == 'icon-pe7.php') ? 'active' : ''; ?>">Pe7 Icons</a>
+								</li>
+								<li>
+									<a href="icon-simpleline.php" class="<?php echo ($page == 'icon-simpleline.php') ? 'active' : ''; ?>">Simpleline Icons</a>
+								</li>
+								<li>
+									<a href="icon-themify.php" class="<?php echo ($page == 'icon-themify.php') ? 'active' : ''; ?>">Themify Icons</a>
+								</li>
+								<li>
+									<a href="icon-weather.php" class="<?php echo ($page == 'icon-weather.php') ? 'active' : ''; ?>">Weather Icons</a>
+								</li>
+								<li>
+									<a href="icon-typicon.php" class="<?php echo ($page == 'icon-typicon.php') ? 'active' : ''; ?>">Typicon Icons</a>
+								</li>
+								<li>
+									<a href="icon-flag.php" class="<?php echo ($page == 'icon-flag.php') ? 'active' : ''; ?>">Flag Icons</a>
+								</li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);" class="<?php echo ($page == 'maps-vector.php' || $page == 'maps-leaflet.php') ? 'subdrop active' : ''; ?>">
+								<i class="ti ti-table-plus"></i>
+								<span>Maps</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li>
+									<a href="maps-vector.php" class="<?php echo ($page == 'maps-vector.php') ? 'active' : ''; ?>">Vector</a>
+								</li>
+								<li>
+									<a href="maps-leaflet.php" class="<?php echo ($page == 'maps-leaflet.php') ? 'active' : ''; ?>">Leaflet</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+
+
+
+
+				
+				<li class="menu-title"><span>AUTHENTICATION</span></li>
+				<li>
+					<ul>
+						<li class="submenu">
+							<a href="javascript:void(0);">
+								<i class="ti ti-login"></i><span>Login</span><span class="menu-arrow"></span>
+							</a>
+							
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);">
+								<i class="ti ti-forms"></i><span>Register</span><span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li><a href="register.php">Cover</a></li>
+								<li><a href="register-2.php">Illustration</a></li>
+								<li><a href="register-3.php">Basic</a></li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);">
+								<i class="ti ti-help-triangle"></i><span>Forgot Password</span><span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li><a href="forgot-password.php">Cover</a></li>
+								<li><a href="forgot-password-2.php">Illustration</a></li>
+								<li><a href="forgot-password-3.php">Basic</a></li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);">
+								<i class="ti ti-restore"></i><span>Reset Password</span><span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li><a href="reset-password.php">Cover</a></li>
+								<li><a href="reset-password-2.php">Illustration</a></li>
+								<li><a href="reset-password-3.php">Basic</a></li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);">
+								<i class="ti ti-mail-exclamation"></i><span>Email Verification</span><span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li><a href="email-verification.php">Cover</a></li>
+								<li><a href="email-verification-2.php">Illustration</a></li>
+								<li><a href="email-verification-3.php">Basic</a></li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);">
+								<i class="ti ti-password"></i><span>2 Step Verification</span><span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li><a href="two-step-verification.php">Cover</a></li>
+								<li><a href="two-step-verification-2.php">Illustration</a></li>
+								<li><a href="two-step-verification-3.php">Basic</a></li>
+							</ul>
+						</li>
+						<li><a href="lock-screen.php"><i class="ti ti-lock-square"></i><span>Lock Screen</span></a></li>
+						<li><a href="error-404.php"><i class="ti ti-error-404"></i><span>404 Error</span></a></li>
+						<li><a href="error-500.php"><i class="ti ti-server"></i><span>500 Error</span></a></li>
+					</ul>
+				</li>

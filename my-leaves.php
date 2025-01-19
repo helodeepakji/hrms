@@ -7,15 +7,12 @@ $leaves = $conn->prepare("
     SELECT leaves.*, users.name AS user_name, role.name AS role_name
     FROM leaves
     JOIN users ON users.id = leaves.user_id
-    JOIN role ON role.id = users.role_id
+    JOIN role ON role.id = users.role_id WHERE `leaves`.`user_id` = ?
     ORDER BY leaves.created_at DESC
 ");
-$leaves->execute();
+$leaves->execute([$userId]);
 $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 
-$sql = $conn->prepare("SELECT * FROM `role`");
-$sql->execute();
-$role = $sql->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <?php include 'layouts/head-main.php'; ?>
@@ -188,17 +185,6 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 									?>
 								</select>
 							</div>
-							<div class="me-3">
-								<select id="selectedRole" class="form-select">
-									<option value="">Select Role</option>
-									<?php
-									foreach ($role as $value) {
-										echo '  <option value=' . $value['id'] . '>' . ucfirst(str_replace('_', ' ', $value['name'])) . '</option>';
-									}
-									?>
-
-								</select>
-							</div>
 
 							<div class="me-3">
 								<select id="selectedStatus" class="form-select">
@@ -226,7 +212,6 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										<th>To</th>
 										<th>No of Days</th>
 										<th>Status</th>
-										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -278,12 +263,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 											<span  class="' . ($value['status'] == 'cancel' ? 'text-danger' : ($value['status'] == 'approve' ? 'text-success' : '')) . '">' . ucfirst($value['status']) . ' </span><br>
 											'.$user['name'].'
 										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_leaves"><i class="fe fe-check-circle"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal" onclick="rejectLeave(' . $value['id'] . ')"><i class="ti ti-arrows-cross"></i></a>
-											</div>
-										</td>
+										
 									</tr>';
 									} ?>
 
@@ -592,28 +572,6 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 			});
 		});
 
-		function rejectLeave(id) {
-			$('#delete-btn').data('delete', id);
-		}
-
-		$('#delete-btn').on('click', function() {
-			var id = $('#delete-btn').data('delete');
-			$.ajax({
-				url: 'settings/api/leaveApi.php',
-				method: 'GET',
-				data: {
-					leave_id: id,
-					type: 'cancelLaves',
-				},
-				success: function(response) {
-					location.reload();
-				},
-				error: function() {
-					alert('Error fetching data.');
-				},
-			});
-		});
-
 		$(document).ready(function() {
 			// Handle date range input change
 			$('#dateRange').on('change', function() {
@@ -625,9 +583,6 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 				fetchFilteredData();
 			});
 
-			$('#selectedRole').on('click', function() {
-				fetchFilteredData();
-			});
 
 			$('#selectedStatus').on('click', function() {
 				fetchFilteredData();
@@ -637,7 +592,6 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 			function fetchFilteredData() {
 				const dateRange = $('#dateRange').val();
 				const leaveType = $('#leaveType').val();
-				const role = $('#selectedRole').val();
 				const status = $('#selectedStatus').val();
 
 				$.ajax({
@@ -648,7 +602,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 						leave_type: leaveType,
 						role: role,
 						status: status,
-						type: 'filterLeave',
+						type: 'myFilterLeave',
 					},
 					success: function(response) {
 						$('.datatable').DataTable().destroy();

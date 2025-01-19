@@ -1,20 +1,26 @@
-<?php include 'layouts/session.php'; ?>
+<?php include 'layouts/session.php';
+$leave_type = $conn->prepare("SELECT * FROM `leave_type`");
+$leave_type->execute();
+$leave_type = $leave_type->fetchAll(PDO::FETCH_ASSOC);
+?>
 <?php include 'layouts/head-main.php'; ?>
+
 <head>
-<title>Smarthr Admin Template</title>
- <?php include 'layouts/title-meta.php'; ?>
- <?php include 'layouts/head-css.php'; ?>
-<!-- Bootstrap Tagsinput CSS -->
-<link rel="stylesheet" href="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
+	<title>Smarthr Admin Template</title>
+	<?php include 'layouts/title-meta.php'; ?>
+	<?php include 'layouts/head-css.php'; ?>
+	<!-- Bootstrap Tagsinput CSS -->
+	<link rel="stylesheet" href="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
 
 </head>
+
 <body>
-<div id="global-loader" style="display: none;">
+	<div id="global-loader" style="display: none;">
 		<div class="page-loader"></div>
 	</div>
 
-    <div class="main-wrapper">
-    <?php include 'layouts/menu.php'; ?>
+	<div class="main-wrapper">
+		<?php include 'layouts/menu.php'; ?>
 
 		<!-- Page Wrapper -->
 		<div class="page-wrapper">
@@ -73,7 +79,7 @@
 									<a href="approval-settings.php" class="d-inline-flex align-items-center rounded py-2 px-3">Approval Settings</a>
 									<a href="invoice-settings.php" class="d-inline-flex align-items-center rounded py-2 px-3">Invoice Settings</a>
 									<a href="leave-type.php" class="d-inline-flex align-items-center rounded active py-2 px-3"><i class="ti ti-arrow-badge-right me-2"></i>Leave Type</a>
-                                    <a href="custom-fields.php" class="d-inline-flex align-items-center rounded py-2 px-3">Custom Fields</a>
+									<a href="custom-fields.php" class="d-inline-flex align-items-center rounded py-2 px-3">Custom Fields</a>
 								</div>
 							</div>
 						</div>
@@ -87,7 +93,7 @@
 										<a href="#" data-bs-toggle="modal" data-bs-target="#add_leaves" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add Leave Type</a>
 									</div>
 								</div>
-                                <div class="card-body p-0">
+								<div class="card-body p-0">
 									<div class="card mb-0">
 										<div class="card-header d-flex align-items-center justify-content-between">
 											<h6>Leave Type List</h6>
@@ -108,79 +114,31 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
+													<?php foreach ($leave_type as $value) {
+														echo '<tr>
 														<td>
 															<div class="form-check form-check-md">
 																<input class="form-check-input" type="checkbox">
 															</div>
 														</td>
-														<td class="text-dark">Annual Leave</td>
-														<td>12</td>
-													  
+														<td class="text-dark">'.$value['leave_name'].'</td>
+														<td>'.$value['balance'].'</td>
+
 														<td><span class="badge badge-success"><i class="ti ti-point-filled"></i>Active</span></td>
 														<td>
 															<div class="action-icon d-inline-flex">
-															<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_leaves" ><i class="ti ti-edit"></i></a>
-																<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
+																<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_leaves" onclick="editLeave('.$value['id'].',\''.$value['leave_name'].'\','.$value['balance'].')"><i class="ti ti-edit"></i></a>
+																<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal" onclick="editLeave('.$value['id'].')"><i class="ti ti-trash"></i></a>
 															</div>
 														</td>
-													</tr>
-													<tr>
-														<td>
-															<div class="form-check form-check-md">
-																<input class="form-check-input" type="checkbox">
-															</div>
-														</td>
-														<td class="text-dark">Medical Leave</td>
-														<td>12</td>
-													  
-														<td><span class="badge badge-success"><i class="ti ti-point-filled"></i>Active</span></td>
-														<td>
-															<div class="action-icon d-inline-flex">
-															<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_leaves" ><i class="ti ti-edit"></i></a>
-																<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-															</div>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div class="form-check form-check-md">
-																<input class="form-check-input" type="checkbox">
-															</div>
-														</td>
-														<td class="text-dark">Casual Leave</td>
-														<td>12</td>
-													  
-														<td><span class="badge badge-success"><i class="ti ti-point-filled"></i>Active</span></td>
-														<td>
-															<div class="action-icon d-inline-flex">
-															<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_leaves" ><i class="ti ti-edit"></i></a>
-																<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-															</div>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div class="form-check form-check-md">
-																<input class="form-check-input" type="checkbox">
-															</div>
-														</td>
-														<td class="text-dark">Other Leave</td>
-														<td>12</td>
-													  
-														<td><span class="badge badge-success"><i class="ti ti-point-filled"></i>Active</span></td>
-														<td>
-															<div class="action-icon d-inline-flex">
-															<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_leaves" ><i class="ti ti-edit"></i></a>
-																<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-															</div>
-														</td>
-													</tr>
+													</tr>';
+													} ?>
+													
 												</tbody>
 											</table>
 										</div>
-									</div>                                    
-                                </div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -193,108 +151,165 @@
 		</div>
 		<!-- /Page Wrapper -->
 
- <!-- Add Leaves -->
- <div class="modal fade" id="add_leaves">
-		<div class="modal-dialog modal-dialog-centered modal-md">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Add Leave Type</h4>
-					<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-						<i class="ti ti-x"></i>
-					</button>
-				</div>
-				<form action="leave-type.php">
-					<div class="modal-body pb-0">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">Leave Type <span class="text-danger">*</span></label>
-									<input type="text" class="form-control">
-								</div>	
-							</div>
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">Number of days <span class="text-danger">*</span></label>
-									<input type="text" class="form-control">
-								</div>	
-							</div>
-						</div>
+		<!-- Add Leaves -->
+		<div class="modal fade" id="add_leaves">
+			<div class="modal-dialog modal-dialog-centered modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Add Leave Type</h4>
+						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+							<i class="ti ti-x"></i>
+						</button>
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
-						<button type="submit" class="btn btn-primary">Add Leave</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!-- /Add Leaves -->
-
-	<!-- Edit Leaves -->
-	<div class="modal fade" id="edit_leaves">
-		<div class="modal-dialog modal-dialog-centered modal-md">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Edit Leave Type</h4>
-					<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-						<i class="ti ti-x"></i>
-					</button>
-				</div>
-				<form action="leave-type.php">
-					<div class="modal-body pb-0">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">Leave Type <span class="text-danger">*</span></label>
-									<input type="text" class="form-control" value="Casual Leave">
-								</div>	
-							</div>
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">Number of days <span class="text-danger">*</span></label>
-									<input type="text" class="form-control" value="12">
-								</div>	
+					<form id="editLeaveType">
+						<div class="modal-body pb-0">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="mb-3">
+										<label class="form-label">Leave Type <span class="text-danger">*</span></label>
+										<input type="text" class="form-control" name="leave_name">
+										<input type="hidden" value="addLeave" name="type">
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="mb-3">
+										<label class="form-label">Number of days <span class="text-danger">*</span></label>
+										<input type="text" class="form-control" name="balance">
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
-						<button type="submit" class="btn btn-primary">Save Changes</button>
-					</div>
-				</form>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
+							<button type="submit" class="btn btn-primary">Add Leave</button>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
-	</div>
-	<!-- /Edit Leaves -->
+		<!-- /Add Leaves -->
 
-	<!-- Delete Modal -->
-	<div class="modal fade" id="delete_modal">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-body text-center">
-					<span class="avatar avatar-xl bg-transparent-danger text-danger mb-3">
-						<i class="ti ti-trash-x fs-36"></i>
-					</span>
-					<h4 class="mb-1">Confirm Delete</h4>
-					<p class="mb-3">You want to delete all the marked items, this cant be undone once you delete.</p>
-					<div class="d-flex justify-content-center">
-						<a href="javascript:void(0);" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</a>
-						<a href="leave-type.php" class="btn btn-danger">Yes, Delete</a>
+		<!-- Edit Leaves -->
+		<div class="modal fade" id="edit_leaves">
+			<div class="modal-dialog modal-dialog-centered modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Edit Leave Type</h4>
+						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+							<i class="ti ti-x"></i>
+						</button>
+					</div>
+					<form id="editLeaveType">
+						<div class="modal-body pb-0">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="mb-3">
+										<label class="form-label">Leave Type <span class="text-danger">*</span></label>
+										<input type="text" class="form-control" value="" id="leave_name" name="leave_name">
+										<input type="hidden" class="form-control" name="leave_id" id="leave_id">
+										<input type="hidden" class="form-control" name="type" value="editLeave">
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="mb-3">
+										<label class="form-label">Number of days <span class="text-danger">*</span></label>
+										<input type="text" class="form-control" value="12" id="leave_balance" name="leave_balance">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
+							<button type="submit" class="btn btn-primary">Save Changes</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- /Edit Leaves -->
+
+		<!-- Delete Modal -->
+		<div class="modal fade" id="delete_modal">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-body text-center">
+						<span class="avatar avatar-xl bg-transparent-danger text-danger mb-3">
+							<i class="ti ti-trash-x fs-36"></i>
+						</span>
+						<h4 class="mb-1">Confirm Delete</h4>
+						<p class="mb-3">You want to delete all the marked items, this cant be undone once you delete.</p>
+						<div class="d-flex justify-content-center">
+							<a href="javascript:void(0);" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</a>
+							<a id="dtn-button" class="btn btn-danger" onclick="deleteLeave()">Yes, Delete</a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<!-- /Delete Modal -->
+
 	</div>
-	<!-- /Delete Modal -->
+	<!-- end main wrapper-->
 
-    </div>
-<!-- end main wrapper-->
- 
 
-<!-- JAVASCRIPT -->
-<?php include 'layouts/vendor-scripts.php'; ?>
-<!-- Bootstrap Tagsinput JS -->
-<script src="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+	<!-- JAVASCRIPT -->
+	<?php include 'layouts/vendor-scripts.php'; ?>
+	<!-- Bootstrap Tagsinput JS -->
+	<script src="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+	<script>
+		function editLeave(id,name,balance){
+			$('#leave_balance').val(balance);
+			$('#leave_id').val(id);
+			$('#leave_name').val(name);
+			$('#dtn-button').data('delete',id);
+		}
+
+		$('#editLeaveType').submit(function () {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/leaveApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function (response) {
+					location.reload();
+				},
+				error: function (xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+
+		function deleteLeave() {
+			event.preventDefault();
+			var id = $('#dtn-button').data('delete');
+			$.ajax({
+				url: 'settings/api/leaveApi.php',
+				type: 'POST',
+				data: {
+					type : 'deleteLeave',
+					id : id
+				},
+				dataType: 'json',
+				success: function (response) {
+					location.reload();
+				},
+				error: function (xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
+
+	</script>
 
 </body>
+
 </html>

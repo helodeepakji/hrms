@@ -80,8 +80,8 @@
 							</span>
 							<div class="ms-3">
 								<h3 class="mb-2">Welcome <?php echo $_SESSION['userDetails']['name'] ?> <a href="javascript:void(0);" class="edit-icon"><i class="ti ti-edit fs-14"></i></a></h3>
-								<p class="mb-0">Clock In  &nbsp;  : <span class="text-primary text-decoration-none"><?php echo date('h:i A',strtotime($attendance['clock_in_time'])) ?></p>
-								<p>Clock Out : <span class="text-primary text-decoration-none"><?php echo date('h:i A',strtotime($attendance['clock_out_time'])) ?></p>
+								<p class="mb-0">Clock In  &nbsp;  : <span class="text-primary text-decoration-none"><?php echo $attendance['clock_in_time'] != '' ? date('h:i A',strtotime($attendance['clock_in_time'])) : '' ?></p>
+								<p>Clock Out : <span class="text-primary text-decoration-none"><?php echo $attendance['clock_out_time'] != '' ? date('h:i A',strtotime($attendance['clock_out_time'])) : '' ?></p>
 							</div>
 						</div>
 						<div class="d-flex align-items-center flex-wrap mb-1">
