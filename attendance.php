@@ -106,7 +106,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 									<option value="">Select Role</option>
 									<?php
 									foreach ($role as $value) {
-										echo '  <option value=' . $value['id'] . '>' . ucfirst(str_replace('_',' ',$value['name'])) . '</option>';
+										echo '  <option value=' . $value['id'] . '>' . ucfirst(str_replace('_', ' ', $value['name'])) . '</option>';
 									}
 									?>
 
@@ -131,6 +131,19 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 								</thead>
 								<tbody>
 									<?php foreach ($attendance as $key => $value) {
+										if ($value['clock_out_time'] != '') {
+											$attendance_clock_out = date('h:i A', strtotime($value['clock_out_time']));
+										} else {
+											$attendance_clock_out = '';
+										}
+
+
+										if ($value['regularisation'] == 1) {
+											$status = '<span class="text-danger" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $value['id'] . ',\'' . $value['clock_out_time'] . '\')" style="cursor: pointer">Regularization Accept </span>';
+										} else {
+											$status = '';
+										}
+
 									?>
 										<tr>
 											<td>
@@ -151,7 +164,9 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 											</td>
 											<td><?php echo date('h:i A', strtotime($value['clock_in_time'])) ?></td>
 											<td>
-												<?php echo date('h:i A', strtotime($value['clock_out_time'])) ?>
+												<?php echo $attendance_clock_out ?>
+												<br>
+												<?php echo $status ?>
 											</td>
 											<td>30 Min</td>
 											<td>20 Min</td>
@@ -181,119 +196,37 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 		</div>
 		<!-- /Page Wrapper -->
 
-		<!-- Attendance Report -->
-		<div class="modal fade" id="attendance_report">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Attendance</h4>
-						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-							<i class="ti ti-x"></i>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="card shadow-none bg-transparent-light">
-							<div class="card-body pb-1">
-								<div class="row">
-									<div class="col-sm-3">
-										<div class="mb-3">
-											<span>Date</span>
-											<p class="text-gray-9 fw-medium">15 Apr 2025</p>
-										</div>
-									</div>
-									<div class="col-sm-3">
-										<div class="mb-3">
-											<span>Punch in at</span>
-											<p class="text-gray-9 fw-medium">09:00 AM</p>
-										</div>
-									</div>
-									<div class="col-sm-3">
-										<div class="mb-3">
-											<span>Punch out at</span>
-											<p class="text-gray-9 fw-medium">06:45 PM</p>
-										</div>
-									</div>
-									<div class="col-sm-3">
-										<div class="mb-3">
-											<span>Status</span>
-											<p class="text-gray-9 fw-medium">Present</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card shadow-none border mb-0">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-xl-3">
-										<div class="mb-4">
-											<p class="d-flex align-items-center mb-1"><i class="ti ti-point-filled text-dark-transparent me-1"></i>Total Working hours</p>
-											<h3>12h 36m</h3>
-										</div>
-									</div>
-									<div class="col-xl-3">
-										<div class="mb-4">
-											<p class="d-flex align-items-center mb-1"><i class="ti ti-point-filled text-success me-1"></i>Productive Hours</p>
-											<h3>08h 36m</h3>
-										</div>
-									</div>
-									<div class="col-xl-3">
-										<div class="mb-4">
-											<p class="d-flex align-items-center mb-1"><i class="ti ti-point-filled text-warning me-1"></i>Break hours</p>
-											<h3>22m 15s</h3>
-										</div>
-									</div>
-									<div class="col-xl-3">
-										<div class="mb-4">
-											<p class="d-flex align-items-center mb-1"><i class="ti ti-point-filled text-info me-1"></i>Overtime</p>
-											<h3>02h 15m</h3>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-8 mx-auto">
-										<div class="progress bg-transparent-dark mb-3" style="height: 24px;">
-											<div class="progress-bar bg-success rounded me-2" role="progressbar" style="width: 18%;"></div>
-											<div class="progress-bar bg-warning rounded me-2" role="progressbar" style="width: 5%;"></div>
-											<div class="progress-bar bg-success rounded me-2" role="progressbar" style="width: 28%;"></div>
-											<div class="progress-bar bg-warning rounded me-2" role="progressbar" style="width: 17%;"></div>
-											<div class="progress-bar bg-success rounded me-2" role="progressbar" style="width: 22%;"></div>
-											<div class="progress-bar bg-warning rounded me-2" role="progressbar" style="width: 5%;"></div>
-											<div class="progress-bar bg-info rounded me-2" role="progressbar" style="width: 3%;"></div>
-											<div class="progress-bar bg-info rounded" role="progressbar" style="width: 2%;"></div>
-										</div>
-
-									</div>
-									<div class="co-md-12">
-										<div class="d-flex align-items-center justify-content-between">
-											<span class="fs-10">06:00</span>
-											<span class="fs-10">07:00</span>
-											<span class="fs-10">08:00</span>
-											<span class="fs-10">09:00</span>
-											<span class="fs-10">10:00</span>
-											<span class="fs-10">11:00</span>
-											<span class="fs-10">12:00</span>
-											<span class="fs-10">01:00</span>
-											<span class="fs-10">02:00</span>
-											<span class="fs-10">03:00</span>
-											<span class="fs-10">04:00</span>
-											<span class="fs-10">05:00</span>
-											<span class="fs-10">06:00</span>
-											<span class="fs-10">07:00</span>
-											<span class="fs-10">08:00</span>
-											<span class="fs-10">09:00</span>
-											<span class="fs-10">10:00</span>
-											<span class="fs-10">11:00</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /Attendance Report -->
+		<div class="modal fade" id="regularisation">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Accept Regularisation</h4>
+                        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
+                    <form id="addRegularisation">
+                        <div class="modal-body pb-0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Time</label>
+                                        <input type="hidden" value="approveAttendance" name="type">
+                                        <input type="time" class="form-control" id="clockout_time" name="clockout_time" required>
+                                        <input type="hidden" name="id" id="attendance_id" value="" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
 	</div>
@@ -302,6 +235,33 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 	<?php include 'layouts/vendor-scripts.php'; ?>
 	<script src="assets/js/circle-progress.js"></script>
 	<script>
+		$('#addRegularisation').submit(function() {
+            event.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: 'settings/api/attendanceApi.php',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+                    notyf.error(errorMessage);
+                }
+            });
+        });
+
+        
+		function addRegularisation(id,time) {
+            $('#attendance_id').val(id);
+			$('#clockout_time').val(time);
+        }
+
 		$(document).ready(function() {
 			// Handle date range input change
 			$('#dateRange').on('change', function() {
@@ -329,7 +289,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 					data: {
 						dateRange: dateRange,
 						status: status,
-						role:role,
+						role: role,
 						type: 'filterAttandace',
 					},
 					success: function(response) {

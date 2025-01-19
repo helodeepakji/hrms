@@ -128,7 +128,98 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterAttandac
     }
 }
 
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttandace')) {
+    $dateRange = $_POST['dateRange'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $role = $_POST['role'] ?? '';
 
+    $sql = '
+    SELECT 
+        `attendance`.*, 
+        `users`.`name` AS `user_name`, 
+        `users`.`employee_id`, 
+        `role`.`name` AS `role_name`
+    FROM 
+        `attendance`
+    JOIN 
+        `users` ON `attendance`.`user_id` = `users`.`id`
+    JOIN 
+        `role` ON `users`.`role_id` = `role`.`id`
+    WHERE 
+        `users`.`id` = ?
+';
+
+    $params = [];
+    $params[] = $user_id;
+
+    // Filter by date range
+    if (!empty($dateRange)) {
+        [$startDate, $endDate] = explode(' - ', $dateRange);
+        $sql .= ' AND `attendance`.`date` BETWEEN ? AND ?';
+        $params[] = date('Y-m-d', strtotime($startDate));
+        $params[] = date('Y-m-d', strtotime($endDate));
+    }
+
+    // Filter by status
+    if (!empty($status)) {
+        if ($status === 'absent') {
+            $sql .= ' AND `attendance`.`not_allowed` = 1';
+        } elseif ($status === 'present') {
+            $sql .= ' AND `attendance`.`not_allowed` = 0';
+        }
+    }
+    
+    if (!empty($role)) {
+        if ($role != '') {
+            $sql .= ' AND `users`.`role_id` = ?';
+            $params[] = $role;
+        }
+    }
+
+    $sql .= ' ORDER BY `attendance`.`date` DESC';
+    $query = $conn->prepare($sql);
+    $query->execute($params);
+
+    $attendance = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    // Generate table rows dynamically
+    foreach ($attendance as $row) {
+        if ($row['clock_out_time'] != '') {
+            $attendance_clock_out = date('h:i A', strtotime($row['clock_out_time']));
+        } else {
+            $attendance_clock_out = '';
+        }
+
+        if ($row['clock_out_time'] == '' && $row['date'] != date('Y-m-d')) {
+            $regulazation = '<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $row['id'] . ')">Regularisation</a>';
+            $status = '';
+        } else {
+            if ($row['regularisation'] == 1) {
+                $status = '<span class="text-danger">Regularization Pending </span>';
+            } else {
+                $status = '';
+            }
+        }
+
+        echo '<tr>';
+        echo '<td>' . date('d M, Y', strtotime($row['date'])) . '</td>';
+        echo '<td>' . $row['user_name'] . '<br>';
+        echo '<span class="badge badge-success-transparent d-inline-flex align-items-center">' . ucfirst($row['role_name']) . '</span>';
+        if ($row['not_allowed'] == 1) {
+            echo '<span class="badge badge-danger-transparent d-inline-flex align-items-center">Absent</span>';
+        }
+        echo '</td>';
+        echo '<td>' . date('h:i A', strtotime($row['clock_in_time'])) . '</td>';
+        echo '<td>' . ($regulazation ?: $attendance_clock_out) . '<br>' . $status . '</td>';
+        echo '<td>30 Min</td>';
+        echo '<td>20 Min</td>';
+        echo '<td>';
+        echo '<span class="badge badge-success d-inline-flex align-items-center">';
+        echo '<i class="ti ti-clock-hour-11 me-1"></i>' . $row['hours'] . ' Hrs</span>';
+        echo '</td>';
+        echo '</tr>';
+    }
+}
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'addRegularisation')) {
     if ($_POST['clockout_time'] != '' && $_POST['attendance_id'] != '') {
@@ -148,8 +239,8 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'addRegularisat
 }
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'approveAttendance')) {
-    $sql = $conn->prepare("UPDATE `attendance` SET `regularisation` = 0 WHERE `id` = ?");
-    $result = $sql->execute([$_POST['id']]);
+    $sql = $conn->prepare("UPDATE `attendance` SET `clock_out_time` = ? ,  `regularisation` = 0 WHERE `id` = ?");
+    $result = $sql->execute([$_POST['clockout_time'],$_POST['id']]);
     if ($result) {
         http_response_code(200);
         echo json_encode(array("message" => 'Approve Regularisation successful', "status" => 200));
