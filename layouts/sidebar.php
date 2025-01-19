@@ -204,7 +204,7 @@ $page = end($link_array);
 							</a>
 							<ul>
 								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'leaves-employee.php' || $page == 'leave-settings.php') ? 'active subdrop' : ''; ?>">Leaves<span class="menu-arrow inside-submenu"></span></a>
+									<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-settings.php') ? 'active subdrop' : ''; ?>">Leaves<span class="menu-arrow inside-submenu"></span></a>
 									<ul>
 										<li><a href="leaves.php" class="<?php echo ($page == 'leaves.php') ? 'active' : ''; ?>">Leaves</a></li>
 										<li><a href="my-leaves.php" class="<?php echo ($page == 'my-leaves.php') ? 'active' : ''; ?>">My Leave</a></li>

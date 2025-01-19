@@ -8,6 +8,7 @@ $leaves = $conn->prepare("
     FROM leaves
     JOIN users ON users.id = leaves.user_id
     JOIN role ON role.id = users.role_id WHERE `leaves`.`user_id` = ?
+	AND DATE(`leaves`.`created_at`) >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
     ORDER BY leaves.created_at DESC
 ");
 $leaves->execute([$userId]);
