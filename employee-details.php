@@ -1,4 +1,30 @@
-<?php include 'layouts/session.php'; ?>
+<?php
+include 'layouts/session.php';
+
+$id = base64_decode($_GET['id']);
+
+$sql = $conn->prepare("SELECT `users`.*, `role`.`name` AS `role` FROM `users` JOIN `role` ON `role`.`id` = `users`.`role_id` WHERE `users`.`id` = ?");
+$sql->execute([$id]);
+$user = $sql->fetch(PDO::FETCH_ASSOC);
+
+$experience = $conn->prepare("SELECT * FROM `experience` WHERE `user_id` = ?");
+$experience->execute([$id]);
+$experience = $experience->fetchAll(PDO::FETCH_ASSOC);
+
+$education = $conn->prepare("SELECT * FROM `education` WHERE `user_id` = ?");
+$education->execute([$id]);
+$education = $education->fetchAll(PDO::FETCH_ASSOC);
+
+$family = $conn->prepare("SELECT * FROM `family` WHERE `user_id` = ?");
+$family->execute([$id]);
+$family = $family->fetchAll(PDO::FETCH_ASSOC);
+
+
+$role = $conn->prepare("SELECT * FROM `role`");
+$role->execute();
+$role = $role->fetchAll(PDO::FETCH_ASSOC);
+
+?>
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
@@ -27,9 +53,6 @@
 						</h6>
 					</div>
 					<div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-						<div class="mb-2">
-							<a href="#" data-bs-toggle="modal" data-bs-target="#add_bank_satutory" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Bank & Statutory</a>
-						</div>
 						<div class="head-icons ms-2">
 							<a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
 								<i class="ti ti-chevrons-up"></i>
@@ -44,59 +67,47 @@
 						<div class="card card-bg-1">
 							<div class="card-body p-0">
 								<span class="avatar avatar-xl avatar-rounded border border-2 border-white m-auto d-flex mb-2">
-									<img src="assets/img/users/user-13.jpg" class="w-auto h-auto" alt="Img">
+									<img src="<?php echo $user['profile'] == '' ? 'assets/img/users/user-13.jpg' : $user['profile'] ?>" class="w-auto h-auto" alt="Img">
 								</span>
 								<div class="text-center px-3 pb-3 border-bottom">
 									<div class="mb-3">
-										<h5 class="d-flex align-items-center justify-content-center mb-1">Stephan Peralt<i class="ti ti-discount-check-filled text-success ms-1"></i></h5>
+										<h5 class="d-flex align-items-center justify-content-center mb-1"><?php echo $user['name'] ?><i class="ti ti-discount-check-filled text-success ms-1"></i></h5>
 										<span class="badge badge-soft-dark fw-medium me-2">
-											<i class="ti ti-point-filled me-1"></i>Software Developer
+											<i class="ti ti-point-filled me-1"></i><?php echo ucfirst(str_replace('_', ' ', $user['role'])) ?>
 										</span>
-										<span class="badge badge-soft-secondary fw-medium">10+ years of Experience</span>
+										<span class="badge badge-soft-secondary fw-medium"><?php echo $user['employee_id'] ?></span>
 									</div>
 									<div>
 										<div class="d-flex align-items-center justify-content-between mb-2">
 											<span class="d-inline-flex align-items-center">
 												<i class="ti ti-id me-2"></i>
-												Client ID
+												Employee ID
 											</span>
-											<p class="text-dark">CLT-0024</p>
+											<p class="text-dark"><?php echo $user['employee_id'] ?></p>
 										</div>
 										<div class="d-flex align-items-center justify-content-between mb-2">
 											<span class="d-inline-flex align-items-center">
 												<i class="ti ti-star me-2"></i>
-												Team
+												Role
 											</span>
-											<p class="text-dark">UI/UX Design</p>
+											<p class="text-dark"><?php echo ucfirst(str_replace('_', ' ', $user['role'])) ?></p>
 										</div>
 										<div class="d-flex align-items-center justify-content-between mb-2">
 											<span class="d-inline-flex align-items-center">
 												<i class="ti ti-calendar-check me-2"></i>
 												Date Of Join
 											</span>
-											<p class="text-dark">1st Jan 2023</p>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<span class="d-inline-flex align-items-center">
-												<i class="ti ti-calendar-check me-2"></i>
-												Report Office
-											</span>
-											<div class="d-flex align-items-center">
-												<span class="avatar avatar-sm avatar-rounded me-2">
-													<img src="assets/img/profiles/avatar-12.jpg" alt="Img">
-												</span>
-												<p class="text-gray-9 mb-0">Doglas Martini</p>
-											</div>
+											<p class="text-dark"><?php echo date('d M, Y', strtotime($user['joining_date']))  ?></p>
 										</div>
 										<div class="row gx-2 mt-3">
 											<div class="col-6">
 												<div>
-													<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit me-1"></i>Edit Info</a>
+													<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#edit_employee" onclick="getEmployee(<?php echo $user['id'] ?>)"><i class="ti ti-edit me-1"></i>Edit Info</a>
 												</div>
 											</div>
 											<div class="col-6">
 												<div>
-													<a href="chat.php" class="btn btn-primary w-100"><i class="ti ti-message-heart me-1"></i>Message</a>
+													<a href="chat.php" class="btn btn-danger w-100"><i class="ti ti-message-heart me-1"></i>Password Reset</a>
 												</div>
 											</div>
 										</div>
@@ -105,42 +116,42 @@
 								<div class="p-3 border-bottom">
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<h6>Basic information</h6>
-										<a href="javascript:void(0);" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
+										<a href="javascript:void(0);" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_employee" onclick="getEmployee(<?php echo $user['id'] ?>)"><i class="ti ti-edit"></i></a>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-phone me-2"></i>
 											Phone
 										</span>
-										<p class="text-dark">(163) 2459 315</p>
+										<p class="text-dark"><?php echo $user['mobile'] ?></p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-mail-check me-2"></i>
 											Email
 										</span>
-										<a href="javascript:void(0);" class="text-info d-inline-flex align-items-center">perralt12@example.com<i class="ti ti-copy text-dark ms-2"></i></a>
+										<a href="javascript:void(0);" class="text-info d-inline-flex align-items-center"><?php echo $user['email'] ?><i class="ti ti-copy text-dark ms-2"></i></a>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-gender-male me-2"></i>
 											Gender
 										</span>
-										<p class="text-dark text-end">Male</p>
+										<p class="text-dark text-end"><?php echo $user['gender'] ?></p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-cake me-2"></i>
 											Birdthday
 										</span>
-										<p class="text-dark text-end">24th July 2000</p>
+										<p class="text-dark text-end"><?php echo date('d M, Y', strtotime($user['dob'])) ?></p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-map-pin-check me-2"></i>
 											Address
 										</span>
-										<p class="text-dark text-end">1861 Bayonne Ave, <br> Manchester, NJ, 08759</p>
+										<p class="text-dark text-end"><?php echo $user['correspondence_address'] ?></p>
 									</div>
 								</div>
 								<div class="p-3 border-bottom">
@@ -151,81 +162,37 @@
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-e-passport me-2"></i>
-											Passport No
+											Pancard No
 										</span>
 										<p class="text-dark">QRET4566FGRT</p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-calendar-x me-2"></i>
-											Passport Exp Date
+											Aadhar Card
 										</span>
-										<p class="text-dark text-end">15 May 2029</p>
+										<p class="text-dark text-end">QRET4566FGRT</p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
-											<i class="ti ti-gender-male me-2"></i>
-											Nationality
+											<i class="ti ti-calendar-x me-2"></i>
+											Emergency Contact
 										</span>
-										<p class="text-dark text-end">Indian</p>
-									</div>
-									<div class="d-flex align-items-center justify-content-between mb-2">
-										<span class="d-inline-flex align-items-center">
-											<i class="ti ti-bookmark-plus me-2"></i>
-											Religion
-										</span>
-										<p class="text-dark text-end">Christianity</p>
+										<p class="text-dark text-end"><?php echo $user['emergency_contact'] ?></p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-hotel-service me-2"></i>
 											Marital status
 										</span>
-										<p class="text-dark text-end">Yes</p>
-									</div>
-									<div class="d-flex align-items-center justify-content-between mb-2">
-										<span class="d-inline-flex align-items-center">
-											<i class="ti ti-briefcase-2 me-2"></i>
-											Employment of spouse
-										</span>
-										<p class="text-dark text-end">No</p>
+										<p class="text-dark text-end"><?php echo $user['marital_status'] ?></p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between">
 										<span class="d-inline-flex align-items-center">
-											<i class="ti ti-baby-bottle me-2"></i>
-											No. of children
+											<i class="ti ti-map-pin-check me-2"></i>
+											Permanent Address
 										</span>
-										<p class="text-dark text-end">2</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="d-flex align-items-center justify-content-between mb-2">
-							<h6>Emergency Contact Number</h6>
-							<a href="javascript:void(0);" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_emergency"><i class="ti ti-edit"></i></a>
-						</div>
-						<div class="card">
-							<div class="card-body p-0">
-								<div class="p-3 border-bottom">
-									<div class="d-flex align-items-center justify-content-between">
-										<div>
-											<span class="d-inline-flex align-items-center">
-												Primary
-											</span>
-											<h6 class="d-flex align-items-center fw-medium mt-1">Adrian Peralt <span class="d-inline-flex mx-1"><i class="ti ti-point-filled text-danger"></i></span>Father</h6>
-										</div>
-										<p class="text-dark">+1 127 2685 598</p>
-									</div>
-								</div>
-								<div class="p-3 border-bottom">
-									<div class="d-flex align-items-center justify-content-between">
-										<div>
-											<span class="d-inline-flex align-items-center">
-												Secondry
-											</span>
-											<h6 class="d-flex align-items-center fw-medium mt-1">Karen Wills <span class="d-inline-flex mx-1"><i class="ti ti-point-filled text-danger"></i></span>Mother</h6>
-										</div>
-										<p class="text-dark">+1 989 7774 787</p>
+										<p class="text-dark text-end"><?php echo $user['permanent_address'] ?></p>
 									</div>
 								</div>
 							</div>
@@ -236,24 +203,6 @@
 							<div class="tab-content custom-accordion-items">
 								<div class="tab-pane active show" id="bottom-justified-tab1" role="tabpanel">
 									<div class="accordion accordions-items-seperate" id="accordionExample">
-										<div class="accordion-item">
-											<div class="accordion-header" id="headingOne">
-												<div class="accordion-button">
-													<div class="d-flex align-items-center flex-fill">
-														<h5>About Employee</h5>
-														<a href="#" class="btn btn-sm btn-icon ms-auto" data-bs-toggle="modal" data-bs-target="#edit_employee"><i class="ti ti-edit"></i></a>
-														<a href="#" class="d-flex align-items-center collapsed collapse-arrow" data-bs-toggle="collapse" data-bs-target="#primaryBorderOne" aria-expanded="false" aria-controls="primaryBorderOne">
-															<i class="ti ti-chevron-down fs-18"></i>
-														</a>
-													</div>
-												</div>
-											</div>
-											<div id="primaryBorderOne" class="accordion-collapse collapse show border-top" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-												<div class="accordion-body mt-2">
-													As an award winning designer, I deliver exceptional quality work and bring value to your brand! With 10 years of experience and 350+ projects completed worldwide with satisfied customers, I developed the 360° brand approach, which helped me to create numerous brands that are relevant, meaningful and loved.
-												</div>
-											</div>
-										</div>
 										<div class="accordion-item">
 											<div class="accordion-header" id="headingTwo">
 												<div class="accordion-button">
@@ -303,7 +252,7 @@
 													<div class="d-flex align-items-center justify-content-between flex-fill">
 														<h5>Family Information</h5>
 														<div class="d-flex">
-															<a href="#" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_familyinformation"><i class="ti ti-edit"></i></a>
+															<a href="#" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_familyinformation" onclick="getFamily(<?php echo $user['id'] ?>)"><i class="ti ti-edit"></i></a>
 															<a href="#" class="d-flex align-items-center collapsed collapse-arrow" data-bs-toggle="collapse" data-bs-target="#primaryBorderThree" aria-expanded="false" aria-controls="primaryBorderThree">
 																<i class="ti ti-chevron-down fs-18"></i>
 															</a>
@@ -313,32 +262,37 @@
 											</div>
 											<div id="primaryBorderThree" class="accordion-collapse collapse border-top" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
 												<div class="accordion-body">
-													<div class="row">
+													<?php foreach ($family as $value) {
+														echo '
+														<div class="row mb-3">
 														<div class="col-md-3">
 															<span class="d-inline-flex align-items-center">
 																Name
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">Hendry Peralt</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1">' . $value['name'] . '</h6>
 														</div>
 														<div class="col-md-3">
 															<span class="d-inline-flex align-items-center">
 																Relationship
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">Brother</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1">' . ucfirst($value['relation']) . '</h6>
 														</div>
 														<div class="col-md-3">
 															<span class="d-inline-flex align-items-center">
 																Date of birth
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">25 May 2014</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1">' . date('d M, Y', strtotime($value['dob'])) . '</h6>
 														</div>
 														<div class="col-md-3">
 															<span class="d-inline-flex align-items-center">
 																Phone
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">+1 265 6956 961</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1">' . $value['phone'] . '</h6>
 														</div>
 													</div>
+														';
+													} ?>
+
 												</div>
 											</div>
 										</div>
@@ -351,7 +305,7 @@
 																<div class="d-flex align-items-center justify-content-between flex-fill">
 																	<h5>Education Details</h5>
 																	<div class="d-flex">
-																		<a href="#" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_education"><i class="ti ti-edit"></i></a>
+																		<a href="#" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_employee" onclick="getEmployee(<?php echo $user['id'] ?>)"><i class="ti ti-edit"></i></a>
 																		<a href="#" class="d-flex align-items-center collapsed collapse-arrow" data-bs-toggle="collapse" data-bs-target="#primaryBorderFour" aria-expanded="false" aria-controls="primaryBorderFour">
 																			<i class="ti ti-chevron-down fs-18"></i>
 																		</a>
@@ -362,39 +316,20 @@
 														<div id="primaryBorderFour" class="accordion-collapse collapse border-top" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
 															<div class="accordion-body">
 																<div>
-																	<div class="mb-3">
+																	<?php foreach ($education as $value) {
+																		echo '<div class="mb-3">
 																		<div class="d-flex align-items-center justify-content-between">
 																			<div>
 																				<span class="d-inline-flex align-items-center fw-normal">
-																					Oxford University
+																					' . $value['university'] . '
 																				</span>
-																				<h6 class="d-flex align-items-center mt-1">Computer Science</h6>
+																				<h6 class="d-flex align-items-center mt-1">' . $value['degree'] . '</h6>
 																			</div>
-																			<p class="text-dark">2020 - 2022</p>
+																			<p class="text-dark">(' . $value['mark'] . '%) ' . $value['year'] . '</p>
 																		</div>
-																	</div>
-																	<div class="mb-3">
-																		<div class="d-flex align-items-center justify-content-between">
-																			<div>
-																				<span class="d-inline-flex align-items-center fw-normal">
-																					Cambridge University
-																				</span>
-																				<h6 class="d-flex align-items-center mt-1">Computer Network & Systems</h6>
-																			</div>
-																			<p class="text-dark">2016- 2019</p>
-																		</div>
-																	</div>
-																	<div>
-																		<div class="d-flex align-items-center justify-content-between">
-																			<div>
-																				<span class="d-inline-flex align-items-center fw-normal">
-																					Oxford School
-																				</span>
-																				<h6 class="d-flex align-items-center mt-1">Grade X</h6>
-																			</div>
-																			<p class="text-dark">2012 - 2016</p>
-																		</div>
-																	</div>
+																	</div>';
+																	} ?>
+
 																</div>
 															</div>
 														</div>
@@ -409,7 +344,7 @@
 																<div class="d-flex align-items-center justify-content-between flex-fill">
 																	<h5>Experience</h5>
 																	<div class="d-flex">
-																		<a href="#" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_experience"><i class="ti ti-edit"></i></a>
+																		<a href="#" class="btn btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit_employee" onclick="getEmployee(<?php echo $user['id'] ?>)"><i class="ti ti-edit"></i></a>
 																		<a href="#" class="d-flex align-items-center collapsed collapse-arrow" data-bs-toggle="collapse" data-bs-target="#primaryBorderFive" aria-expanded="false" aria-controls="primaryBorderFive">
 																			<i class="ti ti-chevron-down fs-18"></i>
 																		</a>
@@ -420,39 +355,22 @@
 														<div id="primaryBorderFive" class="accordion-collapse collapse border-top" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
 															<div class="accordion-body">
 																<div>
-																	<div class="mb-3">
+																	<?php foreach ($experience as $value) {
+																		echo '
+																		<div class="mb-3">
 																		<div class="d-flex align-items-center justify-content-between">
 																			<div>
 																				<h6 class="d-inline-flex align-items-center fw-medium">
-																					Google
+																					' . $value['oraganization'] . '
 																				</h6>
-																				<span class="d-flex align-items-center badge bg-secondary-transparent mt-1"><i class="ti ti-point-filled me-1"></i>UI/UX Developer</span>
+																				<span class="d-flex align-items-center badge bg-secondary-transparent mt-1"><i class="ti ti-point-filled me-1"></i>' . $value['salary'] . '</span>
 																			</div>
-																			<p class="text-dark">Jan 2013 - Present</p>
+																			<p class="text-dark">' . date('d M, Y', strtotime($value['start_date'])) . ' - ' . date('d M, Y', strtotime($value['end_date'])) . '</p>
 																		</div>
 																	</div>
-																	<div class="mb-3">
-																		<div class="d-flex align-items-center justify-content-between">
-																			<div>
-																				<h6 class="d-inline-flex align-items-center fw-medium">
-																					Salesforce
-																				</h6>
-																				<span class="d-flex align-items-center badge bg-secondary-transparent mt-1"><i class="ti ti-point-filled me-1"></i>Web Developer</span>
-																			</div>
-																			<p class="text-dark">Dec 2012- Jan 2015</p>
-																		</div>
-																	</div>
-																	<div>
-																		<div class="d-flex align-items-center justify-content-between">
-																			<div>
-																				<h6 class="d-inline-flex align-items-center fw-medium">
-																					HubSpot
-																				</h6>
-																				<span class="d-flex align-items-center badge bg-secondary-transparent mt-1"><i class="ti ti-point-filled me-1"></i>Software Developer</span>
-																			</div>
-																			<p class="text-dark">Dec 2011- Jan 2012</p>
-																		</div>
-																	</div>
+																		';
+																	} ?>
+
 																</div>
 															</div>
 														</div>
@@ -664,71 +582,87 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<div class="d-flex align-items-center">
-							<h4 class="modal-title me-2">Edit Employee</h4><span>Employee ID : EMP -0024</span>
+							<h4 class="modal-title me-2">Edit Employee</h4>
 						</div>
-						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal"
+							aria-label="Close">
 							<i class="ti ti-x"></i>
 						</button>
 					</div>
-					<form action="employees-grid.php">
-						<div class="contact-grids-tab">
-							<ul class="nav nav-underline" id="myTab2" role="tablist">
-								<li class="nav-item" role="presentation">
-									<button class="nav-link active" id="info-tab3" data-bs-toggle="tab" data-bs-target="#basic-info3" type="button" role="tab" aria-selected="true">Basic Information</button>
-								</li>
-								<li class="nav-item" role="presentation">
-									<button class="nav-link" id="address-tab3" data-bs-toggle="tab" data-bs-target="#address3" type="button" role="tab" aria-selected="false">Permissions</button>
-								</li>
-							</ul>
-						</div>
-						<div class="tab-content" id="myTabContent2">
-							<div class="tab-pane fade show active" id="basic-info3" role="tabpanel" aria-labelledby="info-tab3" tabindex="0">
+					<div class="contact-grids-tab">
+						<ul class="nav nav-underline" id="myTab2" role="tablist">
+							<li class="nav-item" role="presentation">
+								<button class="nav-link active" id="info-tab2" data-bs-toggle="tab"
+									data-bs-target="#basic-info20" type="button" role="tab" aria-selected="true">Basic
+									Information</button>
+							</li>
+							<li class="nav-item" role="presentation">
+								<button class="nav-link" id="address-tab2" data-bs-toggle="tab"
+									data-bs-target="#education" type="button" role="tab"
+									aria-selected="false">Education</button>
+							</li>
+							<li class="nav-item" role="presentation">
+								<button class="nav-link" id="address-tab2" data-bs-toggle="tab"
+									data-bs-target="#experience" type="button" role="tab"
+									aria-selected="false">Experience</button>
+							</li>
+						</ul>
+					</div>
+					<div class="tab-content" id="myTabContent2">
+						<div class="tab-pane fade show active" id="basic-info20" role="tabpanel"
+							aria-labelledby="info-tab2" tabindex="0">
+							<form id="editEmployee">
 								<div class="modal-body pb-0 ">
 									<div class="row">
-										<div class="col-md-12">
-											<div class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">
-												<div class="d-flex align-items-center justify-content-center avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0 text-dark frames">
-													<img src="assets/img/users/user-13.jpg" alt="img" class="rounded-circle">
-												</div>
-												<div class="profile-upload">
-													<div class="mb-2">
-														<h6 class="mb-1">Upload Profile Image</h6>
-														<p class="fs-12">Image should be below 4 mb</p>
-													</div>
-													<div class="profile-uploader d-flex align-items-center">
-														<div class="drag-upload-btn btn btn-sm btn-primary me-2">
-															Upload
-															<input type="file" class="form-control image-sign" multiple="">
-														</div>
-														<a href="javascript:void(0);" class="btn btn-light btn-sm">Cancel</a>
-													</div>
-
-												</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Name <span class="text-danger">
+														*</span></label>
+												<input type="text" class="form-control" name="name" id="name" required>
+												<input type="hidden" name="type" value="editEmployee">
+												<input type="hidden" name="id" value="" id="id">
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">First Name <span class="text-danger"> *</span></label>
-												<input type="text" class="form-control" value="Anthony">
+												<label class="form-label">Employee ID <span class="text-danger">
+														*</span></label>
+												<input type="text" class="form-control" name="employee_id"
+													id="employee_id" required>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">Last Name</label>
-												<input type="email" class="form-control" value="Lewis">
+												<label class="form-label">Email <span class="text-danger">
+														*</span></label>
+												<input type="email" class="form-control" name="email" id="email"
+													required>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">Employee ID <span class="text-danger"> *</span></label>
-												<input type="text" class="form-control" value="Emp-001">
+												<label class="form-label">Phone <span class="text-danger">
+														*</span></label>
+												<input type="number" class="form-control" name="phone" id="phone"
+													required>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">Joining Date <span class="text-danger"> *</span></label>
+												<label class="form-label">Emergency Contact <span class="text-danger">
+														*</span></label>
+												<input type="text" class="form-control" name="emergency_contact"
+													id="emergency_contact" required>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Joining Date <span class="text-danger">
+														*</span></label>
 												<div class="input-icon-end position-relative">
-													<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy" value="17-10-2022">
+													<input type="text" class="form-control datetimepicker"
+														placeholder="dd/mm/yyyy" name="joining_date" id="joining_date"
+														required>
 													<span class="input-icon-addon">
 														<i class="ti ti-calendar text-gray-7"></i>
 													</span>
@@ -737,582 +671,177 @@
 										</div>
 										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">Username <span class="text-danger"> *</span></label>
-												<input type="text" class="form-control" value="Anthony">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="mb-3">
-												<label class="form-label">Email <span class="text-danger"> *</span></label>
-												<input type="email" class="form-control" value="anthony@example.com	">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="mb-3 ">
-												<label class="form-label">Password <span class="text-danger"> *</span></label>
-												<div class="pass-group">
-													<input type="password" class="pass-input form-control">
-													<span class="ti toggle-password ti-eye-off"></span>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="mb-3 ">
-												<label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
-												<div class="pass-group">
-													<input type="password" class="pass-inputs form-control">
-													<span class="ti toggle-passwords ti-eye-off"></span>
+												<label class="form-label">Date of Birth<span class="text-danger">
+														*</span></label>
+												<div class="input-icon-end position-relative">
+													<input type="text" class="form-control datetimepicker"
+														placeholder="dd/mm/yyyy" name="dob" id="dob" required>
+													<span class="input-icon-addon">
+														<i class="ti ti-calendar text-gray-7"></i>
+													</span>
 												</div>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">Phone Number <span class="text-danger"> *</span></label>
-												<input type="text" class="form-control" value="(123) 4567 890">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="mb-3">
-												<label class="form-label">Company<span class="text-danger"> *</span></label>
-												<input type="text" class="form-control" value="Abac Company">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="mb-3">
-												<label class="form-label">Department</label>
-												<select class="select">
+												<label class="form-label">Role <span class="text-danger">
+														*</span></label>
+												<select class="form-control" name="role_id" id="role_id" required>
 													<option>Select</option>
-													<option>All Department</option>
-													<option selected>Finance</option>
-													<option>Developer</option>
-													<option>Executive</option>
+													<?php foreach ($role as $value) {
+														echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+													} ?>
 												</select>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">Designation</label>
-												<select class="select">
+												<label class="form-label">Correspondence Address <span
+														class="text-danger"> *</span></label>
+												<textarea class="form-control" name="correspondence_address"
+													id="correspondence_address"></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Permanent Address <span class="text-danger">
+														*</span></label>
+												<textarea class="form-control" name="permanent_address"
+													id="permanent_address"></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="mb-3">
+												<label class="form-label">Marital Status</label>
+												<select class="form-control" name="marital_status" id="marital_status"
+													required>
 													<option>Select</option>
-													<option selected>Finance</option>
-													<option>Developer</option>
-													<option>Executive</option>
+													<option value="Single">Single</option>
+													<option value="Married">Married</option>
 												</select>
 											</div>
 										</div>
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="mb-3">
-												<label class="form-label">About <span class="text-danger"> *</span></label>
-												<textarea class="form-control" rows="3">As an award winning designer, I deliver exceptional quality work and bring value to your brand! With 10 years of experience and 350+ projects completed worldwide with satisfied customers, I developed the 360° brand approach, which helped me to create numerous brands that are relevant, meaningful and loved.
-													</textarea>
+												<label class="form-label">Gender</label>
+												<select class="form-control" name="gender" id="gender" required>
+													<option>Select</option>
+													<option value="Male">Male</option>
+													<option value="Female">Female</option>
+													<option value="Other">Other</option>
+												</select>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
+									<button type="button" class="btn btn-outline-light border me-2"
+										data-bs-dismiss="modal">Cancel</button>
 									<button type="submit" class="btn btn-primary">Save </button>
 								</div>
-							</div>
-							<div class="tab-pane fade" id="address3" role="tabpanel" aria-labelledby="address-tab3" tabindex="0">
+							</form>
+						</div>
+						<div class="tab-pane fade" id="education" role="tabpanel" aria-labelledby="address-tab2"
+							tabindex="0">
+							<form id="educationForm">
+								<input type="hidden" name="type" value="addEducation">
+								<input type="hidden" name="id" id="education_user_id">
 								<div class="modal-body">
-									<div class="card bg-light-500 shadow-none">
-										<div class="card-body d-flex align-items-center justify-content-between flex-wrap row-gap-3">
-											<h6>Enable Options</h6>
-											<div class="d-flex align-items-center justify-content-end">
-												<div class="form-check form-switch me-2">
-													<label class="form-check-label mt-0">
-														<input class="form-check-input me-2" type="checkbox" role="switch">
-														Enable all Module
-													</label>
-												</div>
-												<div class="form-check d-flex align-items-center">
-													<label class="form-check-label mt-0">
-														<input class="form-check-input" type="checkbox" checked="">
-														Select All
-													</label>
-												</div>
+									<div id="educationContainer">
+										<div class="education-item row border rounded p-3 mb-3">
+											<div class="col-md-3 mb-3">
+												<label class="form-label">Degree <span
+														class="text-danger">*</span></label>
+												<input type="text" class="form-control" name="degree[]" required>
+											</div>
+											<div class="col-md-3 mb-3">
+												<label class="form-label">University <span
+														class="text-danger">*</span></label>
+												<input type="text" class="form-control" name="university[]" required>
+											</div>
+											<div class="col-md-2 mb-3">
+												<label class="form-label">Year of Passing <span
+														class="text-danger">*</span></label>
+												<input type="number" class="form-control" name="yop[]" min="1900"
+													max="2100" required>
+											</div>
+											<div class="col-md-2 mb-3">
+												<label class="form-label">Marks (%) <span
+														class="text-danger">*</span></label>
+												<input type="number" class="form-control" name="marks[]" min="0"
+													max="100" step="0.01" required>
+											</div>
+											<div class="col-md-2 mb-3">
+												<label class="form-label">Attachment</label>
+												<input type="file" class="form-control" name="attachment[]">
+											</div>
+											<div class="col-md-1 d-flex align-items-center">
+												<button type="button"
+													class="btn btn-danger btn-sm remove-education">Remove</button>
 											</div>
 										</div>
 									</div>
-									<div class="table-responsive border rounded">
-										<table class="table">
-											<tbody>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch" checked>
-																Holidays
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox" checked="">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox" checked="">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch">
-																Leaves
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch">
-																Clients
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch">
-																Projects
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch">
-																Tasks
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch">
-																Chats
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch" checked>
-																Assets
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox" checked="">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox" checked="">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<div class="form-check form-switch me-2">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input me-2" type="checkbox" role="switch">
-																Timing Sheets
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Read
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Write
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Create
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Delete
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Import
-															</label>
-														</div>
-													</td>
-													<td>
-														<div class="form-check d-flex align-items-center">
-															<label class="form-check-label mt-0">
-																<input class="form-check-input" type="checkbox">
-																Export
-															</label>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+									<button type="button" id="addEducation" class="btn btn-success btn-sm mb-3">Add
+										More</button>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
-									<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#success_modal">Save </button>
+									<button type="button" class="btn btn-outline-light border me-2"
+										data-bs-dismiss="modal">Cancel</button>
+									<button type="submit" class="btn btn-primary" id="saveEducation">Save</button>
 								</div>
-							</div>
+							</form>
 						</div>
-					</form>
+						<div class="tab-pane fade" id="experience" role="tabpanel" aria-labelledby="address-tab2"
+							tabindex="0">
+							<form id="addExperience">
+								<input type="hidden" name="type" value="addExperience">
+								<input type="hidden" name="id" id="experience_user_id">
+								<div class="modal-body">
+									<div id="experienceContainer">
+										<div class="experience-item row border rounded p-3 mb-3">
+											<div class="col-md-3 mb-3">
+												<label class="form-label">Organization <span
+														class="text-danger">*</span></label>
+												<input type="text" class="form-control" name="organization[]" required>
+											</div>
+											<div class="col-md-2 mb-3">
+												<label class="form-label">Start Date <span
+														class="text-danger">*</span></label>
+												<input type="date" class="form-control" name="start_date[]" required>
+											</div>
+											<div class="col-md-2 mb-3">
+												<label class="form-label">End Date <span
+														class="text-danger">*</span></label>
+												<input type="date" class="form-control" name="end_date[]" required>
+											</div>
+											<div class="col-md-2 mb-3">
+												<label class="form-label">Salary (in INR) <span
+														class="text-danger">*</span></label>
+												<input type="number" class="form-control" name="salary[]" min="0"
+													required>
+											</div>
+											<div class="col-md-2 mb-3">
+												<label class="form-label">Attachment</label>
+												<input type="file" class="form-control" name="attachment[]">
+											</div>
+											<div class="col-md-1 d-flex align-items-center">
+												<button type="button"
+													class="btn btn-danger btn-sm remove-experience">Remove</button>
+											</div>
+										</div>
+									</div>
+									<button type="button" id="addExperienceButton"
+										class="btn btn-success btn-sm mb-3">Add More</button>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-outline-light border me-2"
+										data-bs-dismiss="modal">Cancel</button>
+									<button type="submit" class="btn btn-primary" id="saveExperience">Save</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
 				</div>
 			</div>
 		</div>
@@ -1532,39 +1061,43 @@
 							<i class="ti ti-x"></i>
 						</button>
 					</div>
-					<form action="employee-details.php">
+					<form id="familyForm">
+						<input type="hidden" name="type" value="addFamily">
+						<input type="hidden" name="user_id" value="<?php echo $user['id'] ?>">
 						<div class="modal-body pb-0">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Name <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
+							<div id="familyContainer">
+								<div class="family-item border rounded p-3 mb-3">
+									<div class="row">
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Name <span class="text-danger"> *</span></label>
+											<input type="text" class="form-control" name="name[]" required>
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Relationship</label>
+											<input type="text" class="form-control" name="relationship[]">
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Phone</label>
+											<input type="text" class="form-control" name="phone[]">
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Date of Birth <span class="text-danger"> *</span></label>
+											<div class="input-icon-end position-relative">
+												<input type="text" class="form-control" name="dob[]" placeholder="dd/mm/yyyy" required>
+												<span class="input-icon-addon">
+													<i class="ti ti-calendar text-gray-7"></i>
+												</span>
+											</div>
+										</div>
 									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Relationship </label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Phone </label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Passport Expiry Date <span class="text-danger"> *</span></label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
+									<div class="row">
+										<div class="col-12 text-end">
+											<button type="button" class="btn btn-danger btn-sm remove-family">Remove</button>
 										</div>
 									</div>
 								</div>
 							</div>
+							<button type="button" id="addFamilyButton" class="btn btn-success btn-sm mb-3">Add More</button>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-white border me-2" data-bs-dismiss="modal">Cancel</button>
@@ -1575,132 +1108,6 @@
 			</div>
 		</div>
 		<!-- /Add Family -->
-
-		<!-- Add Education -->
-		<div class="modal fade" id="edit_education">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Education Information</h4>
-						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-							<i class="ti ti-x"></i>
-						</button>
-					</div>
-					<form action="employee-details.php">
-						<div class="modal-body pb-0">
-							<div class="row">
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Institution Name <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Course <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Start Date <span class="text-danger"> *</span></label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">End Date <span class="text-danger"> *</span></label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-white border me-2" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!-- /Add Education -->
-
-		<!-- Add Experience -->
-		<div class="modal fade" id="edit_experience">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Company Information</h4>
-						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-							<i class="ti ti-x"></i>
-						</button>
-					</div>
-					<form action="employee-details.php">
-						<div class="modal-body pb-0">
-							<div class="row">
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Previous Company Name <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Designation <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Start Date <span class="text-danger"> *</span></label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">End Date <span class="text-danger"> *</span></label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-check-label d-flex align-items-center mt-0">
-											<input class="form-check-input mt-0 me-2" type="checkbox" checked="">
-											<span class="text-dark">Check if you working present</span>
-										</label>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-white border me-2" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!-- /Add Experience -->
 
 		<!-- Add Employee Success -->
 		<div class="modal fade" id="success_modal" role="dialog">
@@ -2013,6 +1420,300 @@
 	<!-- end main wrapper-->
 	<!-- JAVASCRIPT -->
 	<?php include 'layouts/vendor-scripts.php'; ?>
+	<script>
+		function formatDate(dateString) {
+			if (!dateString) return '';
+			const date = new Date(dateString);
+			const day = String(date.getDate()).padStart(2, '0');
+			const month = String(date.getMonth() + 1).padStart(2, '0');
+			const year = date.getFullYear();
+			return `${day}/${month}/${year}`;
+		}
+
+		$('#addEmployee').submit(function() {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					location.reload();
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$('#editEmployee').submit(function() {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					location.reload();
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$('#educationForm').submit(function() {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					location.reload();
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$(document).ready(function() {
+			// Add family member
+			$('#addFamilyButton').click(function() {
+				const newFamilyItem = $('.family-item:first').clone();
+				newFamilyItem.find('input').val(''); // Clear input values
+				$('#familyContainer').append(newFamilyItem);
+			});
+
+			// Remove family member
+			$(document).on('click', '.remove-family', function() {
+				if ($('.family-item').length > 1) {
+					$(this).closest('.family-item').remove();
+				} else {
+					alert("You must have at least one family member.");
+				}
+			});
+
+
+			$('#familyForm').submit(function(event) {
+				event.preventDefault();
+				var formData = new FormData(this);
+				$.ajax({
+					url: 'settings/api/familyApi.php',
+					type: 'POST',
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					dataType: 'json',
+					success: function(response) {
+						location.reload();
+					},
+					error: function(xhr, status, error) {
+						var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+						notyf.error(errorMessage);
+					}
+				});
+			});
+		});
+
+		function getFamily(id) {
+			$.ajax({
+				url: 'settings/api/familyApi.php',
+				type: 'GET',
+				data: {
+					type: 'getFamily',
+					user_id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					if (response && response.length > 0) {
+
+						// Iterate through each family entry and populate the form
+						response.forEach(function(family, index) {
+							// If it's the first entry, we fill the initial form fields
+							if (index === 0) {
+								document.querySelector('[name="name[]"]').value = family.name;
+								document.querySelector('[name="relationship[]"]').value = family.relation;
+								document.querySelector('[name="phone[]"]').value = family.phone;
+								document.querySelector('[name="dob[]"]').value = family.dob;
+							} else {
+								// For subsequent entries, clone the first family item and populate it
+								const familyContainer = document.getElementById('familyContainer');
+								const newFamilyItem = document.querySelector('.family-item').cloneNode(true);
+								newFamilyItem.querySelector('[name="name[]"]').value = family.name;
+								newFamilyItem.querySelector('[name="relationship[]"]').value = family.relation;
+								newFamilyItem.querySelector('[name="phone[]"]').value = family.phone;
+								newFamilyItem.querySelector('[name="dob[]"]').value = family.dob;
+								familyContainer.appendChild(newFamilyItem);
+							}
+						});
+					} else {
+						console.log("No family data available.");
+					}
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
+		function getExperience(id) {
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'GET',
+				data: {
+					type: 'getExperience',
+					user_id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					const experienceContainer = document.getElementById('experienceContainer');
+					experienceContainer.innerHTML = ''; // Clear previous entries
+
+					if (response && response.length > 0) {
+						response.forEach(function(experience, index) {
+							// Create a new experience item
+							const newExperienceItem = document.createElement('div');
+							newExperienceItem.className = 'experience-item row border rounded p-3 mb-3';
+
+							newExperienceItem.innerHTML = `
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Organization</label>
+                            <input type="text" class="form-control" name="organization[]" value="${experience.oraganization}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" name="start_date[]" value="${experience.start_date}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-control" name="end_date[]" value="${experience.end_date}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Salary</label>
+                            <input type="text" class="form-control" name="salary[]" value="${experience.salary}">
+                        </div>
+                    `;
+
+							experienceContainer.appendChild(newExperienceItem);
+						});
+					} else {
+						console.log("No experience data available.");
+					}
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
+		function getEducation(id) {
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'GET',
+				data: {
+					type: 'getEducation',
+					user_id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					const educationContainer = document.getElementById('educationContainer');
+					educationContainer.innerHTML = ''; // Clear previous entries
+
+					if (response && response.length > 0) {
+						response.forEach(function(education, index) {
+							// Create a new education item
+							const newEducationItem = document.createElement('div');
+							newEducationItem.className = 'education-item row border rounded p-3 mb-3';
+
+							newEducationItem.innerHTML = `
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Degree</label>
+                            <input type="text" class="form-control" name="degree[]" value="${education.degree}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">University</label>
+                            <input type="text" class="form-control" name="university[]" value="${education.university}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Year of Passing</label>
+                            <input type="text" class="form-control" name="yop[]" value="${education.year}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Marks</label>
+                            <input type="text" class="form-control" name="marks[]" value="${education.mark}">
+                        </div>
+                    `;
+
+							educationContainer.appendChild(newEducationItem);
+						});
+					} else {
+						console.log("No education data available.");
+					}
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
+		function getEmployee(id) {
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'GET',
+				data: {
+					type: 'getEmployee',
+					id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					$('#id').val(response.id);
+					$('#education_user_id').val(response.id);
+					$('#experience_user_id').val(response.id);
+					$('#name').val(response.name);
+					$('#employee_id').val(response.employee_id);
+					$('#email').val(response.email);
+					$('#phone').val(response.mobile);
+					$('#emergency_contact').val(response.emergency_contact || '');
+					$('#joining_date').val(formatDate(response.joining_date));
+					$('#dob').val(formatDate(response.dob));
+					$('#correspondence_address').val(response.correspondence_address || '');
+					$('#permanent_address').val(response.permanent_address || '');
+					$('#role_id').val(response.role_id).trigger('change');
+					$('#marital_status').val(response.marital_status || 'Select').trigger('change');
+					$('#gender').val(response.gender || 'Select').trigger('change');
+
+					// Clear and reload education and experience
+					getEducation(id);
+					getExperience(id);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+	</script>
 </body>
 
 </html>

@@ -169,13 +169,13 @@ $page = end($link_array);
 				<li>
 					<ul>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'employees-grid.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'designations.php' || $page == 'policy.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'termination.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'designations.php' || $page == 'policy.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-users"></i><span>Employees</span>
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
 								<li><a href="employees.php" class="<?php echo ($page == 'employees.php') ? 'active' : ''; ?>">Employee Lists</a></li>
-								<li><a href="employees-grid.php" class="<?php echo ($page == 'employees-grid.php') ? 'active' : ''; ?>">Employee Grid</a></li>
+								<li><a href="termination.php" class="<?php echo ($page == 'termination.php') ? 'active' : ''; ?>">Terminated Employee</a></li>
 								<li><a href="employee-details.php" class="<?php echo ($page == 'employee-details.php') ? 'active' : ''; ?>">Employee Details</a></li>
 								<li><a href="departments.php" class="<?php echo ($page == 'departments.php') ? 'active' : ''; ?>">Departments</a></li>
 								<li><a href="designations.php" class="<?php echo ($page == 'designations.php') ? 'active' : ''; ?>">Designations</a></li>
@@ -250,11 +250,6 @@ $page = end($link_array);
 						<li class="<?php echo ($page == 'resignation.php') ? 'active' : ''; ?>">
 							<a href="resignation.php">
 								<i class="ti ti-external-link"></i><span>Resignation</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'termination.php') ? 'active' : ''; ?>">
-							<a href="termination.php">
-								<i class="ti ti-circle-x"></i><span>Termination</span>
 							</a>
 						</li>
 					</ul>

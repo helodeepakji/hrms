@@ -1,5 +1,9 @@
 <?php
 include 'layouts/session.php';
+$terminated = $conn->prepare("SELECT `users`.* FROM `users` WHERE `is_terminated` = 1 ORDER BY `users`.`name` ASC");
+$terminated->execute();
+$terminated = $terminated->fetchAll(PDO::FETCH_ASSOC);
+
 $sql = $conn->prepare("SELECT `users`.*, `role`.`name` AS `role` FROM `users` JOIN `role` ON `role`.`id` = `users`.`role_id` WHERE `is_terminated` = 0 ORDER BY `users`.`name` ASC");
 $sql->execute();
 $users = $sql->fetchAll(PDO::FETCH_ASSOC);
@@ -51,27 +55,6 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 							<div class="d-flex align-items-center border bg-white rounded p-1 me-2 icon-list">
 								<a href="employees.php" class="btn btn-icon btn-sm active bg-primary text-white me-1"><i
 										class="ti ti-list-tree"></i></a>
-								<a href="employees-grid.php" class="btn btn-icon btn-sm"><i
-										class="ti ti-layout-grid"></i></a>
-							</div>
-						</div>
-						<div class="me-2 mb-2">
-							<div class="dropdown">
-								<a href="javascript:void(0);"
-									class="dropdown-toggle btn btn-white d-inline-flex align-items-center"
-									data-bs-toggle="dropdown">
-									<i class="ti ti-file-export me-1"></i>Export
-								</a>
-								<ul class="dropdown-menu  dropdown-menu-end p-3">
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1"><i
-												class="ti ti-file-type-pdf me-1"></i>Export as PDF</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1"><i
-												class="ti ti-file-type-xls me-1"></i>Export as Excel </a>
-									</li>
-								</ul>
 							</div>
 						</div>
 						<div class="mb-2">
@@ -102,14 +85,8 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 									</div>
 									<div class="ms-2 overflow-hidden">
 										<p class="fs-12 fw-medium mb-1 text-truncate">Total Employee</p>
-										<h4>1007</h4>
+										<h4><?php echo count($terminated) + count($users) ?></h4>
 									</div>
-								</div>
-								<div>
-									<span class="badge badge-soft-purple badge-sm fw-normal">
-										<i class="ti ti-arrow-wave-right-down"></i>
-										+19.01%
-									</span>
 								</div>
 							</div>
 						</div>
@@ -127,14 +104,8 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 									</div>
 									<div class="ms-2 overflow-hidden">
 										<p class="fs-12 fw-medium mb-1 text-truncate">Active</p>
-										<h4>1007</h4>
+										<h4><?php echo count($users) ?></h4>
 									</div>
-								</div>
-								<div>
-									<span class="badge badge-soft-primary badge-sm fw-normal">
-										<i class="ti ti-arrow-wave-right-down"></i>
-										+19.01%
-									</span>
 								</div>
 							</div>
 						</div>
@@ -151,15 +122,9 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 												class="ti ti-user-pause"></i></span>
 									</div>
 									<div class="ms-2 overflow-hidden">
-										<p class="fs-12 fw-medium mb-1 text-truncate">InActive</p>
-										<h4>1007</h4>
+										<p class="fs-12 fw-medium mb-1 text-truncate">Terminated</p>
+										<h4><?php echo count($terminated) ?></h4>
 									</div>
-								</div>
-								<div>
-									<span class="badge badge-soft-dark badge-sm fw-normal">
-										<i class="ti ti-arrow-wave-right-down"></i>
-										+19.01%
-									</span>
 								</div>
 							</div>
 						</div>
@@ -176,15 +141,9 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 												class="ti ti-user-plus"></i></span>
 									</div>
 									<div class="ms-2 overflow-hidden">
-										<p class="fs-12 fw-medium mb-1 text-truncate">New Joiners</p>
-										<h4>67</h4>
+										<p class="fs-12 fw-medium mb-1 text-truncate">Roles</p>
+										<h4><?php echo count($role) ?></h4>
 									</div>
-								</div>
-								<div>
-									<span class="badge badge-soft-secondary badge-sm fw-normal">
-										<i class="ti ti-arrow-wave-right-down"></i>
-										+19.01%
-									</span>
 								</div>
 							</div>
 						</div>
@@ -957,6 +916,138 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 			return `${day}/${month}/${year}`;
 		}
 
+		// function getExperience(id) {
+		// 	$.ajax({
+		// 		url: 'settings/api/userApi.php',
+		// 		type: 'GET',
+		// 		data: {
+		// 			type: 'getExperience',
+		// 			user_id: id
+		// 		},
+		// 		dataType: 'json',
+		// 		success: function(response) {
+		// 			if (response && response.length > 0) {
+		// 				// Set user ID
+		// 				document.getElementById('experience_user_id').value = id;
+
+		// 				// Iterate through each experience entry and populate the form
+		// 				response.forEach(function(experience, index) {
+		// 					// If it's the first entry, we fill the initial form fields
+		// 					if (index === 0) {
+		// 						document.querySelector('[name="organization[]"]').value = experience.oraganization;
+		// 						document.querySelector('[name="start_date[]"]').value = experience.start_date;
+		// 						document.querySelector('[name="end_date[]"]').value = experience.end_date;
+		// 						document.querySelector('[name="salary[]"]').value = experience.salary;
+		// 						// Handle file if exists (optional, you can modify to show the filename or preview)
+		// 						if (experience.file) {
+		// 							console.log('File:', experience.file);
+		// 						}
+		// 					} else {
+		// 						// For subsequent entries, clone the first experience item and populate it
+		// 						const experienceContainer = document.getElementById('experienceContainer');
+		// 						const newExperienceItem = document.querySelector('.experience-item').cloneNode(true);
+		// 						newExperienceItem.querySelector('[name="organization[]"]').value = experience.oraganization;
+		// 						newExperienceItem.querySelector('[name="start_date[]"]').value = experience.start_date;
+		// 						newExperienceItem.querySelector('[name="end_date[]"]').value = experience.end_date;
+		// 						newExperienceItem.querySelector('[name="salary[]"]').value = experience.salary;
+		// 						experienceContainer.appendChild(newExperienceItem);
+		// 					}
+		// 				});
+		// 			} else {
+		// 				console.log("No experience data available.");
+		// 			}
+		// 		},
+		// 		error: function(xhr, status, error) {
+		// 			var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+		// 			notyf.error(errorMessage);
+		// 		}
+		// 	});
+		// }
+
+		// function getEducation(id) {
+		// 	$.ajax({
+		// 		url: 'settings/api/userApi.php',
+		// 		type: 'GET',
+		// 		data: {
+		// 			type: 'getEducation',
+		// 			user_id: id
+		// 		},
+		// 		dataType: 'json',
+		// 		success: function(response) {
+		// 			if (response && response.length > 0) {
+		// 				// Set user ID
+		// 				document.getElementById('education_user_id').value = id;
+
+		// 				// Iterate through each education entry and populate the form
+		// 				response.forEach(function(education, index) {
+		// 					// If it's the first entry, we fill the initial form fields
+		// 					if (index === 0) {
+		// 						document.querySelector('[name="degree[]"]').value = education.degree;
+		// 						document.querySelector('[name="university[]"]').value = education.university;
+		// 						document.querySelector('[name="yop[]"]').value = education.year;
+		// 						document.querySelector('[name="marks[]"]').value = education.mark;
+		// 						// Handle file if exists (optional, you can modify to show the filename or preview)
+		// 						if (education.file) {
+		// 							// You could display the file name or preview it, if necessary
+		// 							console.log('File:', education.file);
+		// 						}
+		// 					} else {
+		// 						// For subsequent entries, clone the first education item and populate it
+		// 						const educationContainer = document.getElementById('educationContainer');
+		// 						const newEducationItem = document.querySelector('.education-item').cloneNode(true);
+		// 						newEducationItem.querySelector('[name="degree[]"]').value = education.degree;
+		// 						newEducationItem.querySelector('[name="university[]"]').value = education.university;
+		// 						newEducationItem.querySelector('[name="yop[]"]').value = education.year;
+		// 						newEducationItem.querySelector('[name="marks[]"]').value = education.mark;
+		// 						educationContainer.appendChild(newEducationItem);
+		// 					}
+		// 				});
+		// 			} else {
+		// 				console.log("No education data available.");
+		// 			}
+		// 		},
+		// 		error: function(xhr, status, error) {
+		// 			var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+		// 			notyf.error(errorMessage);
+		// 		}
+		// 	});
+		// }
+
+		// function getEmployee(id) {
+		// 	$.ajax({
+		// 		url: 'settings/api/userApi.php',
+		// 		type: 'GET',
+		// 		data: {
+		// 			type: 'getEmployee',
+		// 			id: id
+		// 		},
+		// 		dataType: 'json',
+		// 		success: function(response) {
+		// 			$('#id').val(response.id);
+		// 			$('#education_user_id').val(response.id);
+		// 			$('#experience_user_id').val(response.id);
+		// 			$('#name').val(response.name);
+		// 			$('#employee_id').val(response.employee_id);
+		// 			$('#email').val(response.email);
+		// 			$('#phone').val(response.mobile);
+		// 			$('#emergency_contact').val(response.emergency_contact || '');
+		// 			$('#joining_date').val(formatDate(response.joining_date));
+		// 			$('#dob').val(formatDate(response.dob));
+		// 			$('#correspondence_address').val(response.correspondence_address || '');
+		// 			$('#permanent_address').val(response.permanent_address || '');
+		// 			$('#role_id').val(response.role_id).trigger('change'); // Update dropdown
+		// 			$('#marital_status').val(response.marital_status || 'Select').trigger('change');
+		// 			$('#gender').val(response.gender || 'Select').trigger('change');
+		// 			getEducation(id);
+		// 			getExperience(id);
+		// 		},
+		// 		error: function(xhr, status, error) {
+		// 			var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+		// 			notyf.error(errorMessage);
+		// 		}
+		// 	});
+		// }
+	
 		function getExperience(id) {
 			$.ajax({
 				url: 'settings/api/userApi.php',
@@ -967,32 +1058,35 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 				},
 				dataType: 'json',
 				success: function(response) {
-					if (response && response.length > 0) {
-						// Set user ID
-						document.getElementById('experience_user_id').value = id;
+					const experienceContainer = document.getElementById('experienceContainer');
+					experienceContainer.innerHTML = ''; // Clear previous entries
 
-						// Iterate through each experience entry and populate the form
+					if (response && response.length > 0) {
 						response.forEach(function(experience, index) {
-							// If it's the first entry, we fill the initial form fields
-							if (index === 0) {
-								document.querySelector('[name="organization[]"]').value = experience.oraganization;
-								document.querySelector('[name="start_date[]"]').value = experience.start_date;
-								document.querySelector('[name="end_date[]"]').value = experience.end_date;
-								document.querySelector('[name="salary[]"]').value = experience.salary;
-								// Handle file if exists (optional, you can modify to show the filename or preview)
-								if (experience.file) {
-									console.log('File:', experience.file);
-								}
-							} else {
-								// For subsequent entries, clone the first experience item and populate it
-								const experienceContainer = document.getElementById('experienceContainer');
-								const newExperienceItem = document.querySelector('.experience-item').cloneNode(true);
-								newExperienceItem.querySelector('[name="organization[]"]').value = experience.oraganization;
-								newExperienceItem.querySelector('[name="start_date[]"]').value = experience.start_date;
-								newExperienceItem.querySelector('[name="end_date[]"]').value = experience.end_date;
-								newExperienceItem.querySelector('[name="salary[]"]').value = experience.salary;
-								experienceContainer.appendChild(newExperienceItem);
-							}
+							// Create a new experience item
+							const newExperienceItem = document.createElement('div');
+							newExperienceItem.className = 'experience-item row border rounded p-3 mb-3';
+
+							newExperienceItem.innerHTML = `
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Organization</label>
+                            <input type="text" class="form-control" name="organization[]" value="${experience.oraganization}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" name="start_date[]" value="${experience.start_date}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-control" name="end_date[]" value="${experience.end_date}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Salary</label>
+                            <input type="text" class="form-control" name="salary[]" value="${experience.salary}">
+                        </div>
+                    `;
+
+							experienceContainer.appendChild(newExperienceItem);
 						});
 					} else {
 						console.log("No experience data available.");
@@ -1015,33 +1109,35 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 				},
 				dataType: 'json',
 				success: function(response) {
-					if (response && response.length > 0) {
-						// Set user ID
-						document.getElementById('education_user_id').value = id;
+					const educationContainer = document.getElementById('educationContainer');
+					educationContainer.innerHTML = ''; // Clear previous entries
 
-						// Iterate through each education entry and populate the form
+					if (response && response.length > 0) {
 						response.forEach(function(education, index) {
-							// If it's the first entry, we fill the initial form fields
-							if (index === 0) {
-								document.querySelector('[name="degree[]"]').value = education.degree;
-								document.querySelector('[name="university[]"]').value = education.university;
-								document.querySelector('[name="yop[]"]').value = education.year;
-								document.querySelector('[name="marks[]"]').value = education.mark;
-								// Handle file if exists (optional, you can modify to show the filename or preview)
-								if (education.file) {
-									// You could display the file name or preview it, if necessary
-									console.log('File:', education.file);
-								}
-							} else {
-								// For subsequent entries, clone the first education item and populate it
-								const educationContainer = document.getElementById('educationContainer');
-								const newEducationItem = document.querySelector('.education-item').cloneNode(true);
-								newEducationItem.querySelector('[name="degree[]"]').value = education.degree;
-								newEducationItem.querySelector('[name="university[]"]').value = education.university;
-								newEducationItem.querySelector('[name="yop[]"]').value = education.year;
-								newEducationItem.querySelector('[name="marks[]"]').value = education.mark;
-								educationContainer.appendChild(newEducationItem);
-							}
+							// Create a new education item
+							const newEducationItem = document.createElement('div');
+							newEducationItem.className = 'education-item row border rounded p-3 mb-3';
+
+							newEducationItem.innerHTML = `
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Degree</label>
+                            <input type="text" class="form-control" name="degree[]" value="${education.degree}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">University</label>
+                            <input type="text" class="form-control" name="university[]" value="${education.university}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Year of Passing</label>
+                            <input type="text" class="form-control" name="yop[]" value="${education.year}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Marks</label>
+                            <input type="text" class="form-control" name="marks[]" value="${education.mark}">
+                        </div>
+                    `;
+
+							educationContainer.appendChild(newEducationItem);
 						});
 					} else {
 						console.log("No education data available.");
@@ -1076,9 +1172,11 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 					$('#dob').val(formatDate(response.dob));
 					$('#correspondence_address').val(response.correspondence_address || '');
 					$('#permanent_address').val(response.permanent_address || '');
-					$('#role_id').val(response.role_id).trigger('change'); // Update dropdown
+					$('#role_id').val(response.role_id).trigger('change');
 					$('#marital_status').val(response.marital_status || 'Select').trigger('change');
 					$('#gender').val(response.gender || 'Select').trigger('change');
+
+					// Clear and reload education and experience
 					getEducation(id);
 					getExperience(id);
 				},
@@ -1088,6 +1186,7 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 				}
 			});
 		}
+
 	</script>
 </body>
 
