@@ -2,6 +2,25 @@
 include __DIR__ . '/../database/conn.php';
 session_start();
 
+function calculateLeaveDays($formDate, $endDate, $conn)
+{
+    $holidaysQuery = $conn->prepare("SELECT `date` FROM `holiday`");
+    $holidaysQuery->execute();
+    $holidays = $holidaysQuery->fetchAll(PDO::FETCH_COLUMN);
+
+    $start = new DateTime($formDate);
+    $end = new DateTime($endDate);
+    $end->modify('+1 day');
+    $validDays = 0;
+    for ($date = $start; $date < $end; $date->modify('+1 day')) {
+        if ($date->format('N') == 7 || in_array($date->format('Y-m-d'), $holidays)) {
+            continue;
+        }
+        $validDays++;
+    }
+    return $validDays;
+}
+
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'editLeave')) {
     $id = $_POST['leave_id'];
     $balance = $_POST['leave_balance'];
@@ -134,11 +153,12 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterLeave'))
         SELECT 
             leaves.*, 
             users.name AS user_name, 
-            role.name AS role_name 
+            role.name AS role_name , leave_type.leave_name
         FROM 
             leaves
         JOIN 
             users ON users.id = leaves.user_id
+        JOIN leave_type ON leave_type.id = leaves.leave_type
         JOIN 
             role ON role.id = users.role_id
         WHERE 
@@ -209,7 +229,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterLeave'))
         </td>
         <td>
             <div class="d-flex align-items-center">
-                <p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_type'] . '</p>
+                <p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_name'] . '</p>
             </div>
         </td>
         <td>
@@ -240,16 +260,18 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterLeave'
     $leaveType = $_POST['leave_type'] ?? '';
     $status = $_POST['status'] ?? '';
     $userId = $_SESSION['userId'];
-    
+
     $sql = "
         SELECT 
             leaves.*, 
             users.name AS user_name, 
-            role.name AS role_name 
+            role.name AS role_name ,
+            leave_type.leave_name
         FROM 
             leaves
         JOIN 
             users ON users.id = leaves.user_id
+        JOIN leave_type ON leave_type.id = leaves.leave_type
         JOIN 
             role ON role.id = users.role_id
         WHERE 
@@ -295,7 +317,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterLeave'
             $user->execute([$value['approved_by']]);
             $user = $user->fetch(PDO::FETCH_ASSOC);
         }
-        
+
         echo '<tr>
         <td>
             <div class="form-check form-check-md">
@@ -315,7 +337,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterLeave'
         </td>
         <td>
             <div class="d-flex align-items-center">
-                <p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_type'] . '</p>
+                <p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_name'] . '</p>
             </div>
         </td>
         <td>
@@ -338,12 +360,141 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterLeave'
 if (($_SERVER['REQUEST_METHOD'] == 'GET') && ($_GET['type'] == 'cancelLaves')) {
 
     $userId = $_SESSION['userId'];
-    $check = $conn->prepare("UPDATE `leaves` SET `status` = 'cancel' , `approved_by` = ? WHERE id = ? ");
-    $result = $check->execute([$userId, $_GET['leave_id']]);
+    $check = $conn->prepare("SELECT * FROM `leaves` WHERE id = ? AND (`status` = 'pending' OR `status` = 'approve')");
+    $check->execute([$_GET['leave_id']]);
+    $check = $check->fetch(PDO::FETCH_ASSOC);
+
+    if ($check) {
+
+        $balance = $conn->prepare("SELECT balance FROM `user_leave_balances` WHERE leave_type_id = ? AND `year` = YEAR(CURDATE()) AND `user_id` = ?");
+        $balance->execute([$check['leave_type'], $check['user_id']]);
+        $balance = $balance->fetch(PDO::FETCH_ASSOC);
+
+        $update = $conn->prepare("UPDATE `leaves` SET `status` = 'cancel' , `approved_by` = ? ,`use` = 0 WHERE id = ? ");
+        $update = $update->execute([$userId, $_GET['leave_id']]);
+
+        $update = $conn->prepare("UPDATE `user_leave_balances` SET `balance` = ? WHERE `user_id` = ? AND `leave_type_id` = ?");
+        $result = $update->execute([$balance['balance'] + $check['use'], $check['user_id'], $check['leave_type']]);
+
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(array("message" => 'successfull Leave Status Change...', "status" => 200));
+        } else {
+            http_response_code(500);
+            echo json_encode(array("message" => 'Something went wrong', "status" => 500));
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(array("message" => 'Leave not found.', "status" => 500));
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] == 'GET') && ($_GET['type'] == 'approveLeave')) {
+
+    $userId = $_SESSION['userId'];
+
+    // Corrected query with 'FROM'
+    $check = $conn->prepare("SELECT * FROM `leaves` WHERE id = ? AND (`status` = 'pending' OR `status` = 'cancel')");
+    $check->execute([$_GET['leave_id']]);
+    $result = $check->fetch(PDO::FETCH_ASSOC);
 
     if ($result) {
+        $balance = $conn->prepare("SELECT balance FROM `user_leave_balances` WHERE leave_type_id = ? AND `year` = YEAR(CURDATE()) AND `user_id` = ?");
+        $balance->execute([$result['leave_type'], $result['user_id']]);
+        $balance = $balance->fetch(PDO::FETCH_ASSOC);
+
+        $leav = calculateLeaveDays($result['form_date'], $result['end_date'], $conn);
+
+        if ($balance['balance'] > $leav) {
+            $use = $balance['balance'] - $leav;
+        } else {
+            $use = $balance['balance'];
+        }
+
+        $check = $conn->prepare("UPDATE `leaves` SET `status` = 'approve', `use` = ?, `approved_by` = ? WHERE id = ?");
+        $update = $check->execute([$use, $userId, $_GET['leave_id']]);
+
+        $check = $conn->prepare("UPDATE `user_leave_balances` SET `balance` = ? WHERE `user_id` = ? AND `leave_type_id` = ?");
+        $update = $check->execute([$balance['balance'] - $use, $result['user_id'], $result['leave_type']]);
+
         http_response_code(200);
-        echo json_encode(array("message" => 'successfull Leave Status Change...', "status" => 200));
+        echo json_encode(array("message" => 'Successful Leave Status Change...', "status" => 200));
+    } else {
+        http_response_code(400);
+        echo json_encode(array("message" => 'Leave not found.', "status" => 500));
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'addLeaveBonus')) {   
+    $holiday = $conn->prepare("SELECT * FROM `holiday` WHERE `date` = CURRENT_DATE()");
+    $holiday->execute();
+    $holiday = $holiday->fetch(PDO::FETCH_ASSOC);
+    if(date('N') == 7 || $holiday)  {
+        $sql = $conn->prepare('SELECT * FROM `attendance` WHERE date= CURDATE() AND `user_id`= ?');
+        $sql->execute([$user_id]);
+        $attendance = $sql->fetch(PDO::FETCH_ASSOC);
+        if ($attendance) {
+            $TclockInTime = strtotime($result['clock_in_time']);
+            $TclockOutTime = strtotime($result['clock_out_time']);
+            $timeDifferenceSeconds = $TclockOutTime - $TclockInTime;
+            $timeDifferenceHours = $timeDifferenceSeconds / 3600;
+            if($timeDifferenceHours < 6){
+                http_response_code(400);
+                echo json_encode(array("message" => 'Login Time is then 6 Hours.', "status" => 400));
+                exit;
+            }else{
+                $check = $conn->prepare('INSERT INTO `leave_bonus`(`user_id`) VALUES ( ? )');
+                $result = $check->execute([$user_id ]);
+
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode(array("message" => 'successfull Leave Bonus Added.', "status" => 200));
+                } else {
+                    http_response_code(500);
+                    echo json_encode(array("message" => 'Something went wrong', "status" => 500));
+                }
+            }
+        }else{
+            http_response_code(400);
+            echo json_encode(array("message" => 'Attendance Not Found.', "status" => 400));
+        }
+    }else{
+        http_response_code(500);
+        echo json_encode(array("message" => 'Today is not Holiday', "status" => 500));
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'approveLeaveBonus')) {   
+
+    $check = $conn->prepare('SELECT * FROM `leave_bonus` WHERE `id` = ? AND `aprrove` = 0');
+    $check->execute([$_POST['leave_id'] ]);
+    $check = $check->fetch(PDO::FETCH_ASSOC);
+    if ($check) {
+        $updatecheck = $conn->prepare('UPDATE `leave_bonus` SET `aprrove` = 1 , `approve_by` = ? WHERE `id` = ?');
+        $result = $updatecheck->execute([$user_id , $_POST['leave_id'] ]);
+
+        $update = $conn->prepare("UPDATE `user_leave_balances` SET `balance` = `balance`+1 WHERE `user_id` = ? AND `leave_type_id` = ?");
+        $update = $update->execute([$check['user_id'], 4]);
+
+        http_response_code(200);
+        echo json_encode(array("message" => 'successfull Leave Bonus Approve.', "status" => 200));
+    } else {
+        http_response_code(500);
+        echo json_encode(array("message" => 'Something went wrong', "status" => 500));
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'rejectLeaveBonus')) {   
+
+    $check = $conn->prepare('SELECT * FROM `leave_bonus` WHERE `id` = ? AND `aprrove` = 0');
+    $check->execute([$_POST['leave_id'] ]);
+    $check = $check->fetch(PDO::FETCH_ASSOC);
+    if ($check) {
+        $updatecheck = $conn->prepare('UPDATE `leave_bonus` SET `reject` = 1 , `approve_by` = ? WHERE `id` = ?');
+        $result = $updatecheck->execute([$user_id , $_POST['leave_id'] ]);
+
+        http_response_code(200);
+        echo json_encode(array("message" => 'successfull Leave Bonus Approve.', "status" => 200));
     } else {
         http_response_code(500);
         echo json_encode(array("message" => 'Something went wrong', "status" => 500));

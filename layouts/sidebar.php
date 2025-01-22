@@ -151,14 +151,14 @@ $page = end($link_array);
 							<a href="clients-grid.php">
 								<i class="ti ti-users-group"></i><span>Clients</span>
 							</a>
-						</li class="<?php echo ($page == 'projects-grid.php') ? 'active' : ''; ?>">
+						</li class="<?php echo ($page == 'projects.php') ? 'active' : ''; ?>">
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'projects-grid.php' || $page == 'tasks.php' || $page == 'task-board.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'projects.php' || $page == 'tasks.php' || $page == 'task-board.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-box"></i><span>Projects</span>
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
-								<li><a href="projects-grid.php" class="<?php echo ($page == 'projects-grid.php') ? 'active' : ''; ?>">Projects</a></li>
+								<li><a href="projects.php" class="<?php echo ($page == 'projects.php') ? 'active' : ''; ?>">Projects</a></li>
 								<li><a href="tasks.php" class="<?php echo ($page == 'tasks.php') ? 'active' : ''; ?>">Tasks</a></li>
 								<li><a href="task-board.php" class="<?php echo ($page == 'task-board.php') ? 'active' : ''; ?>">Task Board</a></li>
 							</ul>
@@ -198,17 +198,17 @@ $page = end($link_array);
 							</a>
 						</li>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-settings.php' || $page == 'attendance.php' || $page == 'my-attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-bonus.php' || $page == 'attendance.php' || $page == 'my-attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-file-time"></i><span>Attendance</span>
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
 								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-settings.php') ? 'active subdrop' : ''; ?>">Leaves<span class="menu-arrow inside-submenu"></span></a>
+									<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-bonus.php') ? 'active subdrop' : ''; ?>">Leaves<span class="menu-arrow inside-submenu"></span></a>
 									<ul>
 										<li><a href="leaves.php" class="<?php echo ($page == 'leaves.php') ? 'active' : ''; ?>">Leaves</a></li>
 										<li><a href="my-leaves.php" class="<?php echo ($page == 'my-leaves.php') ? 'active' : ''; ?>">My Leave</a></li>
-										<li><a href="leave-settings.php" class="<?php echo ($page == 'leave-settings.php') ? 'active' : ''; ?>">Leave Settings</a></li>
+										<li><a href="leave-bonus.php" class="<?php echo ($page == 'leave-bonus.php') ? 'active' : ''; ?>">Leave Bonus</a></li>
 									</ul>
 								</li>
 								<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>

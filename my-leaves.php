@@ -1,18 +1,53 @@
 <?php include 'layouts/session.php';
+
 $leave_type = $conn->prepare("SELECT * FROM `leave_type`");
 $leave_type->execute();
 $leave_type = $leave_type->fetchAll(PDO::FETCH_ASSOC);
 
 $leaves = $conn->prepare("
-    SELECT leaves.*, users.name AS user_name, role.name AS role_name
+    SELECT leaves.*, users.name AS user_name, role.name AS role_name , leave_type.leave_name
     FROM leaves
     JOIN users ON users.id = leaves.user_id
+	JOIN leave_type ON leave_type.id = leaves.leave_type
     JOIN role ON role.id = users.role_id WHERE `leaves`.`user_id` = ?
 	AND DATE(`leaves`.`created_at`) >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
     ORDER BY leaves.created_at DESC
 ");
 $leaves->execute([$userId]);
 $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
+
+
+$Casual = $conn->prepare("SELECT balance FROM `user_leave_balances` WHERE leave_type_id = 1 AND `year` = YEAR(CURDATE()) AND `user_id` = ?");
+$Casual->execute([$userId]);
+$Casual = $Casual->fetch(PDO::FETCH_ASSOC);
+
+$Sick = $conn->prepare("SELECT balance FROM `user_leave_balances` WHERE leave_type_id = 2 AND `year` = YEAR(CURDATE()) AND `user_id` = ?");
+$Sick->execute([$userId]);
+$Sick = $Sick->fetch(PDO::FETCH_ASSOC);
+
+$Privilege = $conn->prepare("SELECT balance FROM `user_leave_balances` WHERE leave_type_id = 3 AND `year` = YEAR(CURDATE()) AND `user_id` = ?");
+$Privilege->execute([$userId]);
+$Privilege = $Privilege->fetch(PDO::FETCH_ASSOC);
+
+$Bonus = $conn->prepare("SELECT balance FROM `user_leave_balances` WHERE leave_type_id = 4 AND `year` = YEAR(CURDATE()) AND `user_id` = ?");
+$Bonus->execute([$userId]);
+$Bonus = $Bonus->fetch(PDO::FETCH_ASSOC);
+
+$usepl = $conn->prepare("SELECT SUM(`use`) as use_pl FROM `leaves` WHERE leave_type = 'Privilege Leave' AND `user_id` = ? AND YEAR(form_date) = YEAR(CURDATE()) AND `status` = 'approve'");
+$usepl->execute([$userId]);
+$usepl = $usepl->fetch(PDO::FETCH_ASSOC);
+
+$usecl = $conn->prepare("SELECT SUM(`use`) as use_cl FROM `leaves` WHERE leave_type = 'Casual Leave' AND `user_id` = ?  AND YEAR(form_date) = YEAR(CURDATE()) AND `status` = 'approve'");
+$usecl->execute([$userId]);
+$usecl = $usecl->fetch(PDO::FETCH_ASSOC);
+
+$usesl = $conn->prepare("SELECT SUM(`use`) as use_sl FROM `leaves` WHERE leave_type = 'Sick Leave' AND `user_id` = ?  AND YEAR(form_date) = YEAR(CURDATE()) AND `status` = 'approve'");
+$usesl->execute([$userId]);
+$usesl = $usesl->fetch(PDO::FETCH_ASSOC);
+
+$uselb = $conn->prepare("SELECT SUM(`use`) as use_sl FROM `leaves` WHERE leave_type = 'Leave Bonus' AND `user_id` = ?  AND YEAR(form_date) = YEAR(CURDATE()) AND `status` = 'approve'");
+$uselb->execute([$userId]);
+$uselb = $uselb->fetch(PDO::FETCH_ASSOC);
 
 
 ?>
@@ -96,8 +131,8 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 										</div>
 									</div>
 									<div class="text-end">
-										<p class="mb-1">Total Present</p>
-										<h4>180/200</h4>
+										<p class="mb-1">Casual Leave</p>
+										<h4><?php echo $Casual['balance'] - $usecl['use_cl'] ?></h4>
 									</div>
 								</div>
 							</div>
@@ -115,8 +150,8 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 										</div>
 									</div>
 									<div class="text-end">
-										<p class="mb-1">Planned Leaves</p>
-										<h4>10</h4>
+										<p class="mb-1">Privilege Leave</p>
+										<h4><?php echo $Privilege['balance'] - $usepl['use_pl'] ?></h4>
 									</div>
 								</div>
 							</div>
@@ -134,8 +169,8 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 										</div>
 									</div>
 									<div class="text-end">
-										<p class="mb-1">Unplanned Leaves</p>
-										<h4>10</h4>
+										<p class="mb-1">Sick Leave</p>
+										<h4><?php echo $Sick['balance'] - $usesl['use_sl'] ?></h4>
 									</div>
 								</div>
 							</div>
@@ -153,8 +188,8 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 										</div>
 									</div>
 									<div class="text-end">
-										<p class="mb-1">Pending Requests</p>
-										<h4>15</h4>
+										<p class="mb-1">Leave Bonus</p>
+										<h4><?php echo $Bonus['balance'] - $uselb['use_bl'] ?></h4>
 									</div>
 								</div>
 							</div>
@@ -178,10 +213,10 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 							</div>
 							<div class="me-3">
 								<select id="leaveType" name="leaveType" class="form-select btn-sm btn-white">
-									<option value="" disabled selected>Select Leave Type</option>
+									<option value="" selected>Select Leave Type</option>
 									<?php
 									foreach ($leave_type as $value) {
-										echo '<option value="' . $value['leave_name'] . '">' . $value['leave_name'] . '</option>';
+										echo '<option value="' . $value['id'] . '">' . $value['leave_name'] . '</option>';
 									}
 									?>
 								</select>
@@ -217,11 +252,7 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 								</thead>
 								<tbody>
 									<?php foreach ($leaves as $value) {
-										$start = new DateTime($value['form_date']);
-										$end = new DateTime($value['end_date']);
-										$end->modify('+1 day');
-										$interval = $start->diff($end);
-										$days = $interval->days;
+										
 
 										if ($value['approved_by'] != '') {
 											$user = $conn->prepare("SELECT `name` FROM `users` WHERE `id` = ?");
@@ -248,7 +279,7 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 										</td>
 										<td>
 											<div class="d-flex align-items-center">
-												<p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_type'] . '</p>
+												<p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_name'] . '</p>
 											</div>
 										</td>
 										<td>
@@ -258,7 +289,9 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 											' . date('d M, Y', strtotime($value['end_date'])) . '
 										</td>
 										<td>
-											' . $days . ' Days
+											' . calculateLeaveDays($value['form_date'] , $value['end_date'] ,$conn) . ' Days
+											<br>
+											Use Balance '.($value['use'] ?? 0).'
 										</td>
 										<td>
 											<span  class="' . ($value['status'] == 'cancel' ? 'text-danger' : ($value['status'] == 'approve' ? 'text-success' : '')) . '">' . ucfirst($value['status']) . ' </span><br>
@@ -303,7 +336,7 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 										<select class="select" name="leave_type">
 											<option value="">Select</option>
 											<?php foreach ($leave_type as $value) {
-												echo '<option value="' . $value['leave_name'] . '">' . $value['leave_name'] . '</option>';
+												echo '<option value="' . $value['id'] . '">' . $value['leave_name'] . '</option>';
 											} ?>
 											<option value="unpaid">Unpaid Leave</option>
 										</select>
@@ -601,7 +634,6 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 					data: {
 						dateRange: dateRange,
 						leave_type: leaveType,
-						role: role,
 						status: status,
 						type: 'myFilterLeave',
 					},

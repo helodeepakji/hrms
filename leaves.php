@@ -4,9 +4,10 @@ $leave_type->execute();
 $leave_type = $leave_type->fetchAll(PDO::FETCH_ASSOC);
 
 $leaves = $conn->prepare("
-    SELECT leaves.*, users.name AS user_name, role.name AS role_name
+    SELECT leaves.*, users.name AS user_name, role.name AS role_name , leave_type.leave_name
     FROM leaves
     JOIN users ON users.id = leaves.user_id
+	JOIN leave_type ON leave_type.id = leaves.leave_type
     JOIN role ON role.id = users.role_id
 	WHERE 
        DATE(`leaves`.`created_at`) >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
@@ -18,6 +19,27 @@ $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);
 $sql = $conn->prepare("SELECT * FROM `role`");
 $sql->execute();
 $role = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+
+$pending = $conn->prepare("SELECT COUNT(id) as pending FROM leaves	WHERE `status` = 'pending'");
+$pending->execute();
+$pending = $pending->fetch(PDO::FETCH_ASSOC);
+
+$approve = $conn->prepare("SELECT COUNT(id) as approve FROM leaves	WHERE `status` = 'approve'");
+$approve->execute();
+$approve = $approve->fetch(PDO::FETCH_ASSOC);
+
+$cancel = $conn->prepare("SELECT COUNT(id) as cancel FROM leaves	WHERE `status` = 'cancel'");
+$cancel->execute();
+$cancel = $cancel->fetch(PDO::FETCH_ASSOC);
+
+$balance = $conn->prepare("SELECT SUM(balance) as balance FROM `user_leave_balances`");
+$balance->execute();
+$balance = $balance->fetch(PDO::FETCH_ASSOC);
+
+$usebal = $conn->prepare("SELECT SUM(`use`) as usebal FROM leaves");
+$usebal->execute();
+$usebal = $usebal->fetch(PDO::FETCH_ASSOC);
 
 ?>
 <?php include 'layouts/head-main.php'; ?>
@@ -74,9 +96,9 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 								</ul>
 							</div>
 						</div>
-						<div class="mb-2">
+						<!-- <div class="mb-2">
 							<a href="#" data-bs-toggle="modal" data-bs-target="#add_leaves" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add Leave</a>
-						</div>
+						</div> -->
 						<div class="head-icons ms-2">
 							<a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
 								<i class="ti ti-chevrons-up"></i>
@@ -100,8 +122,8 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										</div>
 									</div>
 									<div class="text-end">
-										<p class="mb-1">Total Present</p>
-										<h4>180/200</h4>
+										<p class="mb-1">Total Use Balance</p>
+										<h4><?php echo $usebal['usebal'] ?>/<?php echo $balance['balance'] ?></h4>
 									</div>
 								</div>
 							</div>
@@ -119,8 +141,8 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										</div>
 									</div>
 									<div class="text-end">
-										<p class="mb-1">Planned Leaves</p>
-										<h4>10</h4>
+										<p class="mb-1">Cancel Leaves</p>
+										<h4><?php echo $cancel['cancel'] ?? 0 ?></h4>
 									</div>
 								</div>
 							</div>
@@ -138,8 +160,8 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										</div>
 									</div>
 									<div class="text-end">
-										<p class="mb-1">Unplanned Leaves</p>
-										<h4>10</h4>
+										<p class="mb-1">Approve Leaves</p>
+										<h4><?php echo $approve['approve'] ?? 0 ?></h4>
 									</div>
 								</div>
 							</div>
@@ -158,7 +180,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 									</div>
 									<div class="text-end">
 										<p class="mb-1">Pending Requests</p>
-										<h4>15</h4>
+										<h4><?php echo $pending['pending'] ?? 0 ?></h4>
 									</div>
 								</div>
 							</div>
@@ -182,10 +204,10 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 							</div>
 							<div class="me-3">
 								<select id="leaveType" name="leaveType" class="form-select btn-sm btn-white">
-									<option value="" disabled selected>Select Leave Type</option>
+									<option value="" selected>Select Leave Type</option>
 									<?php
 									foreach ($leave_type as $value) {
-										echo '<option value="' . $value['leave_name'] . '">' . $value['leave_name'] . '</option>';
+										echo '<option value="' . $value['id'] . '">' . $value['leave_name'] . '</option>';
 									}
 									?>
 								</select>
@@ -233,11 +255,6 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 								</thead>
 								<tbody>
 									<?php foreach ($leaves as $value) {
-										$start = new DateTime($value['form_date']);
-										$end = new DateTime($value['end_date']);
-										$end->modify('+1 day');
-										$interval = $start->diff($end);
-										$days = $interval->days;
 
 										if ($value['approved_by'] != '') {
 											$user = $conn->prepare("SELECT `name` FROM `users` WHERE `id` = ?");
@@ -264,7 +281,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										</td>
 										<td>
 											<div class="d-flex align-items-center">
-												<p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_type'] . '</p>
+												<p class="fs-14 fw-medium d-flex align-items-center mb-0">' . $value['leave_name'] . '</p>
 											</div>
 										</td>
 										<td>
@@ -274,7 +291,9 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 											' . date('d M, Y', strtotime($value['end_date'])) . '
 										</td>
 										<td>
-											' . $days . ' Days
+											' . calculateLeaveDays($value['form_date'] , $value['end_date'] ,$conn) . ' Days
+											<br>
+											Use Balance '.($value['use'] ?? 0).'
 										</td>
 										<td>
 											<span  class="' . ($value['status'] == 'cancel' ? 'text-danger' : ($value['status'] == 'approve' ? 'text-success' : '')) . '">' . ucfirst($value['status']) . ' </span><br>
@@ -282,7 +301,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										</td>
 										<td>
 											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_leaves"><i class="fe fe-check-circle"></i></a>
+												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#approve_modal"  onclick="rejectLeave(' . $value['id'] . ')"><i class="fe fe-check-circle"></i></a>
 												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal" onclick="rejectLeave(' . $value['id'] . ')"><i class="ti ti-arrows-cross"></i></a>
 											</div>
 										</td>
@@ -324,7 +343,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										<select class="select" name="leave_type">
 											<option value="">Select</option>
 											<?php foreach ($leave_type as $value) {
-												echo '<option value="' . $value['leave_name'] . '">' . $value['leave_name'] . '</option>';
+												echo '<option value="' . $value['id'] . '">' . $value['leave_name'] . '</option>';
 											} ?>
 											<option value="unpaid">Unpaid Leave</option>
 										</select>
@@ -397,133 +416,27 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 		</div>
 		<!-- /Add Leaves -->
 
-		<!-- Edit Leaves -->
-		<div class="modal fade" id="edit_leaves">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
+		
+		<!-- Delete Modal -->
+		<div class="modal fade" id="approve_modal">
+			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Edit Leave</h4>
-						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-							<i class="ti ti-x"></i>
-						</button>
+					<div class="modal-body text-center">
+						<span class="avatar avatar-xl bg-transparent-danger text-success mb-3">
+							<i class="ti ti-check fs-36"></i>
+						</span>
+						<h4 class="mb-1">Confirm Approve</h4>
+						<p class="mb-3">You want to approve leave application, this cant be undone once you approve.</p>
+						<div class="d-flex justify-content-center">
+							<a href="javascript:void(0);" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</a>
+							<a class="btn btn-success" onclick="leaveApprove()">Yes, Approve</a>
+						</div>
 					</div>
-					<form action="leaves.php">
-						<div class="modal-body pb-0">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Employee Name</label>
-										<select class="select">
-											<option selected>Anthony Lewis</option>
-											<option>Brian Villalobos</option>
-											<option>Harvey Smith</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Leave Type</label>
-										<select class="select">
-											<option selected>Medical Leave</option>
-											<option>Casual Leave</option>
-											<option>Annual Leave</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">From </label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" value="14 Jan 24" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">To </label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" value="15/01/24" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" value="15/01/24" disabled>
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<select class="select">
-											<option>Select</option>
-											<option>Full DAy</option>
-											<option selected>First Half</option>
-											<option>Second Half</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">No of Days</label>
-										<input type="text" class="form-control" value="01" disabled>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Remaining Days</label>
-										<input type="text" class="form-control" value="07" disabled>
-									</div>
-								</div>
-
-								<div class="col-md-12">
-									<div class="d-flex align-items-center mb-3">
-										<div class="form-check me-2">
-											<input class="form-check-input" type="radio" name="leave1" value="option4" id="leave6">
-											<label class="form-check-label" for="leave6">
-												Full Day
-											</label>
-										</div>
-										<div class="form-check me-2">
-											<input class="form-check-input" type="radio" name="leave1" value="option5" id="leave5">
-											<label class="form-check-label" for="leave5">
-												First Half
-											</label>
-										</div>
-										<div class="form-check me-2">
-											<input class="form-check-input" type="radio" name="leave1" value="option6" id="leave4">
-											<label class="form-check-label" for="leave4">
-												Second Half
-											</label>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Reason</label>
-										<textarea class="form-control" rows="3"> Going to Hospital </textarea>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary">Save Changes</button>
-						</div>
-					</form>
 				</div>
 			</div>
 		</div>
-		<!-- /Edit Leaves -->
+		<!-- /Delete Modal -->
+
 
 		<!-- Delete Modal -->
 		<div class="modal fade" id="delete_modal">
@@ -610,11 +523,32 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 				success: function(response) {
 					location.reload();
 				},
-				error: function() {
-					alert('Error fetching data.');
-				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Leave not found.";
+					notyf.error(errorMessage);
+				}
 			});
 		});
+		
+		
+		function leaveApprove() {
+			var id = $('#delete-btn').data('delete');
+			$.ajax({
+				url: 'settings/api/leaveApi.php',
+				method: 'GET',
+				data: {
+					leave_id: id,
+					type: 'approveLeave',
+				},
+				success: function(response) {
+					location.reload();
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Leave not found.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
 
 		$(document).ready(function() {
 			// Handle date range input change
