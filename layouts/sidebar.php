@@ -9,7 +9,7 @@ $page = end($link_array);
 	<!-- Logo -->
 	<div class="sidebar-logo">
 		<a href="index.php" class="logo logo-normal">
-			<img src="assets/img/logo.svg" alt="Logo">
+			<img src="assets/img/LOGO.png" width="150px" alt="Logo">
 		</a>
 		<a href="index.php" class="logo-small">
 			<img src="assets/img/logo-small.svg" alt="Logo">
@@ -147,11 +147,6 @@ $page = end($link_array);
 				<li class="menu-title"><span>PROJECTS</span></li>
 				<li>
 					<ul>
-						<li class="<?php echo ($page == 'clients-grid.php') ? 'active' : ''; ?>">
-							<a href="clients-grid.php">
-								<i class="ti ti-users-group"></i><span>Clients</span>
-							</a>
-						</li class="<?php echo ($page == 'projects.php') ? 'active' : ''; ?>">
 						<li class="submenu">
 							<a href="javascript:void(0);" class=" <?php echo ($page == 'projects.php' || $page == 'tasks.php' || $page == 'task-board.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-box"></i><span>Projects</span>
@@ -182,16 +177,7 @@ $page = end($link_array);
 								<li><a href="policy.php" class="<?php echo ($page == 'policy.php') ? 'active' : ''; ?>">Policies</a></li>
 							</ul>
 						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'tickets.php' || $page == 'ticket-details.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-ticket"></i><span>Tickets</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="tickets.php" class="<?php echo ($page == 'tickets.php') ? 'active' : ''; ?>">Tickets</a></li>
-								<li><a href="ticket-details.php" class="<?php echo ($page == 'ticket-details.php') ? 'active' : ''; ?>">Ticket Details</a></li>
-							</ul>
-						</li>
+						
 						<li class="<?php echo ($page == 'holidays.php') ? 'active' : ''; ?>">
 							<a href="holidays.php">
 								<i class="ti ti-calendar-event"></i><span>Holidays</span>
@@ -216,6 +202,16 @@ $page = end($link_array);
 								<li><a href="timesheets.php" class="<?php echo ($page == 'timesheets.php') ? 'active' : ''; ?>">Timesheets</a></li>
 								<li><a href="schedule-timing.php" class="<?php echo ($page == 'schedule-timing.php') ? 'active' : ''; ?>">Shift & Schedule</a></li>
 								<li><a href="overtime.php" class="<?php echo ($page == 'overtime.php') ? 'active' : ''; ?>">Overtime</a></li>
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'tickets.php' || $page == 'ticket-details.php') ? 'active subdrop' : ''; ?>">
+								<i class="ti ti-ticket"></i><span>Tickets</span>
+								<span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<li><a href="tickets.php" class="<?php echo ($page == 'tickets.php') ? 'active' : ''; ?>">Tickets</a></li>
+								<li><a href="ticket-details.php" class="<?php echo ($page == 'ticket-details.php') ? 'active' : ''; ?>">Ticket Details</a></li>
 							</ul>
 						</li>
 						<li class="submenu">

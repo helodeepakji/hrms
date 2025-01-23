@@ -4,7 +4,7 @@
 
 				<div class="header-left">
 					<a href="admin-dashboard.php" class="logo">
-						<img src="assets/img/logo.svg" alt="Logo">
+						<img src="assets/img/LOGO.png" alt="Logo">
 					</a>
 					<a href="admin-dashboard.php" class="dark-logo">
 						<img src="assets/img/logo-white.svg" alt="Logo">

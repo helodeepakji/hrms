@@ -9,7 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterProduct') {
     $status = $_POST['status'] ?? '';
 
     // Start building the SQL query
-    $sql = "SELECT * FROM `projects` WHERE 1 = 1";
+    $sql = "SELECT `projects`.*, `users`.`name`, `users`.`profile` 
+    FROM `projects` 
+    LEFT JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` 
+    LEFT JOIN `users` ON `users`.`id` = `project_assign`.`user_id` WHERE 1 = 1";
     $params = [];
 
     // Filter by date range if provided
@@ -17,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterProduct') {
         // Split date range into start and end date
         [$startDate, $endDate] = explode(' - ', $dateRange);
         $sql .= ' AND `projects`.`end_date` BETWEEN ? AND ?';
-        // Format dates to 'Y-m-d' format
+
         $params[] = date('Y-m-d', strtotime($startDate));
         $params[] = date('Y-m-d', strtotime($endDate));
     }
 
-    // Filter by status if provided
+
     if (!empty($status)) {
         $sql .= ' AND `projects`.`is_complete` = ?';
         $params[] = $status; // Assuming 0 for Active and 1 for Completed
@@ -42,6 +45,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterProduct') {
         // Loop through the results and display the project details
         http_response_code(200);
         foreach ($product as $value) {
+            if ($value['name'] != '') {
+                $data = '<div class="d-flex align-items-center file-name-icon">
+                    <a href="javascript:void(0);" class="avatar avatar-sm border avatar-rounded">
+                        <img src="' . ($value['profile'] != '' ? $value['profile'] : 'assets/img/users/user-39.jpg') . '" class="img-fluid" alt="img">
+                    </a>
+                    <div class="ms-2">
+                        <h6 class="fw-normal"><a href="javascript:void(0);">' . $value['name'] . '</a></h6>
+                    </div>
+                </div>';
+            } else {
+                $data = '<span class="badge badge-success d-inline-flex align-items-center badge-xs" data-bs-toggle="modal" data-bs-target="#edit_project" onclick="getProject(' . $value['id'] . ')">
+                    <i class="ti ti-point-filled me-1"></i>Assign Project
+                </span>';
+            }
+
             echo '
             <tr>
                 <td>
@@ -54,16 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterProduct') {
                 <td>
                     <h6 class="fw-medium"><a href="project-details.php?id=' . $value['id'] . '">' . $value['project_name'] . '</a></h6>
                 </td>
-                <td>' . strtoupper($value['area']) . '.</td>
-                <td>
-                    <div class="d-flex align-items-center file-name-icon">
-                        <a href="javascript:void(0);" class="avatar avatar-sm border avatar-rounded">
-                            <img src="assets/img/users/user-39.jpg" class="img-fluid" alt="img">
-                        </a>
-                        <div class="ms-2">
-                            <h6 class="fw-normal"><a href="javascript:void(0);">Michael Walker</a></h6>
-                        </div>
-                    </div>
+                <td>' . $data . '
                 </td>
                 <td>
                     ' . $value['estimated_hour'] . 'Hr.
@@ -147,11 +156,22 @@ if (($_SERVER['REQUEST_METHOD'] == 'GET') && ($_GET['type'] == 'getAllProduct'))
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['type'] === 'getProduct') {
-    $sql = $conn->prepare("SELECT * FROM `projects` WHERE `id` = ?");
+    $sql = $conn->prepare("SELECT `projects`.* , `project_assign`.`user_id` FROM `projects` LEFT JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` WHERE `projects`.`id` = ?");
     $sql->execute([$_GET['id']]);
     $result = $sql->fetch(PDO::FETCH_ASSOC);
-
     if ($result) {
+
+        $team_leader = $conn->prepare("SELECT `user_id` FROM `team_leader_assign` WHERE `project_id` = ?");
+        $team_leader->execute([$_GET['id']]);
+        $team_leader = $team_leader->fetchAll(PDO::FETCH_ASSOC);
+        
+        $employee = $conn->prepare("SELECT `user_id` FROM `employee_assign` WHERE `project_id` = ?");
+        $employee->execute([$_GET['id']]);
+        $employee = $employee->fetchAll(PDO::FETCH_ASSOC);
+
+        $result['project_manger'] = $result['user_id'];
+        $result['team_leader'] = $team_leader;
+        $result['employee'] = $employee;
         http_response_code(200);
         echo json_encode($result);
     } else {

@@ -136,18 +136,18 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
                                             $attendance_clock_out = date('h:i A', strtotime($value['clock_out_time']));
                                         } else {
                                             $attendance_clock_out = '';
-                                        }
-
-                                        if ($value['clock_out_time'] == '' && $value['date'] != date('Y-m-d')) {
-                                            $regulazation = '<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $value['id'] . ')">Regularisation</a>';
-                                            $status = '';
-                                        } else {
-                                            if ($value['regularisation'] == 1) {
-                                                $status = '<span class="text-danger">Regularization Pending </span>';
-                                            } else {
-                                                $status = '';
+                                            if ($value['date'] != date('Y-m-d')) {
+                                                $regulazation = '<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $value['id'] . ')">Regularisation</a>';
                                             }
                                         }
+
+
+                                        if ($value['regularisation'] == 1) {
+                                            $status = '<span class="text-danger">Regularization Pending </span>';
+                                        } else {
+                                            $status = '';
+                                        }
+
                                     ?>
                                         <tr>
                                             <td>
@@ -168,9 +168,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
                                             </td>
                                             <td><?php echo date('h:i A', strtotime($value['clock_in_time'])) ?></td>
                                             <td>
-                                                <?php echo $regulazation ?? $attendance_clock_out; ?>
-                                                <br>
-                                                <?php echo $status ?? '' ?>
+                                                <?php echo $value['clock_out_time'] != '' ?  $attendance_clock_out : ($attendance_clock_out == '' ? $regulazation : $status) ?>
                                             </td>
                                             <td>30 Min</td>
                                             <td>20 Min</td>

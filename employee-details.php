@@ -1,7 +1,11 @@
 <?php
 include 'layouts/session.php';
 
-$id = base64_decode($_GET['id']);
+if (isset($_GET['id']) && $_GET['id'] != '') {
+	$id = base64_decode($_GET['id']);
+} else {
+	$id = $_SESSION['userId'];
+}
 
 $sql = $conn->prepare("SELECT `users`.*, `role`.`name` AS `role` FROM `users` JOIN `role` ON `role`.`id` = `users`.`role_id` WHERE `users`.`id` = ?");
 $sql->execute([$id]);
@@ -23,6 +27,10 @@ $family = $family->fetchAll(PDO::FETCH_ASSOC);
 $role = $conn->prepare("SELECT * FROM `role`");
 $role->execute();
 $role = $role->fetchAll(PDO::FETCH_ASSOC);
+
+$user_details = $conn->prepare("SELECT * FROM `user_details`  WHERE `user_id` = ?");
+$user_details->execute([$id]);
+$user_details = $user_details->fetch(PDO::FETCH_ASSOC);
 
 ?>
 <?php include 'layouts/head-main.php'; ?>
@@ -100,14 +108,19 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 											<p class="text-dark"><?php echo date('d M, Y', strtotime($user['joining_date']))  ?></p>
 										</div>
 										<div class="row gx-2 mt-3">
-											<div class="col-6">
+											<div class="col-4">
 												<div>
 													<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#edit_employee" onclick="getEmployee(<?php echo $user['id'] ?>)"><i class="ti ti-edit me-1"></i>Edit Info</a>
 												</div>
 											</div>
-											<div class="col-6">
+											<div class="col-4">
 												<div>
-													<a href="chat.php" class="btn btn-danger w-100"><i class="ti ti-message-heart me-1"></i>Password Reset</a>
+													<a onclick="empTerminate(<?php echo $user['id'] ?>)" class="btn btn-<?php echo $user['is_terminated'] == 0 ? 'danger' : 'success' ?> w-100"><i class="ti ti-message-heart me-1"></i><?php echo $user['is_terminated'] == 0 ? 'Terminate' : 'Active' ?></a>
+												</div>
+											</div>
+											<div class="col-4">
+												<div>
+													<a onclick="passwordReset(<?php echo $user['id'] ?>)" class="btn btn-danger w-100"></i>Password</a>
 												</div>
 											</div>
 										</div>
@@ -164,14 +177,14 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 											<i class="ti ti-e-passport me-2"></i>
 											Pancard No
 										</span>
-										<p class="text-dark">QRET4566FGRT</p>
+										<p class="text-dark"><?php echo $user_details['pancard'] ?></p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
 											<i class="ti ti-calendar-x me-2"></i>
 											Aadhar Card
 										</span>
-										<p class="text-dark text-end">QRET4566FGRT</p>
+										<p class="text-dark text-end"><?php echo $user_details['aadhar'] ?></p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="d-inline-flex align-items-center">
@@ -208,7 +221,7 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 												<div class="accordion-button">
 													<div class="d-flex align-items-center flex-fill">
 														<h5>Bank Information</h5>
-														<a href="#" class="btn btn-sm btn-icon ms-auto" data-bs-toggle="modal" data-bs-target="#edit_bank"><i class="ti ti-edit"></i></a>
+														<a href="#" class="btn btn-sm btn-icon ms-auto" data-bs-toggle="modal" data-bs-target="#edit_personal"><i class="ti ti-edit"></i></a>
 														<a href="#" class="d-flex align-items-center collapsed collapse-arrow" data-bs-toggle="collapse" data-bs-target="#primaryBorderTwo" aria-expanded="false" aria-controls="primaryBorderTwo">
 															<i class="ti ti-chevron-down fs-18"></i>
 														</a>
@@ -222,25 +235,25 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 															<span class="d-inline-flex align-items-center">
 																Bank Name
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">Swiz Intenational Bank</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1"><?php echo $user_details['bank_name'] ?></h6>
 														</div>
 														<div class="col-md-3">
 															<span class="d-inline-flex align-items-center">
 																Bank account no
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">159843014641</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1"><?php echo $user_details['account'] ?></h6>
 														</div>
 														<div class="col-md-3">
 															<span class="d-inline-flex align-items-center">
 																IFSC Code
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">ICI24504</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1"><?php echo $user_details['ifsc_code'] ?></h6>
 														</div>
 														<div class="col-md-3">
 															<span class="d-inline-flex align-items-center">
-																Branch
+																Account Holder
 															</span>
-															<h6 class="d-flex align-items-center fw-medium mt-1">Alabama USA</h6>
+															<h6 class="d-flex align-items-center fw-medium mt-1"><?php echo $user_details['bank_holder'] ?></h6>
 														</div>
 													</div>
 												</div>
@@ -569,10 +582,10 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 					</div>
 				</div>
 			</div>
-			<div class="footer d-sm-flex align-items-center justify-content-between border-top bg-white p-3">
+			<!-- <div class="footer d-sm-flex align-items-center justify-content-between border-top bg-white p-3">
 				<p class="mb-0">2014 - 2025 &copy; SmartHR.</p>
 				<p>Designed &amp; Developed By <a href="#" class="text-primary">Dreams</a></p>
-			</div>
+			</div> -->
 		</div>
 		<!-- /Page Wrapper -->
 
@@ -857,58 +870,45 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 							<i class="ti ti-x"></i>
 						</button>
 					</div>
-					<form action="employee-details.php">
+					<form id="updateUserDetails">
+						<input type="hidden" name="user_id" value="<?php echo $user['id'] ?>">
+						<input type="hidden" name="type" value="addUserDetails">
 						<div class="modal-body pb-0">
 							<div class="row">
 								<div class="col-md-6">
 									<div class="mb-3">
-										<label class="form-label">Passport No <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
+										<label class="form-label">Pancard No <span class="text-danger"> *</span></label>
+										<input type="text" class="form-control" name="pancard" id="pancard" value="<?php echo $user_details['pancard'] ?>">
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="mb-3">
-										<label class="form-label">Passport Expiry Date <span class="text-danger"> *</span></label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
+										<label class="form-label">Aadhar Card <span class="text-danger"> *</span></label>
+										<input type="text" class="form-control" name="aadhar" id="aadhar" value="<?php echo $user_details['aadhar'] ?>">
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="mb-3">
-										<label class="form-label">Nationality <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
+										<label class="form-label">Bank Name <span class="text-danger"> *</span></label>
+										<input type="text" class="form-control" name="bank_name" id="bank_name" value="<?php echo $user_details['bank_name'] ?>">
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="mb-3">
-										<label class="form-label">Religion</label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Marital status <span class="text-danger"> *</span></label>
-										<select class="select">
-											<option>Select</option>
-											<option>Yes</option>
-											<option>Nos</option>
-										</select>
+										<label class="form-label">Account Number <span class="text-danger"> *</span></label>
+										<input type="number" class="form-control" name="account" id="account" value="<?php echo $user_details['account'] ?>">
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="mb-3">
-										<label class="form-label">Employment spouse</label>
-										<input type="text" class="form-control">
+										<label class="form-label">IFSC Code <span class="text-danger"> *</span></label>
+										<input type="text" class="form-control" name="ifsc_code" id="ifsc_code" value="<?php echo $user_details['ifsc_code'] ?>">
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="mb-3">
-										<label class="form-label">No. of children</label>
-										<input type="text" class="form-control">
+										<label class="form-label">Holder Name <span class="text-danger"> *</span></label>
+										<input type="text" class="form-control" name="bank_holder" id="bank_holder" value="<?php echo $user_details['bank_holder'] ?>">
 									</div>
 								</div>
 							</div>
@@ -1001,55 +1001,6 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 			</div>
 		</div>
 		<!-- /Edit Emergency Contact -->
-
-		<!-- Edit Bank -->
-		<div class="modal fade" id="edit_bank">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Bank Details</h4>
-						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-							<i class="ti ti-x"></i>
-						</button>
-					</div>
-					<form action="employee-details.php">
-						<div class="modal-body pb-0">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Bank Details <span class="text-danger"> *</span></label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Bank account No </label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">IFSC Code</label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Branch Address</label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-white border me-2" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!-- /Edit Bank -->
 
 		<!-- Add Family -->
 		<div class="modal fade" id="edit_familyinformation">
@@ -1430,7 +1381,28 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 			return `${day}/${month}/${year}`;
 		}
 
-		$('#addEmployee').submit(function() {
+		$('#updateUserDetails').submit(function() {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					location.reload();
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$('#addExperience').submit(function(event) {
 			event.preventDefault();
 			var formData = new FormData(this);
 			$.ajax({
@@ -1706,6 +1678,51 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 					// Clear and reload education and experience
 					getEducation(id);
 					getExperience(id);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
+
+		function passwordReset(id) {
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'GET',
+				data: {
+					type: 'passwordReset',
+					user_id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
+		function empTerminate(id) {
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'GET',
+				data: {
+					type: 'changeStatus',
+					user_id: id
+				},
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
 				},
 				error: function(xhr, status, error) {
 					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";

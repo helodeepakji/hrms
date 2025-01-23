@@ -92,7 +92,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterAttandac
             $sql .= ' AND `attendance`.`not_allowed` = 0';
         }
     }
-    
+
     if (!empty($role)) {
         if ($role != '') {
             $sql .= ' AND `users`.`role_id` = ?';
@@ -168,7 +168,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
             $sql .= ' AND `attendance`.`not_allowed` = 0';
         }
     }
-    
+
     if (!empty($role)) {
         if ($role != '') {
             $sql .= ' AND `users`.`role_id` = ?';
@@ -188,17 +188,16 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
             $attendance_clock_out = date('h:i A', strtotime($row['clock_out_time']));
         } else {
             $attendance_clock_out = '';
+            if ($row['date'] != date('Y-m-d')) {
+                $regulazation = '<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $row['id'] . ')">Regularisation</a>';
+            }
         }
 
-        if ($row['clock_out_time'] == '' && $row['date'] != date('Y-m-d')) {
-            $regulazation = '<a href="#" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $row['id'] . ')">Regularisation</a>';
-            $status = '';
+
+        if ($row['regularisation'] == 1) {
+            $status = '<span class="text-danger">Regularization Pending </span>';
         } else {
-            if ($row['regularisation'] == 1) {
-                $status = '<span class="text-danger">Regularization Pending </span>';
-            } else {
-                $status = '';
-            }
+            $status = '';
         }
 
         echo '<tr>';
@@ -210,7 +209,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
         }
         echo '</td>';
         echo '<td>' . date('h:i A', strtotime($row['clock_in_time'])) . '</td>';
-        echo '<td>' . ($regulazation ?: $attendance_clock_out) . '<br>' . $status . '</td>';
+        echo '<td>' . ($row['clock_out_time'] != '' ?  $attendance_clock_out : ($attendance_clock_out == '' ? $regulazation : $status)) . '</td>';
         echo '<td>30 Min</td>';
         echo '<td>20 Min</td>';
         echo '<td>';
@@ -239,15 +238,33 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'addRegularisat
 }
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'approveAttendance')) {
-    $sql = $conn->prepare("UPDATE `attendance` SET `clock_out_time` = ? ,  `regularisation` = 0 WHERE `id` = ?");
-    $result = $sql->execute([$_POST['clockout_time'],$_POST['id']]);
-    if ($result) {
-        http_response_code(200);
-        echo json_encode(array("message" => 'Approve Regularisation successful', "status" => 200));
-    } else {
-        http_response_code(500);
-        echo json_encode(array("message" => 'Something went wrong', "status" => 500));
+
+    $sql = $conn->prepare("SELECT * FROM `attendance` WHERE `id` = ?");
+    $sql->execute([$_POST['id']]);
+    $result = $sql->fetch(PDO::FETCH_ASSOC);
+
+    if($result){
+        $TclockInTime = strtotime($result['clock_in_time']);
+        $TclockOutTime = strtotime($_POST['clockout_time']);
+        $formattedClockOutTime = date('Y-m-d H:i:s', $TclockOutTime);
+        $timeDifferenceSeconds = $TclockOutTime - $TclockInTime;
+        $timeDifferenceHours = round($timeDifferenceSeconds / 3600, 2);
+    
+    
+        $sql = $conn->prepare("UPDATE `attendance` SET `clock_out_time` = ? ,  `regularisation` = 0 , hours = ? WHERE `id` = ?");
+        $result = $sql->execute([$_POST['clockout_time'], $timeDifferenceHours, $_POST['id']]);
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(array("message" => 'Approve Regularisation successful', "status" => 200));
+        } else {
+            http_response_code(500);
+            echo json_encode(array("message" => 'Something went wrong', "status" => 500));
+        }
+    }else{
+        http_response_code(400);
+        echo json_encode(array("message" => 'Attandance not found', "status" => 400));
     }
+
 }
 
 if (($_SERVER['REQUEST_METHOD'] == 'GET') && ($_GET['type'] == 'getMonth')) {

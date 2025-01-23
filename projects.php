@@ -1,10 +1,30 @@
 <?php
 include 'layouts/session.php';
 
-$project = $conn->prepare("SELECT * FROM `projects` WHERE `is_complete` = 0 ORDER BY `id` DESC");
+$project = $conn->prepare("SELECT `projects`.*, `users`.`name`, `users`.`profile` 
+    FROM `projects` 
+    LEFT JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` 
+    LEFT JOIN `users` ON `users`.`id` = `project_assign`.`user_id` 
+    WHERE `projects`.`is_complete` = 0 
+    ORDER BY `projects`.`id` DESC");
 $project->execute();
 $project = $project->fetchAll(PDO::FETCH_ASSOC);
+
+
+$project_manager = $conn->prepare("SELECT * FROM `users` WHERE `role_id` = 2 AND `is_terminated` = 0");
+$project_manager->execute();
+$project_manager = $project_manager->fetchAll(PDO::FETCH_ASSOC);
+
+$team_leader = $conn->prepare("SELECT * FROM `users` WHERE `role_id` = 3 AND `is_terminated` = 0");
+$team_leader->execute();
+$team_leader = $team_leader->fetchAll(PDO::FETCH_ASSOC);
+
+$employee = $conn->prepare("SELECT * FROM `users` WHERE `role_id` = 4 AND `is_terminated` = 0");
+$employee->execute();
+$employee = $employee->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
+
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
@@ -90,8 +110,7 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 										<th>Project ID</th>
 										<th>Client Code</th>
 										<th>Project Name</th>
-										<th>Area</th>
-										<th>Leader</th>
+										<th>Project Manager</th>
 										<th>Estimated Hour</th>
 										<th>Start Date</th>
 										<th>Deadline</th>
@@ -102,6 +121,23 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 								</thead>
 								<tbody>
 									<?php foreach ($project  as $value) {
+
+
+										if ($value['name'] != '') {
+											$data = '<div class="d-flex align-items-center file-name-icon">
+												<a href="javascript:void(0);" class="avatar avatar-sm border avatar-rounded">
+													<img src="' . ($value['profile'] != '' ? $value['profile'] : 'assets/img/users/user-39.jpg') . '" class="img-fluid" alt="img">
+												</a>
+												<div class="ms-2">
+													<h6 class="fw-normal"><a href="javascript:void(0);">' . $value['name'] . '</a></h6>
+												</div>
+											</div>';
+										} else {
+											$data = '<span class="badge badge-success d-inline-flex align-items-center badge-xs" data-bs-toggle="modal" data-bs-target="#edit_project" onclick="getProject(' . $value['id'] . ')">
+												<i class="ti ti-point-filled me-1"></i>Assign Project
+											</span>';
+										}
+
 										echo '
 										<tr>
 										<td>
@@ -115,17 +151,7 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 											<h6 class="fw-medium"><a href="project-details.php?id=' . $value['id'] . '">' . $value['project_name'] . '</a></h6>
 										</td>
 										<td>
-											' . strtoupper($value['area']) . '.
-										</td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="javascript:void(0);" class="avatar avatar-sm border avatar-rounded">
-													<img src="assets/img/users/user-39.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-normal"><a href="javascript:void(0);">Michael Walker</a></h6>
-												</div>
-											</div>
+											' . $data . '
 										</td>
 										<td>
 											' . $value['estimated_hour'] . 'Hr.
@@ -166,10 +192,10 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 				<!-- / Project list  -->
 
 			</div>
-			<div class="footer d-sm-flex align-items-center justify-content-between border-top bg-white p-3">
+			<!-- <div class="footer d-sm-flex align-items-center justify-content-between border-top bg-white p-3">
 				<p class="mb-0">2014 - 2025 &copy; SmartHR.</p>
 				<p>Designed &amp; Developed By <a href="javascript:void(0);" class="text-primary">Dreams</a></p>
-			</div>
+			</div> -->
 		</div>
 		<!-- /Page Wrapper -->
 
@@ -319,7 +345,13 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 									<button class="nav-link active" id="basic-tab1" data-bs-toggle="tab" data-bs-target="#basic-info1" type="button" role="tab" aria-selected="true">Basic Information</button>
 								</li>
 								<li class="nav-item" role="presentation">
-									<button class="nav-link" id="member-tab1" data-bs-toggle="tab" data-bs-target="#member1" type="button" role="tab" aria-selected="false">Members</button>
+									<button class="nav-link" id="member-tab1" data-bs-toggle="tab" data-bs-target="#member1" type="button" role="tab" aria-selected="false">Project Manager</button>
+								</li>
+								<li class="nav-item" role="presentation">
+									<button class="nav-link" id="member-tab1" data-bs-toggle="tab" data-bs-target="#TeamLeader" type="button" role="tab" aria-selected="false">Team Leader</button>
+								</li>
+								<li class="nav-item" role="presentation">
+									<button class="nav-link" id="member-tab1" data-bs-toggle="tab" data-bs-target="#Employee" type="button" role="tab" aria-selected="false">Employee</button>
 								</li>
 							</ul>
 						</div>
@@ -423,41 +455,21 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 								</form>
 							</div>
 							<div class="tab-pane fade" id="member1" role="tabpanel" aria-labelledby="member-tab1" tabindex="0">
-								<form action="projects.php">
+								<form id="assignProject">
 									<div class="modal-body">
+										<input type="hidden" value="assignProjectManager" name="type">
+										<input type="hidden" value="" name="project_id" id="assign_project_id">
 										<div class="row">
 											<div class="col-md-12">
 												<div class="mb-3">
-													<label class="form-label me-2">Team Members</label>
-													<input class="input-tags form-control" placeholder="Add new" type="text" data-role="tagsinput" name="Label" value="Jerald,Andrew,Philip,Davis">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="mb-3">
-													<label class="form-label me-2">Team Leader</label>
-													<input class="input-tags form-control" placeholder="Add new" type="text" data-role="tagsinput" name="Label" value="Hendry,James">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="mb-3">
 													<label class="form-label me-2">Project Manager</label>
-													<input class="input-tags form-control" placeholder="Add new" type="text" data-role="tagsinput" name="Label" value="Dwight">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div>
-													<label class="form-label">Tags</label>
-													<input class="input-tags form-control" placeholder="Add new" type="text" data-role="tagsinput" name="Label" value="Collab,Promotion,Rated">
-												</div>
-											</div>
-
-											<div class="col-md-12">
-												<div class="mb-3">
-													<label class="form-label">Status</label>
-													<select class="select">
-														<option>Select</option>
-														<option selected>Active</option>
-														<option>Inactive</option>
+													<select class="form-control" name="project_manager" id="project_manager" required>
+														<option value="">Select</option>
+														<?php
+														foreach ($project_manager as $value) {
+															echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+														}
+														?>
 													</select>
 												</div>
 											</div>
@@ -466,7 +478,65 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 									<div class="modal-footer">
 										<div class="d-flex align-items-center justify-content-end">
 											<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
-											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#success_modal">Save</button>
+											<button class="btn btn-primary" type="submit">Save</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane fade" id="TeamLeader" role="tabpanel" aria-labelledby="member-tab1" tabindex="0">
+								<form id="assignTeamLeader">
+									<div class="modal-body">
+										<input type="hidden" value="assignTeamLeader" name="type">
+										<input type="hidden" value="" name="project_id" id="assign_teamlear_project_id">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="mb-3">
+													<label class="form-label me-2">Team Leader</label>
+													<select class="form-control select2" name="team_leader[]" id="team_leader" required multiple>
+														<option value="">Select</option>
+														<?php
+														foreach ($team_leader as $value) {
+															echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+														}
+														?>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<div class="d-flex align-items-center justify-content-end">
+											<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
+											<button class="btn btn-primary" type="submit">Save</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane fade" id="Employee" role="tabpanel" aria-labelledby="member-tab1" tabindex="0">
+								<form id="assignEmployee">
+									<div class="modal-body">
+										<input type="hidden" value="assignEmployee" name="type">
+										<input type="hidden" value="" name="project_id" id="assign_user_project_id">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="mb-3">
+													<label class="form-label me-2">Employee</label>
+													<select class="form-control select2" name="employee[]" id="employee" required multiple>
+														<option value="">Select</option>
+														<?php
+														foreach ($employee as $value) {
+															echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+														}
+														?>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<div class="d-flex align-items-center justify-content-end">
+											<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
+											<button class="btn btn-primary" type="submit">Save</button>
 										</div>
 									</div>
 								</form>
@@ -497,7 +567,7 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 			</div>
 		</div>
 		<!-- /Delete Modal -->
-		 
+
 		<!-- Delete Modal -->
 		<div class="modal fade" id="complete_modal">
 			<div class="modal-dialog modal-dialog-centered">
@@ -517,7 +587,7 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 			</div>
 		</div>
 		<!-- /Delete Modal -->
-		 
+
 		<!-- Delete Modal -->
 		<div class="modal fade" id="incomplete_modal">
 			<div class="modal-dialog modal-dialog-centered">
@@ -653,6 +723,9 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 					console.log(response);
 					$('#project_id').text(response.id);
 					$('#edit_project_id').val(response.id);
+					$('#assign_teamlear_project_id').val(response.id);
+					$('#assign_user_project_id').val(response.id);
+					$('#assign_project_id').val(response.id);
 					$('#edit_project_name').val(response.project_name);
 					$('#area').val(response.area);
 					$('#description').summernote('code', response.description);
@@ -661,6 +734,35 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 					$('#complexity').val(response.complexity);
 					$('#edit_estimated_hour').val(response.estimated_hour);
 					$('#client_id').val(response.client_id);
+
+					// project manager
+					$('#project_manager').val(response.project_manger);
+
+					//team leader
+					let teamLeaderIds = response.team_leader.map(leader => leader.user_id);
+					$('#team_leader option').each(function() {
+						if (teamLeaderIds.includes(parseInt($(this).val()))) {
+							$(this).prop('selected', true);
+						} else {
+							$(this).prop('selected', false);
+						}
+					});
+
+					// Preselect Employees
+					let employeeIds = response.employee.map(emp => emp.user_id);
+					$('#employee option').each(function() {
+						if (employeeIds.includes(parseInt($(this).val()))) {
+							$(this).prop('selected', true);
+						} else {
+							$(this).prop('selected', false);
+						}
+					});
+
+					// Refresh select2 for both dropdowns if used
+					if ($.fn.select2) {
+						$('#team_leader').trigger('change.select2');
+						$('#employee').trigger('change.select2');
+					}
 				},
 				error: function(xhr, status, error) {
 					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
@@ -669,14 +771,14 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 			});
 		}
 
-		function switchProject(id , status){
+		function switchProject(id, status) {
 			var comp = status == 0 ? 'complete_modal' : 'incomplete_modal';
-			$('#'+comp).modal('show');
-			$('#btn-complete').data('id',id);
-			$('#btn-complete').data('status',status);
+			$('#' + comp).modal('show');
+			$('#btn-complete').data('id', id);
+			$('#btn-complete').data('status', status);
 		}
 
-		$('#btn-complete').click(()=>{
+		$('#btn-complete').click(() => {
 			var id = $('#btn-complete').data('id');
 			var status = $('#btn-complete').data('status');
 			var type = status == 0 ? 'completeProject' : 'inCompleteProject';
@@ -702,7 +804,7 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 			});
 		});
 
-		$('#btn-incomplete').click(()=>{
+		$('#btn-incomplete').click(() => {
 			var id = $('#btn-complete').data('id');
 			var status = $('#btn-complete').data('status');
 			var type = status == 0 ? 'completeProject' : 'inCompleteProject';
@@ -770,6 +872,78 @@ $project = $project->fetchAll(PDO::FETCH_ASSOC);
 						location.reload();
 					}, 1000);
 
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$('#assignProject').submit(function(event) {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/assignProjectApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$('#assignTeamLeader').submit(function(event) {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/assignProjectApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$('#assignEmployee').submit(function(event) {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/assignProjectApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
 				},
 				error: function(xhr, status, error) {
 					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";

@@ -403,10 +403,14 @@ if (($_SERVER['REQUEST_METHOD'] == 'GET') && ($_GET['type'] == 'approveLeave')) 
         $balance->execute([$result['leave_type'], $result['user_id']]);
         $balance = $balance->fetch(PDO::FETCH_ASSOC);
 
-        $leav = calculateLeaveDays($result['form_date'], $result['end_date'], $conn);
+        if($result['leave_option'] == 'first_half' || $result['leave_option'] == 'second_half'){
+            $leav = 0.5;
+        }else{
+            $leav = calculateLeaveDays($result['form_date'], $result['end_date'], $conn);
+        }
 
         if ($balance['balance'] > $leav) {
-            $use = $balance['balance'] - $leav;
+            $use = $leav;
         } else {
             $use = $balance['balance'];
         }

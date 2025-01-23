@@ -163,6 +163,54 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addEmployee")
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['type'] === 'addUserDetails') {
+    // Extract data from POST request
+    $user_id = $_POST['user_id'];
+    $pancard = $_POST['pancard'];
+    $aadhar = $_POST['aadhar'];
+    $bank_name = $_POST['bank_name'];
+    $account = $_POST['account'];
+    $ifsc_code = $_POST['ifsc_code'];
+    $bank_holder = $_POST['bank_holder'];
+
+    // Check if the user already exists in `user_details`
+    $check = $conn->prepare("SELECT * FROM `user_details` WHERE user_id = ?");
+    $check->execute([$user_id]);
+    $existingUser = $check->fetch(PDO::FETCH_ASSOC);
+
+    if ($existingUser) {
+        // Update existing record
+        $update = $conn->prepare("
+            UPDATE `user_details` 
+            SET `pancard` = ?, `aadhar` = ?, `bank_name` = ?, `account` = ?, `ifsc_code` = ?, `bank_holder` = ? WHERE `user_id` = ?
+        ");
+        $result = $update->execute([$pancard, $aadhar, $bank_name, $account, $ifsc_code, $bank_holder, $user_id]);
+
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(['message' => 'User details updated successfully!', 'status' => 200]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['message' => 'Failed to update user details.', 'status' => 500]);
+        }
+    } else {
+        // Insert new record
+        $insert = $conn->prepare("
+            INSERT INTO `user_details` (`user_id`, `pancard`, `aadhar`, `bank_name`, `account`, `ifsc_code`, `bank_holder`, `created_at`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+        ");
+        $result = $insert->execute([$user_id, $pancard, $aadhar, $bank_name, $account, $ifsc_code, $bank_holder]);
+
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(['message' => 'User details added successfully!', 'status' => 200]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['message' => 'Failed to add user details.', 'status' => 500]);
+        }
+    }
+}
+
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "getEmployee")) {
     if($_GET['id'] == ''){
         http_response_code(400);
@@ -363,6 +411,55 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "deleteEmployee"
     if($result){
         http_response_code(200);
         echo json_encode(['message' => "Successfull Delete.", "status" => 400]);
+        exit;
+    }else{
+        http_response_code(400);
+        echo json_encode(['message' => "Employee not found.", "status" => 400]);
+        exit;
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "passwordReset")) {
+    if($_GET['user_id'] == ''){
+        http_response_code(400);
+            echo json_encode(['message' => "The field id is required.", "status" => 400]);
+            exit;
+    }
+    $password = password_hash('uniquemMap', PASSWORD_DEFAULT);
+    $user = $conn->prepare('UPDATE `users` SET `password` = ? WHERE `id` = ?');
+    $result = $user->execute([$password,$_GET['user_id']]);
+    if($result){
+        http_response_code(200);
+        echo json_encode(['message' => "Successfull Password Reset.", "status" => 400]);
+        exit;
+    }else{
+        http_response_code(400);
+        echo json_encode(['message' => "Employee not found.", "status" => 400]);
+        exit;
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "changeStatus")) {
+    if($_GET['user_id'] == ''){
+        http_response_code(400);
+            echo json_encode(['message' => "The field id is required.", "status" => 400]);
+            exit;
+    }
+
+    $check = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+    $check->execute([$_GET['user_id']]);
+    $result = $check->fetch(PDO::FETCH_ASSOC);
+    if (!$result) {
+        http_response_code(400);
+        echo json_encode(['message' => 'User not exists. Please check.', "status" => 400]);
+        exit;
+    }
+    $status = $result['is_terminated'] == 1 ? 0 : 1;
+    $user = $conn->prepare('UPDATE `users` SET `is_terminated` = ? WHERE `id` = ?');
+    $result = $user->execute([$status,$_GET['user_id']]);
+    if($result){
+        http_response_code(200);
+        echo json_encode(['message' => "Successfull Change Status.", "status" => 400]);
         exit;
     }else{
         http_response_code(400);

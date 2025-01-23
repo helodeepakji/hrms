@@ -289,7 +289,9 @@ $uselb = $uselb->fetch(PDO::FETCH_ASSOC);
 											' . date('d M, Y', strtotime($value['end_date'])) . '
 										</td>
 										<td>
-											' . calculateLeaveDays($value['form_date'] , $value['end_date'] ,$conn) . ' Days
+											' . (($value['leave_option'] == 'first_half' || $value['leave_option'] == 'second_half') 
+											? 0.5 
+											: calculateLeaveDays($value['form_date'], $value['end_date'], $conn)) . ' Days
 											<br>
 											Use Balance '.($value['use'] ?? 0).'
 										</td>
