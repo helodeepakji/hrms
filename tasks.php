@@ -48,6 +48,9 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                         </nav>
                     </div>
                     <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
+                        <!-- <div class="mb-2 ms-2">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#assign_task" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Assign Tasks</a>
+                        </div> -->
                         <div class="mb-2 ms-2">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#add_task" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add Tasks</a>
                         </div>
@@ -119,7 +122,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
 										<tr>
 										<td>
 											<div class="form-check form-check-md">
-												<input class="form-check-input task-checkbox" type="checkbox" value="'.$value['id'].'">
+												<input class="form-check-input task-checkbox" type="checkbox" value="' . $value['id'] . '">
 											</div>
 										</td>
 										<td>
@@ -218,7 +221,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="mb-3">
                                                     <label class="form-label">Task ID</label>
                                                     <input type="text" class="form-control" name="task_id">
-													</select>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -388,7 +391,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="mb-3">
                                                     <label class="form-label">Task ID</label>
                                                     <input type="text" class="form-control" name="task_id" id="task_name">
-													</select>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">

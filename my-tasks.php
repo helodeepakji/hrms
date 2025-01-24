@@ -9,6 +9,21 @@ $tasks = $conn->prepare("SELECT `tasks`.* , `projects`.`area` , `projects`.`proj
 $tasks->execute([$project[0]['id']]);
 $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
 
+$user = $conn->prepare("SELECT 
+    assignments.project_id,
+    assignments.user_id,
+    users.name AS user_name,
+    users.profile AS user_profile,
+    assignments.table_name
+FROM (
+    SELECT  project_id, user_id, 'project_assign' AS table_name FROM project_assign
+    UNION ALL SELECT  project_id, user_id, 'team_leader_assign' AS table_name FROM team_leader_assign
+    UNION ALL SELECT project_id, user_id, 'employee_assign' AS table_name FROM employee_assign
+) AS assignments JOIN users ON users.id = assignments.user_id WHERE assignments.project_id = ?;
+");
+$user->execute([$project[0]['id']]);
+$user = $user->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <?php include 'layouts/head-main.php'; ?>
 
@@ -48,6 +63,9 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                         </nav>
                     </div>
                     <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
+                        <div class="mb-2 ms-2">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#assign_task" class="btn btn-primary d-flex align-items-center" onclick="assignUser()"><i class="ti ti-circle-plus me-2"></i>Assign Tasks</a>
+                        </div>
                         <div class="mb-2 ms-2">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#add_task" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add Tasks</a>
                         </div>
@@ -119,7 +137,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
 										<tr>
 										<td>
 											<div class="form-check form-check-md">
-												<input class="form-check-input task-checkbox" type="checkbox" value="'.$value['id'].'">
+												<input class="form-check-input task-checkbox" type="checkbox" value="' . $value['id'] . '">
 											</div>
 										</td>
 										<td>
@@ -218,7 +236,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="mb-3">
                                                     <label class="form-label">Task ID</label>
                                                     <input type="text" class="form-control" name="task_id">
-													</select>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -347,6 +365,59 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
         <!-- /Add Project -->
 
         <!-- Add Project -->
+        <div class="modal fade" id="assign_task" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header header-border align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <h5 class="modal-title me-2">Assign Task </h5>
+                        </div>
+                        <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
+                    <div class="add-info-fieldset ">
+                        <div class="contact-grids-tab p-3 pb-0">
+                            <ul class="nav nav-underline" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic-info" type="button" role="tab" aria-selected="true">Basic Information</button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="basic-info" role="tabpanel" aria-labelledby="basic-tab" tabindex="0">
+                                <form id="assignTasks">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">User</label>
+                                                    <select class="select" name="user_id" id="selectUserAssign" required>
+                                                        <option>Select</option>
+                                                        <?php foreach ($user as $value) {
+                                                            echo '<option value="' . $value['user_id'] . '">' . $value['user_name'] . '</option>';
+                                                        } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="d-flex align-items-center justify-content-end">
+                                            <button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-primary" type="submit">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Add Project -->
+
+        <!-- Add Project -->
         <div class="modal fade" id="edit_task" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -388,7 +459,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="mb-3">
                                                     <label class="form-label">Task ID</label>
                                                     <input type="text" class="form-control" name="task_id" id="task_name">
-													</select>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -646,6 +717,44 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
             });
         }
 
+        function selectedTask(){
+            let array = [];
+            $('.task-checkbox:checked').each(function() {
+                array.push($(this).val());
+            });
+            return array;
+        }
+
+        function assignUser() {
+            const project = $('#selectedProject').val();
+            $.ajax({
+                url: 'settings/api/assignProjectApi.php',
+                type: 'GET',
+                data: {
+                    type: 'assignUserOption',
+                    id: project
+                },
+                dataType: 'json',
+                success: function(response) {
+                    const dropdown = $('#selectUserAssign');
+                    dropdown.empty();
+                    dropdown.append('<option value="">Select</option>');
+
+                    response.forEach(user => {
+                        dropdown.append(`<option value="${user.user_id}">${user.user_name}</option>`);
+                    });
+
+                    if ($.fn.select2) {
+                        dropdown.trigger('change.select2');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+                    notyf.error(errorMessage);
+                }
+            });
+        }
+
         $('#taskSubmit').submit(function(event) {
             event.preventDefault();
             var formData = new FormData(this);
@@ -681,6 +790,35 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                 cache: false,
                 contentType: false,
                 processData: false,
+                dataType: 'json',
+                success: function(response) {
+                    notyf.success(response.message);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+                    notyf.error(errorMessage);
+                }
+            });
+        });
+   
+        $('#assignTasks').submit(function(event) {
+            const user_id = $('#selectUserAssign').val();
+            const project = $('#selectedProject').val();
+            event.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: 'settings/api/assignTaskApi.php',
+                type: 'POST',
+                data: {
+                    type : 'assignTask',
+                    tasks : selectedTask(),
+                    user_id : user_id,
+                    project_id : project
+                },
                 dataType: 'json',
                 success: function(response) {
                     notyf.success(response.message);

@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterTask') {
     if (!empty($project_id)) {
         $sql .= ' AND `projects`.`id` = ?';
         $params[] = $project_id;
+    }else{
+        exit;
     }
 
 

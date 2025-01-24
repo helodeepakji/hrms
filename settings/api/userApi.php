@@ -133,7 +133,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addEmployee")
     $permanent_address = $_POST['permanent_address'];
     $gender = $_POST['gender'];
     $marital_status = $_POST['marital_status'];
-    $password = password_hash('uniquemMap', PASSWORD_DEFAULT); // Default password (could be customized)
+    $password = password_hash('uniqueMap', PASSWORD_DEFAULT); // Default password (could be customized)
 
     // Check if user already exists
     $check = $conn->prepare("SELECT * FROM `users` WHERE mobile = ? OR employee_id = ? OR email = ?");
@@ -425,7 +425,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "passwordReset")
             echo json_encode(['message' => "The field id is required.", "status" => 400]);
             exit;
     }
-    $password = password_hash('uniquemMap', PASSWORD_DEFAULT);
+    $password = password_hash('uniqueMap', PASSWORD_DEFAULT);
     $user = $conn->prepare('UPDATE `users` SET `password` = ? WHERE `id` = ?');
     $result = $user->execute([$password,$_GET['user_id']]);
     if($result){
