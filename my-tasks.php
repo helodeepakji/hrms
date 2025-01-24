@@ -133,6 +133,32 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
                                 <tbody>
                                     <?php $i = 0;
                                     foreach ($tasks  as $value) {
+
+                                        switch ($value['status']) {
+                                            case 'assign_pro':
+                                                $role = 'pro';
+                                                break;
+                                            case 'pro_in_progress':
+                                                $role = 'pro';
+                                                break;
+                                            case 'assign_qc':
+                                                $role = 'qc';
+                                                break;
+                                            case 'qc_in_progress':
+                                                $role = 'qc';
+                                                break;
+                                            case 'assign_qa':
+                                                $role = 'qa';
+                                                break;
+                                            case 'qa_in_progress':
+                                                $role = 'qa';
+                                                break;
+                                        }
+
+                                        $assign = $conn->prepare("SELECT `users`.`name` , `assign`.`user_id` FROM `assign` JOIN `users` ON `users`.`id` = `assign`.`user_id` WHERE `assign`.`task_id` = ? AND `assign`.`role` = ?");
+                                        $assign->execute([$value['id'] , $role]);
+                                        $assign = $assign->fetch(PDO::FETCH_ASSOC);
+
                                         echo '
 										<tr>
 										<td>
@@ -157,6 +183,7 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
 										</td>
 										<td>
 											' . ucfirst(str_replace('_', ' ', $value['status'])) . '
+                                            <br> '.$assign['name'].'
 										</td>
 										<td>
 											<div class="dropdown">
@@ -717,7 +744,7 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
             });
         }
 
-        function selectedTask(){
+        function selectedTask() {
             let array = [];
             $('.task-checkbox:checked').each(function() {
                 array.push($(this).val());
@@ -804,7 +831,7 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
                 }
             });
         });
-   
+
         $('#assignTasks').submit(function(event) {
             const user_id = $('#selectUserAssign').val();
             const project = $('#selectedProject').val();
@@ -814,10 +841,10 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
                 url: 'settings/api/assignTaskApi.php',
                 type: 'POST',
                 data: {
-                    type : 'assignTask',
-                    tasks : selectedTask(),
-                    user_id : user_id,
-                    project_id : project
+                    type: 'assignTask',
+                    tasks: selectedTask(),
+                    user_id: user_id,
+                    project_id: project
                 },
                 dataType: 'json',
                 success: function(response) {
