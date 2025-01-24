@@ -1,8 +1,8 @@
 <?php
 include 'layouts/session.php';
 
-$project = $conn->prepare("SELECT * FROM `projects` WHERE `is_complete` = 0 ORDER BY `id` DESC");
-$project->execute();
+$project = $conn->prepare("SELECT `projects`.*, `users`.`name` , `users`.`profile` FROM `projects` JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` JOIN `users` ON `users`.`id` = `project_assign`.`user_id` WHERE `projects`.`is_complete` = 0 AND `project_assign`.`user_id` = ? ORDER BY `projects`.`id` DESC");
+$project->execute([$userId]);
 $project = $project->fetchAll(PDO::FETCH_ASSOC);
 
 $tasks = $conn->prepare("SELECT `tasks`.* , `projects`.`area` , `projects`.`project_name`  FROM `tasks` JOIN `projects` ON `projects`.`id` = `tasks`.`project_id` WHERE `tasks`.`status` = 'pending' AND `projects`.`id` = ? ORDER BY `id` DESC");
@@ -34,7 +34,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                 <!-- Breadcrumb -->
                 <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
                     <div class="my-auto mb-2">
-                        <h2 class="mb-1">Tasks</h2>
+                        <h2 class="mb-1">My Tasks</h2>
                         <nav>
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item">
@@ -43,7 +43,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                                 <li class="breadcrumb-item">
                                     Employee
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Tasks</li>
+                                <li class="breadcrumb-item active" aria-current="page">My Tasks</li>
                             </ol>
                         </nav>
                     </div>
@@ -265,7 +265,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="form-label">Estimated Hour</label>
-                                                            <input type="number" name="estimated_hour" class="form-control" step="0.01" required>
+                                                            <input type="number" name="estimated_hour" class="form-control" step="0.0000001" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -435,7 +435,7 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="form-label">Estimated Hour</label>
-                                                            <input type="number" name="estimated_hour" class="form-control" step="0.01" id="edit_estimated_hour" required>
+                                                            <input type="number" name="estimated_hour" class="form-control" step="0.00001" id="edit_estimated_hour" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -629,7 +629,6 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                 },
                 dataType: 'json',
                 success: function(response) {
-                    console.log(response);
                     $('#task_id').val(response.id);
                     $('#project_id').val(response.project_id);
                     $('#task_name').val(response.task_id);

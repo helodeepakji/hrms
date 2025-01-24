@@ -106,6 +106,106 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterProduct') {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'MyFilterProduct') {
+    // Get filter values from POST request
+    $dateRange = $_POST['dateRange'] ?? '';
+    $status = $_POST['status'] ?? '';
+
+    // Start building the SQL query
+    $sql = "SELECT `projects`.*, `users`.`name` , `users`.`profile` FROM `projects` JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` JOIN `users` ON `users`.`id` = `project_assign`.`user_id` WHERE `project_assign`.`user_id` = ? ";
+    $params = [];
+    $params[] = $_SESSION['userId'];
+
+    // Filter by date range if provided
+    if (!empty($dateRange)) {
+        // Split date range into start and end date
+        [$startDate, $endDate] = explode(' - ', $dateRange);
+        $sql .= ' AND `projects`.`end_date` BETWEEN ? AND ?';
+
+        $params[] = date('Y-m-d', strtotime($startDate));
+        $params[] = date('Y-m-d', strtotime($endDate));
+    }
+
+
+    if (!empty($status)) {
+        $sql .= ' AND `projects`.`is_complete` = ?';
+        $params[] = $status; // Assuming 0 for Active and 1 for Completed
+    }
+
+    // Add ordering by project ID
+    $sql .= ' ORDER BY `projects`.`id` DESC';
+
+    // Prepare and execute the SQL query
+    try {
+        $query = $conn->prepare($sql);
+        $query->execute($params);
+
+        // Fetch all the results
+        $product = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        // Loop through the results and display the project details
+        http_response_code(200);
+        foreach ($product as $value) {
+            if ($value['name'] != '') {
+                $data = '<div class="d-flex align-items-center file-name-icon">
+                    <a href="javascript:void(0);" class="avatar avatar-sm border avatar-rounded">
+                        <img src="' . ($value['profile'] != '' ? $value['profile'] : 'assets/img/users/user-39.jpg') . '" class="img-fluid" alt="img">
+                    </a>
+                    <div class="ms-2">
+                        <h6 class="fw-normal"><a href="javascript:void(0);">' . $value['name'] . '</a></h6>
+                    </div>
+                </div>';
+            } else {
+                $data = '<span class="badge badge-success d-inline-flex align-items-center badge-xs" data-bs-toggle="modal" data-bs-target="#edit_project" onclick="getProject(' . $value['id'] . ')">
+                    <i class="ti ti-point-filled me-1"></i>Assign Project
+                </span>';
+            }
+
+            echo '
+            <tr>
+                <td>
+                    <div class="form-check form-check-md">
+                        <input class="form-check-input" type="checkbox">
+                    </div>
+                </td>
+                <td><a href="project-details.php">PRO-' . $value['id'] . '</a></td>
+                <td><a href="project-details.php?id=' . $value['id'] . '">' . $value['client_id'] . '</a></td>
+                <td>
+                    <h6 class="fw-medium"><a href="project-details.php?id=' . $value['id'] . '">' . $value['project_name'] . '</a></h6>
+                </td>
+                <td>' . $data . '
+                </td>
+                <td>
+                    ' . $value['estimated_hour'] . 'Hr.
+                </td>
+                <td>' . date('d M, Y', strtotime($value['start_date'])) . '</td>
+                <td>' . date('d M, Y', strtotime($value['end_date'])) . '</td>
+                <td>
+                    <div class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle btn btn-sm btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
+                            <span class="rounded-circle bg-transparent-danger d-flex justify-content-center align-items-center me-2">
+                                <i class="ti ti-point-filled text-danger"></i>
+                            </span> ' . ucfirst($value['complexity']) . '
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge badge-' . ($value['is_complete'] == 0 ? 'success' : 'danger') . ' d-inline-flex align-items-center badge-xs" onclick="switchProject(' . $value['id'] . ',' . $value['is_complete'] . ')">
+                        <i class="ti ti-point-filled me-1"></i>' . ($value['is_complete'] == 0 ? 'Active' : 'Completed') . '
+                    </span>
+                </td>
+                <td>
+                    <div class="action-icon d-inline-flex">
+                        <a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_project" onclick="getProject(' . $value['id'] . ')"><i class="ti ti-edit"></i></a>
+                    </div>
+                </td>
+            </tr>';
+        }
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'addProject')) {
 
     if (($_POST['project_name'] != '') && ($_POST['client_id'] != '') && ($_POST['description'] != '') && ($_POST['complexity'] != '')  && ($_POST['area'] != '')  &&  ($_POST['start_date'] != '') && ($_POST['end_date'] != '')) {

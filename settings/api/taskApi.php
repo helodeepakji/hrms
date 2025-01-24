@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterTask') {
     }
 }
 
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'addTask') {
     if (($_POST['project_id'] != '') && ($_POST['task_id'] != '') && ($_POST['area'] != '') && ($_POST['estimated_hour'] != '')) {
         $task = $conn->prepare("SELECT `id`  FROM `tasks` WHERE `task_id` = ?");

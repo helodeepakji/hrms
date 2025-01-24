@@ -148,13 +148,15 @@ $page = end($link_array);
 				<li>
 					<ul>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'projects.php' || $page == 'tasks.php' || $page == 'task-board.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'projects.php' || $page == 'tasks.php' || $page == 'my-tasks.php' || $page == 'task-board.php' || $page == 'my-projects.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-box"></i><span>Projects</span>
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
 								<li><a href="projects.php" class="<?php echo ($page == 'projects.php') ? 'active' : ''; ?>">Projects</a></li>
+								<li><a href="my-projects.php" class="<?php echo ($page == 'my-projects.php') ? 'active' : ''; ?>">My Projects</a></li>
 								<li><a href="tasks.php" class="<?php echo ($page == 'tasks.php') ? 'active' : ''; ?>">Tasks</a></li>
+								<li><a href="my-tasks.php" class="<?php echo ($page == 'my-tasks.php') ? 'active' : ''; ?>">My Tasks</a></li>
 								<li><a href="task-board.php" class="<?php echo ($page == 'task-board.php') ? 'active' : ''; ?>">Task Board</a></li>
 							</ul>
 						</li>
