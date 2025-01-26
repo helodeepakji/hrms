@@ -269,9 +269,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['type'] === 'getProduct') {
         $employee->execute([$_GET['id']]);
         $employee = $employee->fetchAll(PDO::FETCH_ASSOC);
 
+        $check = $conn->prepare("SELECT * FROM `project_time` WHERE `project_id` = ?");
+        $check->execute(params: [$_GET['id']]);
+        $check = $check->fetch(PDO::FETCH_ASSOC);
+
         $result['project_manger'] = $result['user_id'];
         $result['team_leader'] = $team_leader;
         $result['employee'] = $employee;
+        $result['time'] = $check;
         http_response_code(200);
         echo json_encode($result);
     } else {
@@ -367,6 +372,34 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'inCompleteProj
         if ($result) {
             http_response_code(200);
             echo json_encode(array("message" => 'successfull Project inComplete.', "status" => 200));
+        } else {
+            http_response_code(500);
+            echo json_encode(array("message" => 'Something went wrong', "status" => 500));
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(array("message" => "Fill all required fields", "status" => 400));
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'projectPercentage')) {
+
+    if ($_POST['pro'] != '' && $_POST['qc'] != '' && $_POST['qa'] != '' && $_POST['project_id'] != '') {
+
+        $check = $conn->prepare("SELECT * FROM `project_time` WHERE `project_id` = ?");
+        $check->execute([$_POST['project_id']]);
+        $check = $check->fetch(PDO::FETCH_ASSOC);
+        if ($check) {
+            http_response_code(500);
+            echo json_encode(array("message" => 'Time is already uploaded.', "status" => 500));
+            exit;
+        }
+
+        $project = $conn->prepare("INSERT INTO `project_time` (`pro`, `qc`, `qa`, `project_id`) VALUES (? , ? , ? , ?)");
+        $result = $project->execute([$_POST['pro'], $_POST['qc'], $_POST['qa'], $_POST['project_id']]);
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(array("message" => 'Successful Project Time Upload.', "status" => 200));
         } else {
             http_response_code(500);
             echo json_encode(array("message" => 'Something went wrong', "status" => 500));

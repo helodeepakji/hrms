@@ -345,6 +345,9 @@ $employee = $employee->fetchAll(PDO::FETCH_ASSOC);
 									<button class="nav-link active" id="basic-tab1" data-bs-toggle="tab" data-bs-target="#basic-info1" type="button" role="tab" aria-selected="true">Basic Information</button>
 								</li>
 								<li class="nav-item" role="presentation">
+									<button class="nav-link" id="member-tab1" data-bs-toggle="tab" data-bs-target="#project-percentage" type="button" role="tab" aria-selected="false">Project Percentage</button>
+								</li>
+								<li class="nav-item" role="presentation">
 									<button class="nav-link" id="member-tab1" data-bs-toggle="tab" data-bs-target="#member1" type="button" role="tab" aria-selected="false">Project Manager</button>
 								</li>
 								<li class="nav-item" role="presentation">
@@ -442,6 +445,40 @@ $employee = $employee->fetchAll(PDO::FETCH_ASSOC);
 												<div class="mb-3">
 													<label class="form-label">Description</label>
 													<textarea class="summernote" id="description" name="description"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<div class="d-flex align-items-center justify-content-end">
+											<button type="button" class="btn btn-outline-light border me-2" data-bs-dismiss="modal">Cancel</button>
+											<button class="btn btn-primary" type="submit">Save</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane fade" id="project-percentage" role="tabpanel" aria-labelledby="member-tab1" tabindex="0">
+								<form id="projectPercentage">
+									<div class="modal-body">
+										<input type="hidden" value="projectPercentage" name="type">
+										<input type="hidden" value="" name="project_id" id="percantage_project_id">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="mb-3">
+													<label class="form-label me-2">Production</label>
+													<input type="number" class="form-control" value="" name="pro" id="pro_per">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="mb-3">
+													<label class="form-label me-2">QC</label>
+													<input type="number" class="form-control" value="" name="qc" id="qc_per">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="mb-3">
+													<label class="form-label me-2">QA</label>
+													<input type="number" class="form-control" value="" name="qa" id="qa_per">
 												</div>
 											</div>
 										</div>
@@ -724,6 +761,7 @@ $employee = $employee->fetchAll(PDO::FETCH_ASSOC);
 					$('#project_id').text(response.id);
 					$('#edit_project_id').val(response.id);
 					$('#assign_teamlear_project_id').val(response.id);
+					$('#percantage_project_id').val(response.id);
 					$('#assign_user_project_id').val(response.id);
 					$('#assign_project_id').val(response.id);
 					$('#edit_project_name').val(response.project_name);
@@ -737,6 +775,12 @@ $employee = $employee->fetchAll(PDO::FETCH_ASSOC);
 
 					// project manager
 					$('#project_manager').val(response.project_manger);
+
+					// project percentage
+
+					$('#pro_per').val(response.time.pro);
+					$('#qc_per').val(response.time.qc);
+					$('#qa_per').val(response.time.qa);
 
 					//team leader
 					let teamLeaderIds = response.team_leader.map(leader => leader.user_id);
@@ -933,6 +977,30 @@ $employee = $employee->fetchAll(PDO::FETCH_ASSOC);
 			var formData = new FormData(this);
 			$.ajax({
 				url: 'settings/api/assignProjectApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+	
+		$('#projectPercentage').submit(function(event) {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/projectApi.php',
 				type: 'POST',
 				data: formData,
 				cache: false,

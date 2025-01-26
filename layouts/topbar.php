@@ -26,17 +26,6 @@
 							<a id="toggle_btn" href="javascript:void(0);" class="btn btn-menubar me-1">
 								<i class="ti ti-arrow-bar-to-left"></i>
 							</a>
-							<!-- Search -->
-							<div class="input-group input-group-flat d-inline-flex me-1">
-								<span class="input-icon-addon">
-									<i class="ti ti-search"></i>
-								</span>
-								<input type="text" class="form-control" placeholder="Search in HRMS">
-								<span class="input-group-text">
-									<kbd>CTRL + / </kbd>
-								</span>
-							</div>
-							<!-- /Search -->
 							<div class="dropdown crm-dropdown">
 								<a href="#" class="btn btn-menubar me-1" data-bs-toggle="dropdown">
 									<i class="ti ti-layout-grid"></i>

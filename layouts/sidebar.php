@@ -179,7 +179,7 @@ $page = end($link_array);
 								<li><a href="policy.php" class="<?php echo ($page == 'policy.php') ? 'active' : ''; ?>">Policies</a></li>
 							</ul>
 						</li>
-						
+
 						<li class="<?php echo ($page == 'holidays.php') ? 'active' : ''; ?>">
 							<a href="holidays.php">
 								<i class="ti ti-calendar-event"></i><span>Holidays</span>
@@ -292,7 +292,7 @@ $page = end($link_array);
 						</li>
 					</ul>
 				</li>
-				
+
 				<li class="menu-title"><span>RECRUITMENT</span></li>
 				<li>
 					<ul>
@@ -518,85 +518,22 @@ $page = end($link_array);
 						</li>
 					</ul>
 				</li>
-				<li class="menu-title"><span>CONTENT</span></li>
+				<li class="menu-title"><span>Other</span></li>
 				<li>
 					<ul>
-						<li>
-							<a href="pages.php">
-								<i class="ti ti-box-multiple"></i><span>Pages</span>
-							</a>
-						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'blogs.php' || $page == 'blog-categories.php' || $page == 'blog-comments.php' || $page == 'blog-tags.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-brand-blogger"></i><span>Blogs</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="blogs.php" class="<?php echo ($page == 'blogs.php') ? 'active' : ''; ?>">All Blogs</a></li>
-								<li><a href="blog-categories.php" class="<?php echo ($page == 'blog-categories.php') ? 'active' : ''; ?>">Categories</a></li>
-								<li><a href="blog-comments.php" class="<?php echo ($page == 'blog-comments.php') ? 'active' : ''; ?>">Comments</a></li>
-								<li><a href="blog-tags.php" class="<?php echo ($page == 'blog-tags.php') ? 'active' : ''; ?>">Blog Tags</a></li>
-							</ul>
-						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'countries.php' || $page == 'states.php' || $page == 'cities.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-map-pin-check"></i><span>Locations</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="countries.php" class="<?php echo ($page == 'countries.php') ? 'active' : ''; ?>">Countries</a></li>
-								<li><a href="states.php" class="<?php echo ($page == 'states.php') ? 'active' : ''; ?>">States</a></li>
-								<li><a href="cities.php" class="<?php echo ($page == 'cities.php') ? 'active' : ''; ?>">Cities</a></li>
-							</ul>
-						</li>
-						<li class="<?php echo ($page == 'testimonials.php') ? 'active' : ''; ?>">
-							<a href="testimonials.php">
-								<i class="ti ti-message-2"></i><span>Testimonials</span>
-							</a>
-						</li>
 						<li class="<?php echo ($page == 'faq.php') ? 'active' : ''; ?>">
 							<a href="faq.php">
 								<i class="ti ti-question-mark"></i><span>FAQ’S</span>
 							</a>
 						</li>
-					</ul>
-				</li>
-				<li class="menu-title"><span>PAGES</span></li>
-				<li>
-					<ul>
-						<li class="<?php echo ($page == 'starter.php') ? 'active' : ''; ?>">
-							<a href="starter.php">
-								<i class="ti ti-layout-sidebar"></i><span>Starter</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'profile.php') ? 'active' : ''; ?>">
-							<a href="profile.php">
-								<i class="ti ti-user-circle"></i><span>Profile</span>
+						<li>
+							<a href="pages.php">
+								<i class="ti ti-box-multiple"></i><span>Pages</span>
 							</a>
 						</li>
 						<li class="<?php echo ($page == 'gallery.php') ? 'active' : ''; ?>">
 							<a href="gallery.php">
 								<i class="ti ti-photo"></i><span>Gallery</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'search-result.php') ? 'active' : ''; ?>">
-							<a href="search-result.php">
-								<i class="ti ti-list-search"></i><span>Search Results</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'timeline.php') ? 'active' : ''; ?>">
-							<a href="timeline.php">
-								<i class="ti ti-timeline"></i><span>Timeline</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'pricing.php') ? 'active' : ''; ?>">
-							<a href="pricing.php">
-								<i class="ti ti-file-dollar"></i><span>Pricing</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'coming-soon.php') ? 'active' : ''; ?>">
-							<a href="coming-soon.php">
-								<i class="ti ti-progress-bolt"></i><span>Coming Soon</span>
 							</a>
 						</li>
 						<li class="<?php echo ($page == 'under-maintenance.php') ? 'active' : ''; ?>">
@@ -607,11 +544,6 @@ $page = end($link_array);
 						<li class="<?php echo ($page == 'under-construction.php') ? 'active' : ''; ?>">
 							<a href="under-construction.php">
 								<i class="ti ti-barrier-block"></i><span>Under Construction</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'api-keys.php') ? 'active' : ''; ?>">
-							<a href="api-keys.php">
-								<i class="ti ti-api"></i><span>API Keys</span>
 							</a>
 						</li>
 						<li class="<?php echo ($page == 'privacy-policy.php') ? 'active' : ''; ?>">

@@ -173,6 +173,10 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'completeTask')
                     exit;
                 }
 
+                $check = $conn->prepare("SELECT * FROM `project_time` WHERE `project_id` = ?");
+                $check->execute(params: [$sql['project_id']]);
+                $check = $check->fetch(PDO::FETCH_ASSOC);
+
                 $update = $conn->prepare("UPDATE `tasks` SET `status` = ? WHERE `id` = ?");
                 $update->execute([$next_status, $assigncheck['task_id']]);
 
@@ -181,18 +185,20 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'completeTask')
                 $updatedAt = $assigncheck['updated_at'];
 
                 // calcutate time diff
-                $currentTime = new DateTime();      
+                $currentTime = new DateTime();
                 $updatedAtTime = new DateTime($updatedAt);
                 $timeDifference = $currentTime->diff($updatedAtTime);
-                $minutesDifference = ($timeDifference->days * 24 * 60) + ($timeDifference->h * 60) +    $timeDifference->i;    
+                $minutesDifference = ($timeDifference->days * 24 * 60) + ($timeDifference->h * 60) +    $timeDifference->i;
                 // end time diff
 
                 $taken_time = $minutesDifference / $total_files;
 
-                $eff = ($total_time/$taken_time)*100;
+                $taken_time = $taken_time * ($check[$role]/100);
+
+                $eff = ($total_time / $taken_time) * 100;
 
                 $work = $conn->prepare("INSERT INTO `work_log`( `user_id`, `task_id`, `project_id`, `work_percentage`, `taken_time`, `prev_status`, `next_status`) VALUES (? , ? , ? , ? , ? ,? , ?)");
-                $work->execute([$user_id, $assigncheck['task_id'], $sql['project_id'], 100 , $taken_time , $prev_status, $next_status]);
+                $work->execute([$user_id, $assigncheck['task_id'], $sql['project_id'], 100, $taken_time, $prev_status, $next_status]);
 
                 $efficincy = $conn->prepare("INSERT INTO `efficiency`(`user_id`, `task_id`, `project_id`, `profile`, `efficiency`, `total_time`, `taken_time`, `created_at`) VALUES (? ,? ,? , ? , ? ,? ,? ,? )");
 
