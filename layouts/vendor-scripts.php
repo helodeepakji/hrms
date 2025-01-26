@@ -131,6 +131,7 @@
     <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.min.js"></script>
 	<!-- Custom JS -->
 	<script src="assets/js/script.js"></script>
+	<script src="assets/js/notifix.js"></script>
 	<script src="assets/js/theme-colorpicker.js"></script>
 	<script>
 		var notyf = new Notyf({ position: { x: 'right', y: 'top'} });

@@ -20,7 +20,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'assignTask')) 
                 if (!$sql) {
                     $conn->rollBack();
                     http_response_code(500);
-                    echo json_encode(array("message" => 'Some tasks are already assigned, please check.', "status" => 500));
+                    echo json_encode(array("message" => 'Some tasks are already assigned, please check.', "status" => 600));
                     exit;
                 }
 
@@ -50,6 +50,59 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'assignTask')) 
 
             http_response_code(200);
             echo json_encode(array("message" => 'Tasks assigned successfully.', "status" => 200));
+        } catch (Exception $e) {
+
+            $conn->rollBack();
+            http_response_code(500);
+            echo json_encode(array("message" => 'An error occurred: ' . $e->getMessage(), "status" => 500));
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(array("message" => 'Fill All Required Fields', "status" => 400));
+    }
+}
+
+
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'reAssignTask')) {
+    if (!empty($_POST['project_id']) && !empty($_POST['user_id']) && !empty($_POST['tasks'])) {
+        try {
+            
+            $conn->beginTransaction();
+
+            $tasks = $_POST['tasks'];
+            foreach ($tasks as $task) {
+                $sql = $conn->prepare("SELECT `status` FROM tasks WHERE `id` = ? AND (`status` = 'assign_pro' OR `status` = 'assign_qc' OR `status` = 'assign_qa')");
+                $sql->execute([$task]);
+                $sql = $sql->fetch(PDO::FETCH_ASSOC);
+
+                if (!$sql) {
+                    $conn->rollBack();
+                    http_response_code(500);
+                    echo json_encode(array("message" => 'Some tasks are already assigned, please check.', "status" => 600));
+                    exit;
+                }
+
+                switch ($sql['status']) {
+                    case 'assign_pro':
+                        $role = 'pro';
+                        break;
+                    case 'assign_qc':
+                        $role = 'qc';
+                        break;
+                    case 'assign_qa':
+                        $role = 'qa';
+                        break;
+                }
+
+                $assign = $conn->prepare("UPDATE `assign` SET `user_id` = ? WHERE `project_id` =  ? AND `task_id` = ? AND `role` = ?");
+                $assign->execute([$_POST['user_id'], $_POST['project_id'], $task, $role]);
+
+            }
+
+            $conn->commit();
+
+            http_response_code(200);
+            echo json_encode(array("message" => 'Tasks reassigned successfully.', "status" => 200));
         } catch (Exception $e) {
 
             $conn->rollBack();

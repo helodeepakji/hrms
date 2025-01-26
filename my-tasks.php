@@ -97,13 +97,13 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
                                 <select id="selectedStatus" class="form-select">
                                     <option value="pending">Pending</option>
                                     <option value="assign_pro">Assign Pro</option>
-                                    <option value="pro_in_progress">Pro In Progress</option>
+                                    <!-- <option value="pro_in_progress">Pro In Progress</option> -->
                                     <option value="ready_for_qc">Ready For QC</option>
                                     <option value="assign_qc">Assign QC</option>
-                                    <option value="qc_in_progress">QC In Progress</option>
+                                    <!-- <option value="qc_in_progress">QC In Progress</option> -->
                                     <option value="ready_for_qa">Ready For QA</option>
                                     <option value="assign_qa">Assign QA</option>
-                                    <option value="qa_in_progress">QA In Progress</option>
+                                    <!-- <option value="qa_in_progress">QA In Progress</option> -->
                                     <option value="complete">Complete</option>
                                 </select>
                             </div>
@@ -156,7 +156,7 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
                                         }
 
                                         $assign = $conn->prepare("SELECT `users`.`name` , `assign`.`user_id` FROM `assign` JOIN `users` ON `users`.`id` = `assign`.`user_id` WHERE `assign`.`task_id` = ? AND `assign`.`role` = ?");
-                                        $assign->execute([$value['id'] , $role]);
+                                        $assign->execute([$value['id'], $role]);
                                         $assign = $assign->fetch(PDO::FETCH_ASSOC);
 
                                         echo '
@@ -183,7 +183,7 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
 										</td>
 										<td>
 											' . ucfirst(str_replace('_', ' ', $value['status'])) . '
-                                            <br> '.$assign['name'].'
+                                            <br> ' . $assign['name'] . '
 										</td>
 										<td>
 											<div class="dropdown">
@@ -856,7 +856,39 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+                    var status = xhr.responseJSON.status;
                     notyf.error(errorMessage);
+                    if (status == 600) {
+                        Notiflix.Confirm.show(
+                            'Please Confirm',
+                            errorMessage + 'Do you want reassign?',
+                            'Yes',
+                            'No',
+                            function okCb() {
+                                $.ajax({
+                                    url: 'settings/api/assignTaskApi.php',
+                                    type: 'POST',
+                                    data: {
+                                        type: 'reAssignTask',
+                                        tasks: selectedTask(),
+                                        user_id: user_id,
+                                        project_id: project
+                                    },
+                                    dataType: 'json',
+                                    success: function(response) {
+                                        notyf.success(response.message);
+                                        setTimeout(() => {
+                                            location.reload();
+                                        }, 1000);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+                                        notyf.error(errorMessage);
+                                    }
+                                });
+                            }
+                        );
+                    }
                 }
             });
         });
