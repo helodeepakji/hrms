@@ -61,3 +61,90 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'assignTask')) 
         echo json_encode(array("message" => 'Fill All Required Fields', "status" => 400));
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterTask') {
+    // Get filter values from POST request
+    $status = $_POST['status'] ?? '';
+    $project_id = $_POST['project_id'] ?? '';
+
+    // Start building the SQL query
+    $sql = "SELECT `assign`.* , `users`.`name` , `tasks`.`status` , `tasks`.`task_id`, `tasks`.`estimated_hour` , `tasks`.`area_sqkm` ,`projects`.`area` , `projects`.`project_name`  FROM `assign` JOIN `tasks` ON `tasks`.`id` = `assign`.`task_id` JOIN `projects` ON `tasks`.`project_id` = `projects`.`id` JOIN `users` ON `users`.`id` = `assign`.`user_id` WHERE `assign`.`status` != 'complete' AND `assign`.`user_id` = ?";
+    $params = [];
+    $params[] = $user_id;
+
+
+    if (!empty($status)) {
+        $sql .= ' AND `tasks`.`status` = ?';
+        $params[] = $status;
+    }
+
+    if (!empty($project_id)) {
+        $sql .= ' AND `assign`.`project_id` = ?';
+        $params[] = $project_id;
+    }else{
+        exit;
+    }
+
+
+    $sql .= ' ORDER BY `assign`.`id` DESC';
+    try {
+        $query = $conn->prepare($sql);
+        $query->execute($params);
+
+        // Fetch all the results
+        $tasks = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        http_response_code(200);
+        $i = 0;
+        foreach ($tasks  as $value) {
+
+            echo '
+            <tr>
+            <td>
+                <div class="form-check form-check-md">
+                    <input class="form-check-input task-checkbox" type="checkbox" value="' . $value['id'] . '">
+                </div>
+            </td>
+            <td>
+                ' . ++$i . '
+            </td>
+            <td>
+                <h6 class="fw-medium"><a href="task-details.php?id=' . $value['id'] . '">' . $value['task_id'] . '</a></h6>
+            </td>
+            <td>
+                <h6 class="fw-medium"><a href="task-details.php?id=' . $value['id'] . '">' . $value['project_name'] . '</a></h6>
+            </td>
+            <td>
+                ' . $value['area_sqkm'] . '' . strtoupper($value['area']) . '.
+            </td>
+            <td>
+            ' . $value['estimated_hour'] . 'Hr.
+            </td>
+            <td>
+                <b>' . ucfirst(str_replace('_', ' ', $value['status'])) . '</b>
+                <br> '.$value['name'].'
+            </td>
+            <td>
+                <div class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle btn btn-sm btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
+                        <span class="rounded-circle bg-transparent-danger d-flex justify-content-center align-items-center me-2"><i class="ti ti-point-filled text-danger"></i></span> ' . ucfirst($value['complexity'] ?? 'Lower') . '
+                    </a>
+                </div>
+            </td>
+             <td>
+                '.date('d M, Y',strtotime($value['created_at'])).'
+            </td>
+            <td>
+                <div class="action-icon d-inline-flex">
+                    <a href="#" class="me-2" ><i class="ti ti-home"></i></a>
+                </div>
+            </td>
+        </tr>
+            ';
+        
+        }
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
