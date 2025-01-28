@@ -6,6 +6,17 @@ header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 session_start();
 
+
+$check = $conn->prepare("SELECT * FROM `project_time` WHERE `project_id` = ?");
+$check->execute(params: [$_POST['project_id']]);
+$check = $check->fetch(PDO::FETCH_ASSOC);
+if(!$check){
+    http_response_code(500);
+    echo json_encode(array("message" => 'Project Time is not uploaded.', "status" => 500));
+    exit;
+}
+
+
 function isValidFileExtension($fileName, $validExtensions)
 {
     $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));

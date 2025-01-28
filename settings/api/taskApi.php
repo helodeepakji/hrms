@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterTask') {
     if (!empty($project_id)) {
         $sql .= ' AND `projects`.`id` = ?';
         $params[] = $project_id;
-    }else{
+    } else {
         exit;
     }
 
@@ -60,14 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterTask') {
             }
 
             $assign = $conn->prepare("SELECT `users`.`name` , `assign`.`user_id` FROM `assign` JOIN `users` ON `users`.`id` = `assign`.`user_id` WHERE `assign`.`task_id` = ? AND `assign`.`role` = ?");
-            $assign->execute([$value['id'] , $role]);
+            $assign->execute([$value['id'], $role]);
             $assign = $assign->fetch(PDO::FETCH_ASSOC);
 
             echo '
                 <tr>
                 <td>
                     <div class="form-check form-check-md">
-                        <input class="form-check-input task-checkbox" type="checkbox" value="'.$value['id'].'">
+                        <input class="form-check-input task-checkbox" type="checkbox" value="' . $value['id'] . '">
                     </div>
                 </td>
                 <td>
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterTask') {
                 </td>
                 <td>
                     ' . ucfirst(str_replace('_', ' ', $value['status'])) . '
-                    <br> '.$assign['name'].'
+                    <br> ' . $assign['name'] . '
                 </td>
                 <td>
                     <div class="dropdown">
@@ -115,18 +115,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterTask') {
     }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'addTask') {
     if (($_POST['project_id'] != '') && ($_POST['task_id'] != '') && ($_POST['area'] != '') && ($_POST['estimated_hour'] != '')) {
+
+        $check = $conn->prepare("SELECT * FROM `project_time` WHERE `project_id` = ?");
+        $check->execute(params: [$_POST['project_id']]);
+        $check = $check->fetch(PDO::FETCH_ASSOC);
+        if (!$check) {
+            http_response_code(500);
+            echo json_encode(array("message" => 'Project Time is not uploaded.', "status" => 500));
+            exit;
+        }
+
         $task = $conn->prepare("SELECT `id`  FROM `tasks` WHERE `task_id` = ?");
         $task->execute([$_POST['task_id']]);
         $task = $task->fetch(PDO::FETCH_ASSOC);
-        if($task){
+        if ($task) {
             http_response_code(400);
             echo json_encode(array("message" => "This Task Already Uploaded", "status" => 400));
-        }else{
+        } else {
             $check = $conn->prepare('INSERT INTO `tasks`(`task_id`, `project_id`, `area_sqkm`, `complexity`, `start_date`, `end_date`, `estimated_hour`) VALUES ( ? , ? , ? , ? , ? , ? , ?)');
-            $result = $check->execute([$_POST['task_id'] , $_POST['project_id'], $_POST['area'], $_POST['complexity'], $_POST['start_date'], $_POST['end_date'], $_POST['estimated_hour']]);
+            $result = $check->execute([$_POST['task_id'], $_POST['project_id'], $_POST['area'], $_POST['complexity'], $_POST['start_date'], $_POST['end_date'], $_POST['estimated_hour']]);
             if ($result) {
                 http_response_code(200);
                 echo json_encode(array("message" => 'successfull Task Added.', "status" => 200));
@@ -135,11 +144,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'addTask') {
                 echo json_encode(array("message" => 'Something went wrong', "status" => 500));
             }
         }
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(array("message" => "Fill all required fields", "status" => 400));
     }
-     
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'editTask') {
@@ -150,12 +158,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'editTask') {
 
 
         $task = $conn->prepare("SELECT `id`  FROM `tasks` WHERE `id` = ? AND `task_id` = ?");
-        $task->execute([$_POST['id'] , $_POST['task_id']]);
+        $task->execute([$_POST['id'], $_POST['task_id']]);
         $task = $task->fetch(PDO::FETCH_ASSOC);
-        if($task){
-           
+        if ($task) {
+
             $check = $conn->prepare('UPDATE `tasks` SET `task_id` = ?, `project_id` = ?, `area_sqkm` = ?, `complexity` = ? , `start_date` = ?, `end_date` = ?, `estimated_hour` = ? WHERE `id` = ?');
-            $result = $check->execute([$_POST['task_id'] , $_POST['project_id'], $_POST['area'], $_POST['complexity'], $startDate, $endDate, $_POST['estimated_hour'], $_POST['id']]);
+            $result = $check->execute([$_POST['task_id'], $_POST['project_id'], $_POST['area'], $_POST['complexity'], $startDate, $endDate, $_POST['estimated_hour'], $_POST['id']]);
             if ($result) {
                 http_response_code(200);
                 echo json_encode(array("message" => 'successfull Task Update.', "status" => 200));
@@ -163,15 +171,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'editTask') {
                 http_response_code(500);
                 echo json_encode(array("message" => 'Something went wrong', "status" => 500));
             }
-        }else{
+        } else {
             http_response_code(400);
             echo json_encode(array("message" => "This Task is not found", "status" => 400));
         }
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(array("message" => "Fill all required fields", "status" => 400));
     }
-     
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'deleteTask') {
@@ -180,8 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'deleteTask') {
         $task = $conn->prepare("SELECT `id`  FROM `tasks` WHERE `id` = ?");
         $task->execute([$_POST['id']]);
         $task = $task->fetch(PDO::FETCH_ASSOC);
-        if($task){
-           
+        if ($task) {
+
             $check = $conn->prepare('DELETE FROM `tasks` WHERE `id` = ?');
             $result = $check->execute([$_POST['id']]);
             if ($result) {
@@ -191,15 +198,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'deleteTask') {
                 http_response_code(500);
                 echo json_encode(array("message" => 'Something went wrong', "status" => 500));
             }
-        }else{
+        } else {
             http_response_code(400);
             echo json_encode(array("message" => "This Task is not found", "status" => 400));
         }
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(array("message" => "Fill all required fields", "status" => 400));
     }
-     
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['type'] === 'getTask') {

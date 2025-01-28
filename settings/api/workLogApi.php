@@ -4,6 +4,8 @@ session_start();
 $user_id = $_SESSION['userId'];
 header("Access-Control-Allow-Origin: *");
 
+// for multi files
+
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'startTask')) {
 
     $pending = $conn->prepare("SELECT `id` FROM `assign` WHERE `status` = ? AND `user_id` = ?");
@@ -135,7 +137,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'completeTask')
                 }
 
                 $sql = $conn->prepare("SELECT `status` , `project_id`, `estimated_hour` FROM tasks WHERE `id` = ? AND (`status` = 'pro_in_progress' OR `status` = 'qc_in_progress' OR `status` = 'qa_in_progress')");
-                $sql->execute(params: [$assigncheck['task_id']]);
+                $sql->execute( [$assigncheck['task_id']]);
                 $sql = $sql->fetch(PDO::FETCH_ASSOC);
 
                 if (!$sql) {
@@ -174,8 +176,14 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'completeTask')
                 }
 
                 $check = $conn->prepare("SELECT * FROM `project_time` WHERE `project_id` = ?");
-                $check->execute(params: [$sql['project_id']]);
+                $check->execute( [$sql['project_id']]);
                 $check = $check->fetch(PDO::FETCH_ASSOC);
+                if (!$check) {
+                    $conn->rollBack();
+                    http_response_code(500);
+                    echo json_encode(array("message" => 'Time percentage is not assign, please check.', "status" => 500));
+                    exit;
+                }
 
                 $update = $conn->prepare("UPDATE `tasks` SET `status` = ? WHERE `id` = ?");
                 $update->execute([$next_status, $assigncheck['task_id']]);
@@ -193,8 +201,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'completeTask')
 
                 $taken_time = $minutesDifference / $total_files;
 
-                $taken_time = $taken_time * ($check[$role]/100);
-
+                $total_time = $total_time * ($check[$role]/100);
                 $eff = ($total_time / $taken_time) * 100;
 
                 $work = $conn->prepare("INSERT INTO `work_log`( `user_id`, `task_id`, `project_id`, `work_percentage`, `taken_time`, `prev_status`, `next_status`) VALUES (? , ? , ? , ? , ? ,? , ?)");
@@ -220,3 +227,6 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'completeTask')
         echo json_encode(array("message" => 'Fill All Required Fields', "status" => 400));
     }
 }
+
+
+// end multi files

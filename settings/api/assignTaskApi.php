@@ -62,7 +62,6 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'assignTask')) 
     }
 }
 
-
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'reAssignTask')) {
     if (!empty($_POST['project_id']) && !empty($_POST['user_id']) && !empty($_POST['tasks'])) {
         try {
