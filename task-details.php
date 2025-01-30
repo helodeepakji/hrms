@@ -298,58 +298,33 @@ $totalPercentage = $totalPercentage['percentage'] ?? 0;
                                             </div>
                                         </div>
                                     </div>
+                                    <?php
+                                        $worklog = $conn->prepare('SELECT `work_log`.* , `users`.`name` as `user_name`  FROM `work_log` JOIN `users` ON `users`.`id` = `work_log`.`user_id` WHERE `work_log`.`task_id` = ? AND `work_log`.`project_id` = ? ORDER BY `work_log`.`id` DESC');
+                                        $worklog->execute([$assign['task_id'] , $assign['project_id']]);
+                                        $worklog = $worklog->fetchAll(PDO::FETCH_ASSOC);
+                                    ?>
                                     <div id="primaryBorderSix" class="accordion-collapse collapse show border-top" aria-labelledby="headingSix">
                                         <div class="accordion-body">
                                             <div class="notice-widget">
-                                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                                <?php foreach ($worklog as $value) {
+                                                    echo ' <div class="d-flex align-items-center justify-content-between mb-4">
                                                     <div class="d-flex overflow-hidden">
                                                         <span class="bg-info avatar avatar-md me-3 rounded-circle flex-shrink-0">
                                                             <i class="ti ti-checkup-list fs-16"></i>
                                                         </span>
                                                         <div class="overflow-hidden">
-                                                            <p class="text-truncate mb-1"><span class="text-gray-9 fw-medium">Andrew </span>added a New Task</p>
-                                                            <p class="mb-1">15 May 2024, 6:53 PM</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                                    <div class="d-flex overflow-hidden me-2">
-                                                        <span class="bg-warning avatar avatar-md me-3 rounded-circle flex-shrink-0">
-                                                            <i class="ti ti-circle-dot fs-16"></i>
-                                                        </span>
-                                                        <div class="overflow-hidden">
-                                                            <p class="text-truncate mb-1"><span class="text-gray-9 fw-medium">Jermai </span>Moved task <span class="text-gray-9 fw-medium"> “Private chat module”</span></p>
-                                                            <p class="mb-1">15 May 2024, 6:53 PM</p>
+                                                            <p class="text-truncate mb-1"><span class="text-gray-9 fw-medium">'.$value['user_name'].' </span>added a New Task</p>
+                                                            <p class="mb-1">'.date('d M, Y',strtotime($value['date'])).' '.date('h:i A',strtotime($value['time'])).'</p>
                                                             <div class="d-flex align-items-center">
-                                                                <span class="badge badge-success me-2"><i class="ti ti-point-filled me-1"></i>Completed</span>
+                                                                <span class="badge badge-success me-2"><i class="ti ti-point-filled me-1"></i>'.strtoupper($value['prev_status']).'</span>
                                                                 <span><i class="ti ti-arrows-left-right me-2"></i></span>
-                                                                <span class="badge badge-purple"><i class="ti ti-point-filled me-1"></i>Inprogress</span>
+                                                                <span class="badge badge-purple"><i class="ti ti-point-filled me-1"></i>'.strtoupper($value['next_status']).'</span>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                                    <div class="d-flex overflow-hidden me-2">
-                                                        <span class="bg-purple avatar avatar-md me-3 rounded-circle flex-shrink-0">
-                                                            <i class="ti ti-checkup-list fs-16"></i>
-                                                        </span>
-                                                        <div class="overflow-hidden">
-                                                            <p class="text-truncate mb-1"><span class="text-gray-9 fw-medium">Jermai </span>Created task <span class="text-gray-9 fw-medium"> “Private chat module”</span></p>
-                                                            <p class="mb-1">15 May 2024, 6:53 PM</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <div class="d-flex overflow-hidden">
-                                                        <span class="bg-secondary avatar avatar-md me-3 rounded-circle flex-shrink-0">
-                                                            <i class="ti ti-photo fs-16"></i>
-                                                        </span>
-                                                        <div class="overflow-hidden">
-                                                            <p class="text-truncate mb-1"><span class="text-gray-9 fw-medium">Hendry </span> Updated Image <span class="text-gray-9 fw-medium"> “logo.jpg” </span></p>
-                                                            <p class="mb-1">15 May 2024, 6:53 PM</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                </div>';
+                                                } ?>
+                                               
                                             </div>
                                         </div>
                                     </div>

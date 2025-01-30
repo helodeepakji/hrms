@@ -1,20 +1,36 @@
-<?php include 'layouts/session.php'; ?>
+<?php
+include 'layouts/session.php';
+$sql = $conn->prepare("SELECT * FROM `assets` WHERE `status` = 1");
+$sql->execute();
+$assets = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+$sql = $conn->prepare("SELECT * FROM `users` WHERE  `is_terminated` = 0 ORDER BY `name` ASC");
+$sql->execute();
+$users = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+
+$sql = $conn->prepare("SELECT asset_assign.* , users.name as user_name , users.profile , assets.name as asset_name FROM `asset_assign` JOIN users ON users.id = asset_assign.user_id JOIN assets ON assets.id = asset_assign.asset_id");
+$sql->execute();
+$assetlists = $sql->fetchAll(PDO::FETCH_ASSOC);
+?>
 <?php include 'layouts/head-main.php'; ?>
+
 <head>
-<title>Smarthr Admin Template</title>
- <?php include 'layouts/title-meta.php'; ?>
- <?php include 'layouts/head-css.php'; ?>
+	<title>Smarthr Admin Template</title>
+	<?php include 'layouts/title-meta.php'; ?>
+	<?php include 'layouts/head-css.php'; ?>
 </head>
+
 <body>
-<div id="global-loader" style="display: none;">
+	<div id="global-loader" style="display: none;">
 		<div class="page-loader"></div>
 	</div>
 
-    <div class="main-wrapper">
-    <?php include 'layouts/menu.php'; ?>
+	<div class="main-wrapper">
+		<?php include 'layouts/menu.php'; ?>
 
-<!-- Page Wrapper -->
-<div class="page-wrapper">
+		<!-- Page Wrapper -->
+		<div class="page-wrapper">
 			<div class="content">
 
 				<!-- Breadcrumb -->
@@ -34,21 +50,6 @@
 						</nav>
 					</div>
 					<div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-						<div class="me-2 mb-2">
-							<div class="dropdown">
-								<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-									<i class="ti ti-file-export me-1"></i>Export
-								</a>
-								<ul class="dropdown-menu  dropdown-menu-end p-3">
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1"><i class="ti ti-file-type-pdf me-1"></i>Export as PDF</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1"><i class="ti ti-file-type-xls me-1"></i>Export as Excel </a>
-									</li>
-								</ul>
-							</div>
-						</div>
 						<div class="mb-2">
 							<a href="#" data-bs-toggle="modal" data-bs-target="#add_assets" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add Asset</a>
 						</div>
@@ -86,7 +87,7 @@
 										<a href="javascript:void(0);" class="dropdown-item rounded-1">Inactive</a>
 									</li>
 								</ul>
-							</div> 
+							</div>
 							<div class="dropdown">
 								<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
 									Sort By : Last 7 Days
@@ -123,354 +124,44 @@
 										</th>
 										<th>Asset Name</th>
 										<th>Asset User</th>
-										<th>Purchase Date </th>
-										<th>Warranty</th>
-										<th>Warranty End Date</th>
-										<th>Status</th>
+										<th>Assign Date </th>
+										<th>Assign Time</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
+									<?php foreach ($assetlists as $value) {
+										echo '<tr>
 										<td>
 											<div class="form-check form-check-md">
 												<input class="form-check-input" type="checkbox">
 											</div>
 										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
+										<td>
+											<h6 class="fs-14 fw-medium">'.$value['asset_name'].'</h6>
+										</td>
 										<td>
 											<div class="d-flex align-items-center file-name-icon">
 												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-32.jpg" class="img-fluid" alt="img">
+													<img src="'.($value['profile'] == '' ? 'assets/img/users/user-32.jpg' : $value['profile']).'" class="img-fluid" alt="img">
 												</a>
 												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Anthony Lewis</a></h6>
+													<h6 class="fw-medium"><a href="#">'.$value['user_name'].'</a></h6>
 												</div>
 											</div>
 										</td>
-										<td>12 Sep 2024</td>
-										<td>12 months</td>
-										<td>
-											12 Sep 2024           
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
+										<td>' . date('d M, Y', strtotime($value['created_at'])) . '</td>
+										<td>' . date('h:i A', strtotime($value['created_at'])) . '</td>
 										<td>
 											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
+												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets" onclick="getAssignAsset('.$value['id'].')"><i class="ti ti-edit"></i></a>
+												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal" onclick="getAssignAsset('.$value['id'].')"><i class="ti ti-trash"></i></a>
 											</div>
 										</td>
 									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Canon Portable Printer</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-09.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Brian Villalobos</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>24 Oct 2024</td>
-										<td>12 months</td>
-										<td>
-											24 Oct 2024     
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-38.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Sophie Headrick</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>18 Feb 2024</td>
-										<td>12 months</td>
-										<td>
-											18 Feb 2024
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-33.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Stephan Peralt</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>17 Oct 2024</td>
-										<td>12 months</td>
-										<td>
-											17 Oct 2024
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-27.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Thomas Bordelon</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>20 Jul 2024</td>
-										<td>12 months</td>
-										<td>
-											20 Jul 2024
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-32.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Doglas Martini</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>10 Apr 2024</td>
-										<td>12 months</td>
-										<td>
-											10 Apr 2024
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-05.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Cameron Drake</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>29 Aug 2024</td>
-										<td>12 months</td>
-										<td>
-											29 Aug 2024
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-30.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Harvey Smith</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>22 Feb 2024</td>
-										<td>12 months</td>
-										<td>
-											22 Feb 2024
-										</td>
-										<td>
-											<span class="badge badge-danger d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Inactive
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border rounded-circle">
-													<img src="assets/img/users/user-16.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Michael Walker</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>03 Nov 2024</td>
-										<td>12 months</td>
-										<td>
-											03 Nov 2024
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check form-check-md">
-												<input class="form-check-input" type="checkbox">
-											</div>
-										</td>
-										<td><h6 class="fs-14 fw-medium">Dell Laptop</h6></td>
-										<td>
-											<div class="d-flex align-items-center file-name-icon">
-												<a href="#" class="avatar avatar-md border avatar-rounded">
-													<img src="assets/img/users/user-07.jpg" class="img-fluid" alt="img">
-												</a>
-												<div class="ms-2">
-													<h6 class="fw-medium"><a href="#">Doris Crowley</a></h6>
-												</div>
-											</div>
-										</td>
-										<td>17 Dec 2024</td>
-										<td>12 months</td>
-										<td>
-											17 Dec 2024
-										</td>
-										<td>
-											<span class="badge badge-success d-inline-flex align-items-center badge-xs">
-												<i class="ti ti-point-filled me-1"></i>Active
-											</span>
-										</td>
-										<td>
-											<div class="action-icon d-inline-flex">
-												<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#edit_assets"><i class="ti ti-edit"></i></a>
-												<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="ti ti-trash"></i></a>
-											</div>
-										</td>
-									</tr>
+										';
+									} ?>
+									
 								</tbody>
 							</table>
 						</div>
@@ -497,79 +188,29 @@
 							<i class="ti ti-x"></i>
 						</button>
 					</div>
-					<form action="assets.php">
+					<form id="assignAssets">
+						<input type="hidden" name="type" value="assignAssets">
 						<div class="modal-body pb-0">
 							<div class="row">
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Asset  Name</label>
-										<input type="text" class="form-control">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Purchased Date</label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>									
-								</div>
 								<div class="col-md-12">
 									<div class="mb-3">
-										<label class="form-label">Purchase From</label>
-										<input type="text" class="form-control">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Manufacture</label>
-										<input type="text" class="form-control">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Serial Number</label>
-										<input type="text" class="form-control">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3 ">
-										<label class="form-label">Model</label>
-										<input type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3 ">
-										<label class="form-label">Warranty</label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Asset User</label>
-										<select class="select">
+										<label class="form-label">User</label>
+										<select class="select" name="user_id" required>
 											<option>Select</option>
-											<option>Anthony Lewis</option>
-											<option>Brian Villalobos</option>
-											<option>Sophie Headrick</option>
+											<?php foreach ($users as $value) {
+												echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+											} ?>
 										</select>
-									</div>									
-								</div>						
+									</div>
+								</div>
 								<div class="col-md-12">
 									<div class="mb-3 ">
-										<label class="form-label">Status</label>
-										<select class="select">
+										<label class="form-label">Asset</label>
+										<select class="select" name="asset_id" required>
 											<option>Select</option>
-											<option>Active</option>
-											<option>Inactive</option>
+											<?php foreach ($assets as $value) {
+												echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -595,79 +236,30 @@
 							<i class="ti ti-x"></i>
 						</button>
 					</div>
-					<form action="assests.php">
+					<form id="editAssignAssets">
+						<input type="hidden" name="type" value="editAssignAssets">
+						<input type="hidden" name="id" value="" id="assign_id">
 						<div class="modal-body pb-0">
 							<div class="row">
 								<div class="col-md-6">
 									<div class="mb-3">
-										<label class="form-label">Asset  Name</label>
-										<input type="text" class="form-control" value="Dell Laptop">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Purchased Date</label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy" value="12 Sep 2024">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>									
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Purchase From</label>
-										<input type="text" class="form-control" value="Dell">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Manufacture</label>
-										<input type="text" class="form-control" value="Dell">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label class="form-label">Serial Number</label>
-										<input type="text" class="form-control" value="423237">
-									</div>									
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3 ">
-										<label class="form-label">Model</label>
-										<input type="text" class="form-control" value="534AS34">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3 ">
-										<label class="form-label">Warranty</label>
-										<div class="input-icon-end position-relative">
-											<input type="text" class="form-control datetimepicker" placeholder="dd/mm/yyyy" value="12 Sep 2025">
-											<span class="input-icon-addon">
-												<i class="ti ti-calendar text-gray-7"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="mb-3">
-										<label class="form-label">Asset User</label>
-										<select class="select">
+										<label class="form-label">User</label>
+										<select class="form-control" name="user_id" id="user_id" required>
 											<option>Select</option>
-											<option selected>Anthony Lewis</option>
-											<option>Brian Villalobos</option>
-											<option>Sophie Headrick</option>
+											<?php foreach ($users as $value) {
+												echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+											} ?>
 										</select>
-									</div>									
-								</div>						
-								<div class="col-md-12">
+									</div>
+								</div>
+								<div class="col-md-6">
 									<div class="mb-3 ">
-										<label class="form-label">Status</label>
-										<select class="select">
+										<label class="form-label">Asset</label>
+										<select class="form-control" name="asset_id" id="asset_id" required>
 											<option>Select</option>
-											<option selected>Active</option>
-											<option>Inactive</option>
+											<?php foreach ($assets as $value) {
+												echo '<option value="' . $value['id'] . '">' . $value['name'] . '</option>';
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -675,7 +267,7 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary">Save Asset</button>
+							<button type="submit" class="btn btn-primary">Add Asset</button>
 						</div>
 					</form>
 				</div>
@@ -695,7 +287,7 @@
 						<p class="mb-3">You want to delete all the marked items, this cant be undone once you delete.</p>
 						<div class="d-flex justify-content-center">
 							<a href="javascript:void(0);" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</a>
-							<a href="assets.php" class="btn btn-danger">Yes, Delete</a>
+							<a onclick="getDelete()" class="btn btn-danger">Yes, Delete</a>
 						</div>
 					</div>
 				</div>
@@ -706,9 +298,107 @@
 
 
 
-    </div>
-<!-- end main wrapper-->
-<!-- JAVASCRIPT -->
-<?php include 'layouts/vendor-scripts.php'; ?>
+	</div>
+	<!-- end main wrapper-->
+	<!-- JAVASCRIPT -->
+	<?php include 'layouts/vendor-scripts.php'; ?>
+	<script>
+
+         function getDelete(){
+			var id = $('#assign_id').val();
+			$.ajax({
+				url: 'settings/api/assetsApi.php',
+				type: 'POST',
+				data: {
+					type : 'getDelete',
+					id : id
+				},
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+
+		 }
+
+		$('#assignAssets').submit(function(event) {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/assetsApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+		
+		
+		$('#editAssignAssets').submit(function(event) {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/assetsApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		function getAssignAsset(id){
+			$.ajax({
+				url: 'settings/api/assetsApi.php',
+				type: 'GET',
+				data: {
+					id : id,
+					type : 'getAssignAsset'
+				},
+				dataType: 'json',
+				success: function(response) {
+					$('#assign_id').val(response.id);
+					$('#user_id').val(response.user_id);
+					$('#asset_id').val(response.asset_id);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
+	</script>
 </body>
+
 </html>

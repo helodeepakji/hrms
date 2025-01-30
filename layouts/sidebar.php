@@ -166,7 +166,7 @@ $page = end($link_array);
 				<li>
 					<ul>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'termination.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'designations.php' || $page == 'policy.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'termination.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'role.php' || $page == 'policy.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-users"></i><span>Employees</span>
 								<span class="menu-arrow"></span>
 							</a>
@@ -175,7 +175,7 @@ $page = end($link_array);
 								<li><a href="termination.php" class="<?php echo ($page == 'termination.php') ? 'active' : ''; ?>">Terminated Employee</a></li>
 								<li><a href="employee-details.php" class="<?php echo ($page == 'employee-details.php') ? 'active' : ''; ?>">Employee Details</a></li>
 								<li><a href="departments.php" class="<?php echo ($page == 'departments.php') ? 'active' : ''; ?>">Departments</a></li>
-								<li><a href="designations.php" class="<?php echo ($page == 'designations.php') ? 'active' : ''; ?>">Designations</a></li>
+								<li><a href="role.php" class="<?php echo ($page == 'role.php') ? 'active' : ''; ?>">Role</a></li>
 								<li><a href="policy.php" class="<?php echo ($page == 'policy.php') ? 'active' : ''; ?>">Policies</a></li>
 							</ul>
 						</li>
@@ -207,17 +207,7 @@ $page = end($link_array);
 							</ul>
 						</li>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'tickets.php' || $page == 'ticket-details.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-ticket"></i><span>Tickets</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="tickets.php" class="<?php echo ($page == 'tickets.php') ? 'active' : ''; ?>">Tickets</a></li>
-								<li><a href="ticket-details.php" class="<?php echo ($page == 'ticket-details.php') ? 'active' : ''; ?>">Ticket Details</a></li>
-							</ul>
-						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'performance-appraisal.php' || $page == 'goal-tracking.php' || $page == 'goal-type.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'performance-appraisal.php' || $page == 'efficiency-tracking.php' || $page == 'my-efficiency.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-school"></i><span>Performance</span>
 								<span class="menu-arrow"></span>
 							</a>
@@ -225,8 +215,8 @@ $page = end($link_array);
 								<li><a href="performance-indicator.php" class="<?php echo ($page == 'performance-indicator.php') ? 'active' : ''; ?>">Performance Indicator</a></li>
 								<li><a href="performance-review.php" class="<?php echo ($page == 'performance-review.php') ? 'active' : ''; ?>">Performance Review</a></li>
 								<li><a href="performance-appraisal.php" class="<?php echo ($page == 'performance-appraisal.php') ? 'active' : ''; ?>">Performance Appraisal</a></li>
-								<li><a href="goal-tracking.php" class="<?php echo ($page == 'goal-tracking.php') ? 'active' : ''; ?>">Goal List</a></li>
-								<li><a href="goal-type.php" class="<?php echo ($page == 'goal-type.php') ? 'active' : ''; ?>">Goal Type</a></li>
+								<li><a href="efficiency-tracking.php" class="<?php echo ($page == 'efficiency-tracking.php') ? 'active' : ''; ?>">Efficiency Track</a></li>
+								<li><a href="my-efficiency.php" class="<?php echo ($page == 'my-efficiency.php') ? 'active' : ''; ?>">My Efficiency</a></li>
 							</ul>
 						</li>
 						<li class="submenu">

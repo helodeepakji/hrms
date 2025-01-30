@@ -17,6 +17,24 @@ $tasks = $conn->prepare("SELECT `assign`.* , `users`.`name` , `tasks`.`status` ,
 $tasks->execute([$userId, 'assign_pro', $project[0]['id']]);
 $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
 
+//counting
+
+$total_runing = $conn->prepare("SELECT COUNT(`id`) as `total_runing` FROM `assign` WHERE `status` = 'working' AND `user_id` = ?");
+$total_runing->execute([$userId]);
+$total_runing = $total_runing->fetch(PDO::FETCH_ASSOC);
+
+$total_pro = $conn->prepare("SELECT COUNT(`id`) as `total_runing` FROM `assign` WHERE `status` = 'pending' AND `user_id` = ? AND `role` = 'pro'");
+$total_pro->execute([$userId]);
+$total_pro = $total_pro->fetch(PDO::FETCH_ASSOC);
+
+$total_qc = $conn->prepare("SELECT COUNT(`id`) as `total_runing` FROM `assign` WHERE `status` = 'pending' AND `user_id` = ? AND `role` = 'qc'");
+$total_qc->execute([$userId]);
+$total_qc = $total_qc->fetch(PDO::FETCH_ASSOC);
+
+$total_qa = $conn->prepare("SELECT COUNT(`id`) as `total_runing` FROM `assign` WHERE `status` = 'pending' AND `user_id` = ? AND `role` = 'qa'");
+$total_qa->execute([$userId]);
+$total_qa = $total_qa->fetch(PDO::FETCH_ASSOC);
+
 
 ?>
 <?php include 'layouts/head-main.php'; ?>
@@ -66,6 +84,86 @@ $tasks = $tasks->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <!-- /Breadcrumb -->
+
+                <div class="row">
+
+                    <!-- Total Plans -->
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="card flex-fill">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center overflow-hidden">
+                                    <div>
+                                        <span class="avatar avatar-lg bg-dark rounded-circle"><i
+                                                class="ti ti-users"></i></span>
+                                    </div>
+                                    <div class="ms-2 overflow-hidden">
+                                        <p class="fs-12 fw-medium mb-1 text-truncate">Total Runing Task</p>
+                                        <h4><?php echo $total_runing['total_runing'] ?></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Total Plans -->
+
+                    <!-- Total Plans -->
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="card flex-fill">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center overflow-hidden">
+                                    <div>
+                                        <span class="avatar avatar-lg bg-success rounded-circle"><i
+                                                class="ti ti-user-share"></i></span>
+                                    </div>
+                                    <div class="ms-2 overflow-hidden">
+                                        <p class="fs-12 fw-medium mb-1 text-truncate">Assign Pro Task</p>
+                                        <h4><?php echo $total_pro['total_runing'] ?></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Total Plans -->
+
+                    <!-- Inactive Plans -->
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="card flex-fill">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center overflow-hidden">
+                                    <div>
+                                        <span class="avatar avatar-lg bg-danger rounded-circle"><i
+                                                class="ti ti-user-pause"></i></span>
+                                    </div>
+                                    <div class="ms-2 overflow-hidden">
+                                        <p class="fs-12 fw-medium mb-1 text-truncate">Assign Qc Task</p>
+                                        <h4><?php echo $total_qc['total_runing'] ?></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Inactive Companies -->
+
+                    <!-- No of Plans  -->
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="card flex-fill">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center overflow-hidden">
+                                    <div>
+                                        <span class="avatar avatar-lg bg-info rounded-circle"><i
+                                                class="ti ti-user-plus"></i></span>
+                                    </div>
+                                    <div class="ms-2 overflow-hidden">
+                                        <p class="fs-12 fw-medium mb-1 text-truncate">Assign Qa Task</p>
+                                        <h4><?php echo $total_qa['total_runing'] ?></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /No of Plans -->
+
+                </div>
 
                 <!-- Project list -->
                 <div class="card">
