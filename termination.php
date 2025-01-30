@@ -1,5 +1,10 @@
 <?php
 include 'layouts/session.php';
+$page_name = 'termination';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $sql = $conn->prepare("SELECT `users`.*, `role`.`name` AS `role` FROM `users` JOIN `role` ON `role`.`id` = `users`.`role_id` WHERE `is_terminated` = 1 ORDER BY `users`.`name` ASC");
 $sql->execute();
 $users = $sql->fetchAll(PDO::FETCH_ASSOC);

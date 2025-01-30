@@ -165,26 +165,38 @@ $page = end($link_array);
 				<li class="menu-title"><span>HRM</span></li>
 				<li>
 					<ul>
-						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'termination.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'role.php' || $page == 'policy.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-users"></i><span>Employees</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="employees.php" class="<?php echo ($page == 'employees.php') ? 'active' : ''; ?>">Employee Lists</a></li>
-								<li><a href="termination.php" class="<?php echo ($page == 'termination.php') ? 'active' : ''; ?>">Terminated Employee</a></li>
-								<li><a href="employee-details.php" class="<?php echo ($page == 'employee-details.php') ? 'active' : ''; ?>">Employee Details</a></li>
-								<li><a href="departments.php" class="<?php echo ($page == 'departments.php') ? 'active' : ''; ?>">Departments</a></li>
-								<li><a href="role.php" class="<?php echo ($page == 'role.php') ? 'active' : ''; ?>">Role</a></li>
-								<li><a href="policy.php" class="<?php echo ($page == 'policy.php') ? 'active' : ''; ?>">Policies</a></li>
-							</ul>
-						</li>
+						<?php if ($roleId == 1 || in_array('employees', $pageAccessList) || in_array('termination', $pageAccessList) || in_array('employee-details', $pageAccessList) || in_array('role', $pageAccessList)) { ?>
+							<li class="submenu">
+								<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'termination.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'role.php') ? 'active subdrop' : ''; ?>">
+									<i class="ti ti-users"></i><span>Employees</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul>
+									<?php if ($roleId == 1 || in_array('employees', $pageAccessList)) { ?>
+										<li><a href="employees.php" class="<?php echo ($page == 'employees.php') ? 'active' : ''; ?>">Employee Lists</a></li>
+									<?php } ?>
+									<?php if ($roleId == 1 || in_array('termination', $pageAccessList)) { ?>
+										<li><a href="termination.php" class="<?php echo ($page == 'termination.php') ? 'active' : ''; ?>">Terminated Employee</a></li>
+									<?php } ?>
+									<?php if ($roleId == 1 || in_array('employee-details', $pageAccessList)) { ?>
+										<li><a href="employee-details.php" class="<?php echo ($page == 'employee-details.php') ? 'active' : ''; ?>">Employee Details</a></li>
+									<?php } ?>
+									<?php if ($roleId == 1 || in_array('role', $pageAccessList)) { ?>
+										<li><a href="role.php" class="<?php echo ($page == 'role.php') ? 'active' : ''; ?>">Role</a></li>
+									<?php } ?>
+								</ul>
+							</li>
+						<?php } ?>
 
-						<li class="<?php echo ($page == 'holidays.php') ? 'active' : ''; ?>">
-							<a href="holidays.php">
-								<i class="ti ti-calendar-event"></i><span>Holidays</span>
-							</a>
-						</li>
+						<?php if ($roleId == 1 || in_array('holidays', $pageAccessList)) { ?>
+							<li class="<?php echo ($page == 'holidays.php') ? 'active' : ''; ?>">
+								<a href="holidays.php">
+									<i class="ti ti-calendar-event"></i><span>Holidays</span>
+								</a>
+							</li>
+						<?php } ?>
+
+
 						<li class="submenu">
 							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-bonus.php' || $page == 'attendance.php' || $page == 'my-attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-file-time"></i><span>Attendance</span>
@@ -230,59 +242,8 @@ $page = end($link_array);
 								<li><a href="training-type.php" class="<?php echo ($page == 'training-type.php') ? 'active' : ''; ?>">Training Type</a></li>
 							</ul>
 						</li>
-						<li class="<?php echo ($page == 'promotion.php') ? 'active' : ''; ?>">
-							<a href="promotion.php">
-								<i class="ti ti-speakerphone"></i><span>Promotion</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'resignation.php') ? 'active' : ''; ?>">
-							<a href="resignation.php">
-								<i class="ti ti-external-link"></i><span>Resignation</span>
-							</a>
-						</li>
 					</ul>
 				</li>
-				<li class="menu-title"><span>CRM</span></li>
-				<li>
-					<ul>
-						<li class="<?php echo ($page == 'contacts-grid.php' || $page == 'contacts.php' || $page == 'contact-details.php') ? 'active' : ''; ?>">
-							<a href="contacts-grid.php">
-								<i class="ti ti-user-shield"></i><span>Contacts</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'companies-grid.php' || $page == 'companies-crm.php' || $page == 'company-details.php') ? 'active' : ''; ?>">
-							<a href="companies-grid.php">
-								<i class="ti ti-building"></i><span>Companies</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'deals-grid.php' || $page == 'deals-details.php' || $page == 'deals.php') ? 'active' : ''; ?>">
-							<a href="deals-grid.php">
-								<i class="ti ti-heart-handshake"></i><span>Deals</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'leads-grid.php' || $page == 'leads-details.php' || $page == 'leads.php') ? 'active' : ''; ?>">
-							<a href="leads-grid.php">
-								<i class="ti ti-user-check"></i><span>Leads</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'pipeline.php') ? 'active' : ''; ?>">
-							<a href="pipeline.php">
-								<i class="ti ti-timeline-event-text"></i><span>Pipeline</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'analytics.php') ? 'active' : ''; ?>">
-							<a href="analytics.php">
-								<i class="ti ti-graph"></i><span>Analytics</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'activity.php') ? 'active' : ''; ?>">
-							<a href="activity.php">
-								<i class="ti ti-activity"></i><span>Activities</span>
-							</a>
-						</li>
-					</ul>
-				</li>
-
 				<li class="menu-title"><span>RECRUITMENT</span></li>
 				<li>
 					<ul>
@@ -524,16 +485,6 @@ $page = end($link_array);
 						<li class="<?php echo ($page == 'gallery.php') ? 'active' : ''; ?>">
 							<a href="gallery.php">
 								<i class="ti ti-photo"></i><span>Gallery</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'under-maintenance.php') ? 'active' : ''; ?>">
-							<a href="under-maintenance.php">
-								<i class="ti ti-alert-octagon"></i><span>Under Maintenance</span>
-							</a>
-						</li>
-						<li class="<?php echo ($page == 'under-construction.php') ? 'active' : ''; ?>">
-							<a href="under-construction.php">
-								<i class="ti ti-barrier-block"></i><span>Under Construction</span>
 							</a>
 						</li>
 						<li class="<?php echo ($page == 'privacy-policy.php') ? 'active' : ''; ?>">

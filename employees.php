@@ -1,5 +1,11 @@
 <?php
 include 'layouts/session.php';
+
+$page_name = 'employees';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $terminated = $conn->prepare("SELECT `users`.* FROM `users` WHERE `is_terminated` = 1 ORDER BY `users`.`name` ASC");
 $terminated->execute();
 $terminated = $terminated->fetchAll(PDO::FETCH_ASSOC);
@@ -57,11 +63,14 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 										class="ti ti-list-tree"></i></a>
 							</div>
 						</div>
+						<?php if ($roleId == 1 || (in_array('add-employee', $pageAccessList))) {
+												?>
 						<div class="mb-2">
 							<a href="#" data-bs-toggle="modal" data-bs-target="#add_employee"
 								class="btn btn-primary d-flex align-items-center"><i
 									class="ti ti-circle-plus me-2"></i>Add Employee</a>
 						</div>
+						<?php } ?>
 						<div class="head-icons ms-2">
 							<a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
 								data-bs-original-title="Collapse" id="collapse-header">
@@ -240,15 +249,19 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 												</span>
 											</td>
 											<td>
-												<div class="action-icon d-inline-flex">
-													<a href="#" class="me-2" data-bs-toggle="modal"
-														data-bs-target="#edit_employee"
-														onclick="getEmployee(<?php echo $user['id'] ?>)"><i
-															class="ti ti-edit"></i></a>
-													<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"
-														onclick="deleteEmployee(<?php echo $user['id'] ?>)"><i
-															class="ti ti-trash"></i></a>
-												</div>
+												<?php if ($roleId == 1 || (in_array('employee-action', $pageAccessList))) {
+												?>
+													<div class="action-icon d-inline-flex">
+														<a href="#" class="me-2" data-bs-toggle="modal"
+															data-bs-target="#edit_employee"
+															onclick="getEmployee(<?php echo $user['id'] ?>)"><i
+																class="ti ti-edit"></i></a>
+														<a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"
+															onclick="deleteEmployee(<?php echo $user['id'] ?>)"><i
+																class="ti ti-trash"></i></a>
+													</div>
+												<?php } ?>
+
 											</td>
 										</tr>
 									<?php } ?>
@@ -1047,7 +1060,7 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 		// 		}
 		// 	});
 		// }
-	
+
 		function getExperience(id) {
 			$.ajax({
 				url: 'settings/api/userApi.php',
@@ -1186,7 +1199,6 @@ $role = $role->fetchAll(PDO::FETCH_ASSOC);
 				}
 			});
 		}
-
 	</script>
 </body>
 

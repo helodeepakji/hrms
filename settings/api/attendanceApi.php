@@ -106,9 +106,29 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterAttandac
 
     $attendance = $query->fetchAll(PDO::FETCH_ASSOC);
 
+    $i = 0;
     // Generate table rows dynamically
     foreach ($attendance as $row) {
+
+        if ($row['clock_out_time'] != '') {
+            $attendance_clock_out = date('h:i A', strtotime($row['clock_out_time']));
+        } else {
+            $attendance_clock_out = '';
+        }
+
+
+        if ($row['regularisation'] == 1) {
+            $status = '<span class="text-danger" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $row['id'] . ',\'' . $row['clock_out_time'] . '\')" style="cursor: pointer">Regularization Accept </span>';
+        } else {
+            $status = '';
+        }
+
+        $eff = $conn->prepare("SELECT SUM(taken_time) as taken_time , SUM(total_time) as total_time FROM `efficiency` WHERE user_id = ? AND DATE(created_at) = ?");
+        $eff->execute([$row['user_id'], $row['date']]);
+        $eff = $eff->fetch(PDO::FETCH_ASSOC);
+
         echo '<tr>';
+        echo '<td>' . ++$i . '</td>';
         echo '<td>' . date('d M, Y', strtotime($row['date'])) . '</td>';
         echo '<td>' . $row['user_name'] . '<br>';
         echo '<span class="badge badge-success-transparent d-inline-flex align-items-center">' . ucfirst($row['role_name']) . '</span>';
@@ -117,9 +137,9 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterAttandac
         }
         echo '</td>';
         echo '<td>' . date('h:i A', strtotime($row['clock_in_time'])) . '</td>';
-        echo '<td>' . date('h:i A', strtotime($row['clock_out_time'])) . '</td>';
+        echo '<td>' .$attendance_clock_out  . ' <br> '.$status.'</td>';
         echo '<td>30 Min</td>';
-        echo '<td>20 Min</td>';
+        echo '<td>'.round($eff['taken_time'],2).'Min / '.round($eff['total_time'],2).'Min</td>';
         echo '<td>';
         echo '<span class="badge badge-success d-inline-flex align-items-center">';
         echo '<i class="ti ti-clock-hour-11 me-1"></i>' . $row['hours'] . ' Hrs</span>';
@@ -182,6 +202,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
 
     $attendance = $query->fetchAll(PDO::FETCH_ASSOC);
 
+    $i = 0;
     // Generate table rows dynamically
     foreach ($attendance as $row) {
         if ($row['clock_out_time'] != '') {
@@ -200,7 +221,12 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
             $status = '';
         }
 
+        $eff = $conn->prepare("SELECT SUM(taken_time) as taken_time , SUM(total_time) as total_time FROM `efficiency` WHERE user_id = ? AND DATE(created_at) = ?");
+        $eff->execute([$row['user_id'], $row['date']]);
+        $eff = $eff->fetch(PDO::FETCH_ASSOC);
+
         echo '<tr>';
+        echo '<td>' . ++$i . '</td>';
         echo '<td>' . date('d M, Y', strtotime($row['date'])) . '</td>';
         echo '<td>' . $row['user_name'] . '<br>';
         echo '<span class="badge badge-success-transparent d-inline-flex align-items-center">' . ucfirst($row['role_name']) . '</span>';
@@ -211,7 +237,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
         echo '<td>' . date('h:i A', strtotime($row['clock_in_time'])) . '</td>';
         echo '<td>' . ($row['clock_out_time'] != '' ?  $attendance_clock_out : ($attendance_clock_out == '' ? $regulazation : $status)) . '</td>';
         echo '<td>30 Min</td>';
-        echo '<td>20 Min</td>';
+        echo '<td>'.round($eff['taken_time'],2).'Min / '.round($eff['total_time'],2).'Min</td>';
         echo '<td>';
         echo '<span class="badge badge-success d-inline-flex align-items-center">';
         echo '<i class="ti ti-clock-hour-11 me-1"></i>' . $row['hours'] . ' Hrs</span>';
@@ -243,14 +269,14 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'approveAttenda
     $sql->execute([$_POST['id']]);
     $result = $sql->fetch(PDO::FETCH_ASSOC);
 
-    if($result){
+    if ($result) {
         $TclockInTime = strtotime($result['clock_in_time']);
         $TclockOutTime = strtotime($_POST['clockout_time']);
         $formattedClockOutTime = date('Y-m-d H:i:s', $TclockOutTime);
         $timeDifferenceSeconds = $TclockOutTime - $TclockInTime;
         $timeDifferenceHours = round($timeDifferenceSeconds / 3600, 2);
-    
-    
+
+
         $sql = $conn->prepare("UPDATE `attendance` SET `clock_out_time` = ? ,  `regularisation` = 0 , hours = ? WHERE `id` = ?");
         $result = $sql->execute([$_POST['clockout_time'], $timeDifferenceHours, $_POST['id']]);
         if ($result) {
@@ -260,11 +286,10 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'approveAttenda
             http_response_code(500);
             echo json_encode(array("message" => 'Something went wrong', "status" => 500));
         }
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(array("message" => 'Attandance not found', "status" => 400));
     }
-
 }
 
 if (($_SERVER['REQUEST_METHOD'] == 'GET') && ($_GET['type'] == 'getMonth')) {

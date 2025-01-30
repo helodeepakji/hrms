@@ -1,4 +1,10 @@
 <?php include 'layouts/session.php';
+
+$page_name = 'holidays';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$tempFile = $_FILES["csvFile"]["tmp_name"];
 	$targetFile = "assets/upload/holiday/" . basename($_FILES["csvFile"]["name"]);

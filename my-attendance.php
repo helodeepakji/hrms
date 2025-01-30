@@ -120,17 +120,18 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
                             <table class="table datatable">
                                 <thead class="thead-light">
                                     <tr>
+                                        <th>Sno</th>
                                         <th>Date</th>
                                         <th>Name</th>
                                         <th>Check In</th>
                                         <th>Check Out</th>
                                         <th>Shift</th>
-                                        <th>Working Hours</th>
+                                        <th>Taken / Task Time</th>
                                         <th>Production Hours</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($attendance as $key => $value) {
+                                    <?php $i = 0; foreach ($attendance as $key => $value) {
 
                                         if ($value['clock_out_time'] != '') {
                                             $attendance_clock_out = date('h:i A', strtotime($value['clock_out_time']));
@@ -148,8 +149,15 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
                                             $status = '';
                                         }
 
+                                        $eff = $conn->prepare("SELECT SUM(taken_time) as taken_time , SUM(total_time) as total_time FROM `efficiency` WHERE user_id = ? AND DATE(created_at) = ?");
+										$eff->execute([$value['user_id'],$value['date'] ]);
+										$eff = $eff->fetch(PDO::FETCH_ASSOC);
+
                                     ?>
                                         <tr>
+                                            <td>
+                                                <?php echo ++$i; ?>
+                                            </td>
                                             <td>
                                                 <?php echo date('d M, Y', strtotime($value['date'])) ?>
                                             </td>
@@ -171,7 +179,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
                                                 <?php echo $value['clock_out_time'] != '' ?  $attendance_clock_out : ($attendance_clock_out == '' ? $regulazation : $status) ?>
                                             </td>
                                             <td>30 Min</td>
-                                            <td>20 Min</td>
+                                            <td><?php echo round($eff['taken_time'],2) ?>Min / <?php echo round($eff['total_time'],2) ?>Min</td>
                                             <td>
                                                 <span class="badge badge-success d-inline-flex align-items-center">
                                                     <i class="ti ti-clock-hour-11 me-1"></i><?php echo $value['hours'] ?> Hrs

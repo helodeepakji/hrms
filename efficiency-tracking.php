@@ -1,5 +1,12 @@
 <?php
 include 'layouts/session.php';
+
+
+$page_name = 'efficiency-tracking';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $efficincy = $conn->prepare("SELECT `efficiency`.* , `projects`.`project_name` , `tasks`.`task_id` , `users`.`name` as `user_name` , `users`.`profile` as `user_profile` , `role`.`name` as `role_name` FROM `efficiency` JOIN `users` ON `users`.`id` = `efficiency`.`user_id` JOIN `role` ON `role`.`id` = `users`.`role_id` JOIN `tasks` ON `tasks`.`id` = `efficiency`.`task_id` JOIN `projects` ON `projects`.`id` = `efficiency`.`project_id` WHERE  `efficiency`.`created_at` >= DATE_SUB(NOW(), INTERVAL 7 DAY)  ORDER BY `efficiency`.`id` DESC");
 $efficincy->execute();
 $efficincy = $efficincy->fetchAll(PDO::FETCH_ASSOC);

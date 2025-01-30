@@ -1,6 +1,11 @@
 <?php
 include 'layouts/session.php';
 
+$page_name = 'employee-details';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 if (isset($_GET['id']) && $_GET['id'] != '') {
 	$id = base64_decode($_GET['id']);
 } else {
