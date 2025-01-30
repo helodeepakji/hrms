@@ -1,5 +1,12 @@
 <?php
 include 'layouts/session.php';
+
+$page_name = 'assets';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
+
 $sql = $conn->prepare("SELECT * FROM `assets` WHERE `status` = 1");
 $sql->execute();
 $assets = $sql->fetchAll(PDO::FETCH_ASSOC);

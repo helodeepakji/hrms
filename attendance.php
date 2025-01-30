@@ -1,6 +1,12 @@
 <?php
 
 include 'layouts/session.php';
+
+$page_name = 'attendance';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $sql = $conn->prepare('
     SELECT 
         `attendance`.*, 
@@ -142,6 +148,10 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 										if ($value['regularisation'] == 1) {
 											$status = '<span class="text-danger" data-bs-toggle="modal" data-bs-target="#regularisation" onclick="addRegularisation(' . $value['id'] . ',\'' . $value['clock_out_time'] . '\')" style="cursor: pointer">Regularization Accept </span>';
 										} else {
+											$status = '';
+										}
+
+										if ($roleId != 1 && !(in_array('attendance-regulation', $pageAccessList))) {
 											$status = '';
 										}
 

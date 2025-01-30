@@ -1,6 +1,11 @@
 <?php
 include 'layouts/session.php';
 
+$page_name = 'my-tasks';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $project = $conn->prepare("SELECT `projects`.*, `users`.`name` , `users`.`profile` FROM `projects` JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` JOIN `users` ON `users`.`id` = `project_assign`.`user_id` WHERE `projects`.`is_complete` = 0 AND `project_assign`.`user_id` = ? ORDER BY `projects`.`id` DESC");
 $project->execute([$userId]);
 $project = $project->fetchAll(PDO::FETCH_ASSOC);

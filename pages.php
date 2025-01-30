@@ -1,4 +1,11 @@
 <?php include 'layouts/session.php';
+
+
+$page_name = 'pages';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $pages = $conn->prepare("SELECT * FROM `page`");
 $pages->execute();
 $pages = $pages->fetchAll(PDO::FETCH_ASSOC);

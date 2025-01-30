@@ -1,4 +1,10 @@
 <?php include 'layouts/session.php';
+
+$page_name = 'leaves';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $leave_type = $conn->prepare("SELECT * FROM `leave_type`");
 $leave_type->execute();
 $leave_type = $leave_type->fetchAll(PDO::FETCH_ASSOC);

@@ -1,5 +1,10 @@
 <?php include 'layouts/session.php';
 
+$page_name = 'leave-bonus';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $leaves = $conn->prepare("SELECT * FROM `leave_bonus` WHERE `aprrove` = 0 AND `reject` = 0");
 $leaves->execute();
 $leaves = $leaves->fetchAll(PDO::FETCH_ASSOC);

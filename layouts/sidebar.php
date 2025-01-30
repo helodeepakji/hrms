@@ -154,9 +154,13 @@ $page = end($link_array);
 							</a>
 							<ul>
 								<li><a href="projects.php" class="<?php echo ($page == 'projects.php') ? 'active' : ''; ?>">Projects</a></li>
+								<?php if (in_array('my-projects', $pageAccessList)) { ?>
 								<li><a href="my-projects.php" class="<?php echo ($page == 'my-projects.php') ? 'active' : ''; ?>">My Projects</a></li>
+								<?php } ?>
 								<li><a href="tasks.php" class="<?php echo ($page == 'tasks.php') ? 'active' : ''; ?>">Tasks</a></li>
+								<?php if (in_array('my-tasks', $pageAccessList)) { ?>
 								<li><a href="my-tasks.php" class="<?php echo ($page == 'my-tasks.php') ? 'active' : ''; ?>">My Tasks</a></li>
+								<?php } ?>
 								<li><a href="task-board.php" class="<?php echo ($page == 'task-board.php') ? 'active' : ''; ?>">Task Board</a></li>
 							</ul>
 						</li>
@@ -206,16 +210,21 @@ $page = end($link_array);
 								<li class="submenu submenu-two">
 									<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-bonus.php') ? 'active subdrop' : ''; ?>">Leaves<span class="menu-arrow inside-submenu"></span></a>
 									<ul>
-										<li><a href="leaves.php" class="<?php echo ($page == 'leaves.php') ? 'active' : ''; ?>">Leaves</a></li>
+										<?php if ($roleId == 1 || in_array('leaves', $pageAccessList)) { ?>
+											<li><a href="leaves.php" class="<?php echo ($page == 'leaves.php') ? 'active' : ''; ?>">Leaves</a></li>
+										<?php } ?>
 										<li><a href="my-leaves.php" class="<?php echo ($page == 'my-leaves.php') ? 'active' : ''; ?>">My Leave</a></li>
+										<?php if ($roleId == 1 || in_array('leave-bonus', $pageAccessList)) { ?>
 										<li><a href="leave-bonus.php" class="<?php echo ($page == 'leave-bonus.php') ? 'active' : ''; ?>">Leave Bonus</a></li>
+										<?php } ?>
 									</ul>
 								</li>
-								<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>
+								<?php if ($roleId == 1 || in_array('attendance', $pageAccessList)) { ?>
+									<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>
+								<?php } ?>
 								<li><a href="my-attendance.php" class="<?php echo ($page == 'my-attendance.php') ? 'active' : ''; ?>">My Attendance</a></li>
 								<li><a href="timesheets.php" class="<?php echo ($page == 'timesheets.php') ? 'active' : ''; ?>">Timesheets</a></li>
 								<li><a href="schedule-timing.php" class="<?php echo ($page == 'schedule-timing.php') ? 'active' : ''; ?>">Shift & Schedule</a></li>
-								<li><a href="overtime.php" class="<?php echo ($page == 'overtime.php') ? 'active' : ''; ?>">Overtime</a></li>
 							</ul>
 						</li>
 						<li class="submenu">
@@ -227,7 +236,10 @@ $page = end($link_array);
 								<li><a href="performance-indicator.php" class="<?php echo ($page == 'performance-indicator.php') ? 'active' : ''; ?>">Performance Indicator</a></li>
 								<li><a href="performance-review.php" class="<?php echo ($page == 'performance-review.php') ? 'active' : ''; ?>">Performance Review</a></li>
 								<li><a href="performance-appraisal.php" class="<?php echo ($page == 'performance-appraisal.php') ? 'active' : ''; ?>">Performance Appraisal</a></li>
+								
+								<?php if ($roleId == 1 || in_array('efficiency-tracking', $pageAccessList)) { ?>
 								<li><a href="efficiency-tracking.php" class="<?php echo ($page == 'efficiency-tracking.php') ? 'active' : ''; ?>">Efficiency Track</a></li>
+								<?php } ?>
 								<li><a href="my-efficiency.php" class="<?php echo ($page == 'my-efficiency.php') ? 'active' : ''; ?>">My Efficiency</a></li>
 							</ul>
 						</li>
@@ -306,169 +318,6 @@ $page = end($link_array);
 						</li>
 					</ul>
 				</li>
-				<li class="menu-title"><span>ADMINISTRATION</span></li>
-				<li>
-					<ul>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'assets.php' || $page == 'asset-categories.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-cash"></i><span>Assets</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="assets.php" class="<?php echo ($page == 'assets.php') ? 'active' : ''; ?>">Assets</a></li>
-								<li><a href="asset-categories.php" class="<?php echo ($page == 'asset-categories.php') ? 'active' : ''; ?>">Asset Categories</a></li>
-							</ul>
-						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'knowledgebase.php' || $page == 'activity.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-headset"></i><span>Help & Supports</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="knowledgebase.php" class="<?php echo ($page == 'knowledgebase.php') ? 'active' : ''; ?>">Knowledge Base</a></li>
-								<li><a href="activity.php" class="<?php echo ($page == 'activity.php') ? 'active' : ''; ?>">Activities</a></li>
-							</ul>
-						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'users.php' || $page == 'roles-permissions.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-user-star"></i><span>User Management</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="users.php">Users</a></li>
-								<li><a href="roles-permissions.php" class="<?php echo ($page == 'roles-permissions.php') ? 'active' : ''; ?>">Roles & Permissions</a></li>
-							</ul>
-						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'expenses-report.php' || $page == 'invoice-report.php' || $page == 'payment-report.php' || $page == 'project-report.php' || $page == 'task-report.php' || $page == 'user-report.php' || $page == 'employee-report.php' || $page == 'payslip-report.php' || $page == 'attendance-report.php' || $page == 'leave-report.php' || $page == 'daily-report.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-user-star"></i><span>Reports</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="expenses-report.php" class="<?php echo ($page == 'expenses-report.php') ? 'active' : ''; ?>">Expense Report</a></li>
-								<li><a href="invoice-report.php" class="<?php echo ($page == 'invoice-report.php') ? 'active' : ''; ?>">Invoice Report</a></li>
-								<li><a href="payment-report.php" class="<?php echo ($page == 'payment-report.php') ? 'active' : ''; ?>">Payment Report</a></li>
-								<li><a href="project-report.php" class="<?php echo ($page == 'project-report.php') ? 'active' : ''; ?>">Project Report</a></li>
-								<li><a href="task-report.php" class="<?php echo ($page == 'task-report.php') ? 'active' : ''; ?>">Task Report</a></li>
-								<li><a href="user-report.php" class="<?php echo ($page == 'user-report.php') ? 'active' : ''; ?>">User Report</a></li>
-								<li><a href="employee-report.php" class="<?php echo ($page == 'employee-report.php') ? 'active' : ''; ?>">Employee Report</a></li>
-								<li><a href="payslip-report.php" class="<?php echo ($page == 'payslip-report.php') ? 'active' : ''; ?>">Payslip Report</a></li>
-								<li><a href="attendance-report.php" class="<?php echo ($page == 'attendance-report.php') ? 'active' : ''; ?>">Attendance Report</a></li>
-								<li><a href="leave-report.php" class="<?php echo ($page == 'leave-report.php') ? 'active' : ''; ?>">Leave Report</a></li>
-								<li><a href="daily-report.php" class="<?php echo ($page == 'daily-report.php') ? 'active' : ''; ?>">Daily Report</a></li>
-							</ul>
-						</li>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'profile-settings.php' ||
-																		$page == 'security-settings.php' ||
-																		$page == 'notification-settings.php' ||
-																		$page == 'project-report.php' ||
-																		$page == 'connected-apps.php' ||
-																		$page == 'bussiness-settings.php' ||
-																		$page == 'seo-settings.php' ||
-																		$page == 'localization-settings.php' ||
-																		$page == 'prefixes.php' ||
-																		$page == 'preferences.php' ||
-																		$page == 'performance-appraisal.php' ||
-																		$page == 'language.php' ||
-																		$page == 'authentication-settings.php' ||
-																		$page == 'ai-settings.php' ||
-																		$page == 'salary-settings.php' ||
-																		$page == 'approval-settings.php' ||
-																		$page == 'invoice-settings.php' ||
-																		$page == 'leave-type.php' ||
-																		$page == 'custom-fields.php' ||
-																		$page == 'email-settings.php' ||
-																		$page == 'email-template.php' ||
-																		$page == 'sms-settings.php' ||
-																		$page == 'sms-template.php' ||
-																		$page == 'otp-settings.php' ||
-																		$page == 'gdpr.php' ||
-																		$page == 'maintenance-mode.php' ||
-																		$page == 'payment-gateways.php' ||
-																		$page == 'tax-rates.php' ||
-																		$page == 'currencies.php' ||
-																		$page == 'custom-css.php' ||
-																		$page == 'custom-js.php' ||
-																		$page == 'cronjob.php' ||
-																		$page == 'storage-settings.php' ||
-																		$page == 'ban-ip-address.php' ||
-																		$page == 'backup.php' ||
-																		$page == 'clear-cache.php'
-																	) ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-settings"></i><span>Settings</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class="<?php echo ($page == 'profile-settings.php' || $page == 'security-settings.php' || $page == 'notification-settings.php' || $page == 'connected-apps.php') ? 'active subdrop' : ''; ?>">General Settings<span class="menu-arrow inside-submenu"></span></a>
-									<ul>
-										<li><a href="profile-settings.php" class="<?php echo ($page == 'daily-report.php') ? 'active' : ''; ?>">Profile</a></li>
-										<li><a href="security-settings.php" class="<?php echo ($page == 'daily-report.php') ? 'active' : ''; ?>">Security</a></li>
-										<li><a href="notification-settings.php" class="<?php echo ($page == 'daily-report.php') ? 'active' : ''; ?>">Notifications</a></li>
-										<li><a href="connected-apps.php" class="<?php echo ($page == 'daily-report.php') ? 'active' : ''; ?>">Connected Apps</a></li>
-									</ul>
-								</li>
-								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class="<?php echo ($page == 'bussiness-settings.php' || $page == 'seo-settings.php' || $page == 'localization-settings.php' || $page == 'prefixes.php' || $page == 'preferences.php' || $page == 'performance-appraisal.php' || $page == 'language.php' || $page == 'authentication-settings.php' || $page == 'ai-settings.php') ? 'active subdrop' : ''; ?>">Website Settings<span class="menu-arrow inside-submenu"></span></a>
-									<ul>
-										<li><a href="bussiness-settings.php" class="<?php echo ($page == 'bussiness-settings.php') ? 'active' : ''; ?>">Business Settings</a></li>
-										<li><a href="seo-settings.php" class="<?php echo ($page == 'seo-settings.php') ? 'active' : ''; ?>">SEO Settings</a></li>
-										<li><a href="localization-settings.php" class="<?php echo ($page == 'localization-settings.php') ? 'active' : ''; ?>">Localization</a></li>
-										<li><a href="prefixes.php" class="<?php echo ($page == 'prefixes.php') ? 'active' : ''; ?>">Prefixes</a></li>
-										<li><a href="preferences.php" class="<?php echo ($page == 'preferences.php') ? 'active' : ''; ?>">Preferences</a></li>
-										<li><a href="performance-appraisal.php" class="<?php echo ($page == 'performance-appraisal.php') ? 'active' : ''; ?>">Appearance</a></li>
-										<li><a href="language.php" class="<?php echo ($page == 'language.php') ? 'active' : ''; ?>">Language</a></li>
-										<li><a href="authentication-settings.php" class="<?php echo ($page == 'authentication-settings.php') ? 'active' : ''; ?>">Authentication</a></li>
-										<li><a href="ai-settings.php" class="<?php echo ($page == 'ai-settings.php') ? 'active' : ''; ?>">AI Settings</a></li>
-									</ul>
-								</li>
-								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class="<?php echo ($page == 'salary-settings.php' || $page == 'approval-settings.php' || $page == 'invoice-settings.php' || $page == 'leave-type.php' || $page == 'custom-fields.php') ? 'active subdrop' : ''; ?>">App Settings<span class="menu-arrow inside-submenu"></span></a>
-									<ul>
-										<li><a href="salary-settings.php" class="<?php echo ($page == 'salary-settings.php') ? 'active' : ''; ?>">Salary Settings</a></li>
-										<li><a href="approval-settings.php" class="<?php echo ($page == 'approval-settings.php') ? 'active' : ''; ?>">Approval Settings</a></li>
-										<li><a href="invoice-settings.php" class="<?php echo ($page == 'invoice-settings.php') ? 'active' : ''; ?>">Invoice Settings</a></li>
-										<li><a href="leave-type.php" class="<?php echo ($page == 'leave-type.php') ? 'active' : ''; ?>">Leave Type</a></li>
-										<li><a href="custom-fields.php" class="<?php echo ($page == 'custom-fields.php') ? 'active' : ''; ?>">Custom Fields</a></li>
-									</ul>
-								</li>
-								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class="<?php echo ($page == 'email-settings.php' || $page == 'email-template.php' || $page == 'sms-settings.php' || $page == 'sms-template.php' || $page == 'otp-settings.php' || $page == 'gdpr.php' || $page == 'maintenance-mode.php') ? 'active subdrop' : ''; ?>">System Settings<span class="menu-arrow inside-submenu"></span></a>
-									<ul>
-										<li><a href="email-settings.php" class="<?php echo ($page == 'email-settings.php') ? 'active' : ''; ?>">Email Settings</a></li>
-										<li><a href="email-template.php" class="<?php echo ($page == 'email-template.php') ? 'active' : ''; ?>">Email Templates</a></li>
-										<li><a href="sms-settings.php" class="<?php echo ($page == 'sms-settings.php') ? 'active' : ''; ?>">SMS Settings</a></li>
-										<li><a href="sms-template.php" class="<?php echo ($page == 'sms-template.php') ? 'active' : ''; ?>">SMS Templates</a></li>
-										<li><a href="otp-settings.php" class="<?php echo ($page == 'otp-settings.php') ? 'active' : ''; ?>">OTP</a></li>
-										<li><a href="gdpr.php" class="<?php echo ($page == 'gdpr.php') ? 'active' : ''; ?>">GDPR Cookies</a></li>
-										<li><a href="maintenance-mode.php" class="<?php echo ($page == 'maintenance-mode.php') ? 'active' : ''; ?>">Maintenance Mode</a></li>
-									</ul>
-								</li>
-								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class="<?php echo ($page == 'payment-gateways.php' || $page == 'tax-rates.php' || $page == 'currencies.php') ? 'active subdrop' : ''; ?>">Financial Settings<span class="menu-arrow inside-submenu"></span></a>
-									<ul>
-										<li><a href="payment-gateways.php" class="<?php echo ($page == 'payment-gateways.php') ? 'active' : ''; ?>">Payment Gateways</a></li>
-										<li><a href="tax-rates.php" class="<?php echo ($page == 'tax-rates.php') ? 'active' : ''; ?>">Tax Rate</a></li>
-										<li><a href="currencies.php" class="<?php echo ($page == 'currencies.php') ? 'active' : ''; ?>">Currencies</a></li>
-									</ul>
-								</li>
-								<li class="submenu submenu-two">
-									<a href="javascript:void(0);" class="<?php echo ($page == 'custom-css.php' || $page == 'custom-js.php' || $page == 'cronjob.php' || $page == 'storage-settings.php' || $page == 'ban-ip-address.php' || $page == 'backup.php' || $page == 'clear-cache.php') ? 'active subdrop' : ''; ?>">Other Settings<span class="menu-arrow inside-submenu"></span></a>
-									<ul>
-										<li><a href="custom-css.php" class="<?php echo ($page == 'custom-css.php') ? 'active' : ''; ?>">Custom CSS</a></li>
-										<li><a href="custom-js.php" class="<?php echo ($page == 'custom-js.php') ? 'active' : ''; ?>">Custom JS</a></li>
-										<li><a href="cronjob.php" class="<?php echo ($page == 'cronjob.php') ? 'active' : ''; ?>">Cronjob</a></li>
-										<li><a href="storage-settings.php" class="<?php echo ($page == 'storage-settings.php') ? 'active' : ''; ?>">Storage</a></li>
-										<li><a href="ban-ip-address.php" class="<?php echo ($page == 'ban-ip-address.php') ? 'active' : ''; ?>">Ban IP Address</a></li>
-										<li><a href="backup.php" class="<?php echo ($page == 'backup.php') ? 'active' : ''; ?>">Backup</a></li>
-										<li><a href="clear-cache.php" class="<?php echo ($page == 'clear-cache.php') ? 'active' : ''; ?>">Clear Cache</a></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
 				<li class="menu-title"><span>Other</span></li>
 				<li>
 					<ul>
@@ -477,11 +326,13 @@ $page = end($link_array);
 								<i class="ti ti-question-mark"></i><span>FAQ’S</span>
 							</a>
 						</li>
+						<?php if ($roleId == 1 || in_array('pages', $pageAccessList)) { ?>
 						<li>
 							<a href="pages.php">
-								<i class="ti ti-box-multiple"></i><span>Pages</span>
+								<i class="ti ti-lock"></i><span>Authication</span>
 							</a>
 						</li>
+						<?php } ?>
 						<li class="<?php echo ($page == 'gallery.php') ? 'active' : ''; ?>">
 							<a href="gallery.php">
 								<i class="ti ti-photo"></i><span>Gallery</span>
