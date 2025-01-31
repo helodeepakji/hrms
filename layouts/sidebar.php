@@ -202,7 +202,7 @@ $page = end($link_array);
 
 
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-bonus.php' || $page == 'attendance.php' || $page == 'my-attendance.php' || $page == 'timesheets.php' || $page == 'schedule-timing.php' || $page == 'overtime.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'leaves.php' || $page == 'my-leaves.php' || $page == 'leave-bonus.php' || $page == 'attendance.php' || $page == 'my-attendance.php' || $page == 'shift.php' || $page == 'schedule-timing.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-file-time"></i><span>Attendance</span>
 								<span class="menu-arrow"></span>
 							</a>
@@ -223,7 +223,7 @@ $page = end($link_array);
 									<li><a href="attendance.php" class="<?php echo ($page == 'attendance.php') ? 'active' : ''; ?>">Attendance</a></li>
 								<?php } ?>
 								<li><a href="my-attendance.php" class="<?php echo ($page == 'my-attendance.php') ? 'active' : ''; ?>">My Attendance</a></li>
-								<li><a href="timesheets.php" class="<?php echo ($page == 'timesheets.php') ? 'active' : ''; ?>">Timesheets</a></li>
+								<li><a href="shift.php" class="<?php echo ($page == 'shift.php') ? 'active' : ''; ?>">Shift Timing</a></li>
 								<li><a href="schedule-timing.php" class="<?php echo ($page == 'schedule-timing.php') ? 'active' : ''; ?>">Shift & Schedule</a></li>
 							</ul>
 						</li>
