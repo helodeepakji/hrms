@@ -1,16 +1,16 @@
-<?php 
-	include 'layouts/session.php';
-	$sql = $conn->prepare('SELECT * FROM `attendance` WHERE date = CURDATE() AND `user_id` = ?');
-    $sql->execute([$userId]);
-    $attendance = $sql->fetch(PDO::FETCH_ASSOC);
+<?php
+include 'layouts/session.php';
+$sql = $conn->prepare('SELECT * FROM `attendance` WHERE date = CURDATE() AND `user_id` = ?');
+$sql->execute([$userId]);
+$attendance = $sql->fetch(PDO::FETCH_ASSOC);
 
-	$total_runing = $conn->prepare("SELECT COUNT(`id`) as `total_runing` FROM `assign` WHERE `status` = 'working' AND `user_id` = ?");
-	$total_runing->execute([$userId]);
-	$total_runing = $total_runing->fetch(PDO::FETCH_ASSOC);
+$total_runing = $conn->prepare("SELECT COUNT(`id`) as `total_runing` FROM `assign` WHERE `status` = 'working' AND `user_id` = ?");
+$total_runing->execute([$userId]);
+$total_runing = $total_runing->fetch(PDO::FETCH_ASSOC);
 
-	$total_pending = $conn->prepare("SELECT COUNT(`id`) as `total_pending` FROM `assign` WHERE `status` = 'pending' AND `user_id` = ?");
-	$total_pending->execute([$userId]);
-	$total_pending = $total_pending->fetch(PDO::FETCH_ASSOC);
+$total_pending = $conn->prepare("SELECT COUNT(`id`) as `total_pending` FROM `assign` WHERE `status` = 'pending' AND `user_id` = ?");
+$total_pending->execute([$userId]);
+$total_pending = $total_pending->fetch(PDO::FETCH_ASSOC);
 
 ?>
 <?php include 'layouts/head-main.php'; ?>
@@ -57,7 +57,8 @@
 							</div>
 						</div>
 						<div class="ms-2 head-icons">
-							<a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
+							<a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
+								data-bs-original-title="Collapse" id="collapse-header">
 								<i class="ti ti-chevrons-up"></i>
 							</a>
 						</div>
@@ -70,17 +71,27 @@
 					<div class="card-body d-flex align-items-center justify-content-between flex-wrap pb-1">
 						<div class="d-flex align-items-center mb-3">
 							<span class="avatar avatar-xl flex-shrink-0">
-								<img src="<?php echo $_SESSION['userdetails']['profile'] ?? 'assets/img/profiles/avatar-31.jpg' ?>" class="rounded-circle" alt="img">
+								<img src="<?php echo $_SESSION['userdetails']['profile'] ?? 'assets/img/profiles/avatar-31.jpg' ?>"
+									class="rounded-circle" alt="img">
 							</span>
 							<div class="ms-3">
-								<h3 class="mb-2">Welcome <?php echo $_SESSION['userDetails']['name'] ?> <a href="javascript:void(0);" class="edit-icon"><i class="ti ti-edit fs-14"></i></a></h3>
-								<p class="mb-0">Clock In  &nbsp;  : <span class="text-primary text-decoration-none"><?php echo $attendance['clock_in_time'] != '' ? date('h:i A',strtotime($attendance['clock_in_time'])) : '' ?></p>
-								<p>Clock Out : <span class="text-primary text-decoration-none"><?php echo $attendance['clock_out_time'] != '' ? date('h:i A',strtotime($attendance['clock_out_time'])) : '' ?></p>
+								<h3 class="mb-2">Welcome <?php echo $_SESSION['userDetails']['name'] ?> <a
+										href="javascript:void(0);" class="edit-icon"><i
+											class="ti ti-edit fs-14"></i></a></h3>
+								<p class="mb-0">Clock In &nbsp; : <span
+										class="text-primary text-decoration-none"><?php echo $attendance['clock_in_time'] != '' ? date('h:i A', strtotime($attendance['clock_in_time'])) : '' ?>
+								</p>
+								<p>Clock Out : <span
+										class="text-primary text-decoration-none"><?php echo $attendance['clock_out_time'] != '' ? date('h:i A', strtotime($attendance['clock_out_time'])) : '' ?>
+								</p>
 							</div>
 						</div>
 						<div class="d-flex align-items-center flex-wrap mb-1">
-							<a href="#" class="btn btn-secondary btn-md me-2 mb-2"><i class="ti ti-clock me-1"></i>Clock In</a>
-							<a href="#" class="btn btn-<?php echo $attendance['clock_out_time'] == '' ? 'primary' : 'secondary' ?> btn-md mb-2" onclick="clockOut()"><i class="ti ti-clock me-1"></i>Clock Out</a>
+							<a href="#" class="btn btn-secondary btn-md me-2 mb-2"><i class="ti ti-clock me-1"></i>Clock
+								In</a>
+							<a href="#"
+								class="btn btn-<?php echo $attendance['clock_out_time'] == '' ? 'primary' : 'secondary' ?> btn-md mb-2"
+								onclick="clockOut()"><i class="ti ti-clock me-1"></i>Clock Out</a>
 						</div>
 					</div>
 				</div>
@@ -122,7 +133,8 @@
 											<i class="ti ti-users-group fs-16"></i>
 										</span>
 										<h6 class="fs-13 fw-medium text-default mb-1">Total No of Clients</h6>
-										<h3 class="mb-3">69/86 <span class="fs-12 fw-medium text-danger"><i class="fa-solid fa-caret-down me-1"></i>-11.2%</span></h3>
+										<h3 class="mb-3">69/86 <span class="fs-12 fw-medium text-danger"><i
+													class="fa-solid fa-caret-down me-1"></i>-11.2%</span></h3>
 										<a href="clients.php" class="link-default">View All</a>
 									</div>
 								</div>
@@ -134,7 +146,8 @@
 											<i class="ti ti-checklist fs-16"></i>
 										</span>
 										<h6 class="fs-13 fw-medium text-default mb-1">Total No of Tasks</h6>
-										<h3 class="mb-3">225/28 <span class="fs-12 fw-medium text-success"><i class="fa-solid fa-caret-down me-1"></i>+11.2%</span></h3>
+										<h3 class="mb-3">225/28 <span class="fs-12 fw-medium text-success"><i
+													class="fa-solid fa-caret-down me-1"></i>+11.2%</span></h3>
 										<a href="tasks.php" class="link-default">View All</a>
 									</div>
 								</div>
@@ -146,7 +159,8 @@
 											<i class="ti ti-moneybag fs-16"></i>
 										</span>
 										<h6 class="fs-13 fw-medium text-default mb-1">Earnings</h6>
-										<h3 class="mb-3">$21445 <span class="fs-12 fw-medium text-success"><i class="fa-solid fa-caret-up me-1"></i>+10.2%</span></h3>
+										<h3 class="mb-3">$21445 <span class="fs-12 fw-medium text-success"><i
+													class="fa-solid fa-caret-up me-1"></i>+10.2%</span></h3>
 										<a href="expenses.php" class="link-default">View All</a>
 									</div>
 								</div>
@@ -158,7 +172,8 @@
 											<i class="ti ti-browser fs-16"></i>
 										</span>
 										<h6 class="fs-13 fw-medium text-default mb-1">Profit This Week</h6>
-										<h3 class="mb-3">$5,544 <span class="fs-12 fw-medium text-success"><i class="fa-solid fa-caret-up me-1"></i>+2.1%</span></h3>
+										<h3 class="mb-3">$5,544 <span class="fs-12 fw-medium text-success"><i
+													class="fa-solid fa-caret-up me-1"></i>+2.1%</span></h3>
 										<a href="purchase-transaction.php" class="link-default">View All</a>
 									</div>
 								</div>
@@ -170,7 +185,8 @@
 											<i class="ti ti-users-group fs-16"></i>
 										</span>
 										<h6 class="fs-13 fw-medium text-default mb-1">Job Applicants</h6>
-										<h3 class="mb-3">98 <span class="fs-12 fw-medium text-success"><i class="fa-solid fa-caret-up me-1"></i>+2.1%</span></h3>
+										<h3 class="mb-3">98 <span class="fs-12 fw-medium text-success"><i
+													class="fa-solid fa-caret-up me-1"></i>+2.1%</span></h3>
 										<a href="job-list.php" class="link-default">View All</a>
 									</div>
 								</div>
@@ -182,7 +198,8 @@
 											<i class="ti ti-user-star fs-16"></i>
 										</span>
 										<h6 class="fs-13 fw-medium text-default mb-1">New Hire</h6>
-										<h3 class="mb-3">45/48 <span class="fs-12 fw-medium text-danger"><i class="fa-solid fa-caret-down me-1"></i>-11.2%</span></h3>
+										<h3 class="mb-3">45/48 <span class="fs-12 fw-medium text-danger"><i
+													class="fa-solid fa-caret-down me-1"></i>-11.2%</span></h3>
 										<a href="candidates.php" class="link-default">View All</a>
 									</div>
 								</div>
@@ -197,7 +214,9 @@
 							<div class="card-header pb-2 d-flex align-items-center justify-content-between flex-wrap">
 								<h5 class="mb-2">Employees By Department</h5>
 								<div class="dropdown mb-2">
-									<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+									<a href="javascript:void(0);"
+										class="btn btn-white border btn-sm d-inline-flex align-items-center"
+										data-bs-toggle="dropdown">
 										<i class="ti ti-calendar me-1"></i>This Week
 									</a>
 									<ul class="dropdown-menu  dropdown-menu-end p-3">
@@ -233,7 +252,9 @@
 							<div class="card-header pb-2 d-flex align-items-center justify-content-between flex-wrap">
 								<h5 class="mb-2">Employee Status</h5>
 								<div class="dropdown mb-2">
-									<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+									<a href="javascript:void(0);"
+										class="btn btn-white border btn-sm d-inline-flex align-items-center"
+										data-bs-toggle="dropdown">
 										<i class="ti ti-calendar me-1"></i>This Week
 									</a>
 									<ul class="dropdown-menu  dropdown-menu-end p-3">
@@ -255,16 +276,20 @@
 									<h3 class="mb-3">154</h3>
 								</div>
 								<div class="progress-stacked emp-stack mb-3">
-									<div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+									<div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15"
+										aria-valuemin="0" aria-valuemax="100" style="width: 40%">
 										<div class="progress-bar bg-warning"></div>
 									</div>
-									<div class="progress" role="progressbar" aria-label="Segment two" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+									<div class="progress" role="progressbar" aria-label="Segment two" aria-valuenow="30"
+										aria-valuemin="0" aria-valuemax="100" style="width: 20%">
 										<div class="progress-bar bg-secondary"></div>
 									</div>
-									<div class="progress" role="progressbar" aria-label="Segment three" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 10%">
+									<div class="progress" role="progressbar" aria-label="Segment three"
+										aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 10%">
 										<div class="progress-bar bg-danger"></div>
 									</div>
-									<div class="progress" role="progressbar" aria-label="Segment four" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+									<div class="progress" role="progressbar" aria-label="Segment four"
+										aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
 										<div class="progress-bar bg-pink"></div>
 									</div>
 								</div>
@@ -272,41 +297,55 @@
 									<div class="row gx-0">
 										<div class="col-6">
 											<div class="p-2 flex-fill border-end border-bottom">
-												<p class="fs-13 mb-2"><i class="ti ti-square-filled text-primary fs-12 me-2"></i>Fulltime <span class="text-gray-9">(48%)</span></p>
+												<p class="fs-13 mb-2"><i
+														class="ti ti-square-filled text-primary fs-12 me-2"></i>Fulltime
+													<span class="text-gray-9">(48%)</span>
+												</p>
 												<h2 class="display-1">112</h2>
 											</div>
 										</div>
 										<div class="col-6">
 											<div class="p-2 flex-fill border-bottom text-end">
-												<p class="fs-13 mb-2"><i class="ti ti-square-filled me-2 text-secondary fs-12"></i>Contract <span class="text-gray-9">(20%)</span></p>
+												<p class="fs-13 mb-2"><i
+														class="ti ti-square-filled me-2 text-secondary fs-12"></i>Contract
+													<span class="text-gray-9">(20%)</span>
+												</p>
 												<h2 class="display-1">112</h2>
 											</div>
 										</div>
 										<div class="col-6">
 											<div class="p-2 flex-fill border-end">
-												<p class="fs-13 mb-2"><i class="ti ti-square-filled me-2 text-danger fs-12"></i>Probation <span class="text-gray-9">(22%)</span></p>
+												<p class="fs-13 mb-2"><i
+														class="ti ti-square-filled me-2 text-danger fs-12"></i>Probation
+													<span class="text-gray-9">(22%)</span>
+												</p>
 												<h2 class="display-1">12</h2>
 											</div>
 										</div>
 										<div class="col-6">
 											<div class="p-2 flex-fill text-end">
-												<p class="fs-13 mb-2"><i class="ti ti-square-filled text-pink me-2 fs-12"></i>WFH <span class="text-gray-9">(20%)</span></p>
+												<p class="fs-13 mb-2"><i
+														class="ti ti-square-filled text-pink me-2 fs-12"></i>WFH <span
+														class="text-gray-9">(20%)</span></p>
 												<h2 class="display-1">04</h2>
 											</div>
 										</div>
 									</div>
 								</div>
 								<h6 class="mb-2">Top Performer</h6>
-								<div class="p-2 d-flex align-items-center justify-content-between border border-primary bg-primary-100 br-5 mb-4">
+								<div
+									class="p-2 d-flex align-items-center justify-content-between border border-primary bg-primary-100 br-5 mb-4">
 									<div class="d-flex align-items-center overflow-hidden">
 										<span class="me-2">
 											<i class="ti ti-award-filled text-primary fs-24"></i>
 										</span>
 										<a href="employee-details.php" class="avatar avatar-md me-2">
-											<img src="assets/img/profiles/avatar-24.jpg" class="rounded-circle border border-white" alt="img">
+											<img src="assets/img/profiles/avatar-24.jpg"
+												class="rounded-circle border border-white" alt="img">
 										</a>
 										<div>
-											<h6 class="text-truncate mb-1 fs-14 fw-medium"><a href="employee-details.php">Daniel Esbella</a></h6>
+											<h6 class="text-truncate mb-1 fs-14 fw-medium"><a
+													href="employee-details.php">Daniel Esbella</a></h6>
 											<p class="fs-13">IOS Developer</p>
 										</div>
 									</div>
@@ -327,7 +366,9 @@
 							<div class="card-header pb-2 d-flex align-items-center justify-content-between flex-wrap">
 								<h5 class="mb-2">Attendance Overview</h5>
 								<div class="dropdown mb-2">
-									<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+									<a href="javascript:void(0);"
+										class="btn btn-white border btn-sm d-inline-flex align-items-center"
+										data-bs-toggle="dropdown">
 										<i class="ti ti-calendar me-1"></i>Today
 									</a>
 									<ul class="dropdown-menu  dropdown-menu-end p-3">
@@ -353,7 +394,8 @@
 								</div>
 								<h6 class="mb-3">Status</h6>
 								<div class="d-flex align-items-center justify-content-between">
-									<p class="f-13 mb-2"><i class="ti ti-circle-filled text-success me-1"></i>Present</p>
+									<p class="f-13 mb-2"><i class="ti ti-circle-filled text-success me-1"></i>Present
+									</p>
 									<p class="f-13 fw-medium text-gray-9 mb-2">59%</p>
 								</div>
 								<div class="d-flex align-items-center justify-content-between">
@@ -361,22 +403,26 @@
 									<p class="f-13 fw-medium text-gray-9 mb-2">21%</p>
 								</div>
 								<div class="d-flex align-items-center justify-content-between">
-									<p class="f-13 mb-2"><i class="ti ti-circle-filled text-warning me-1"></i>Permission</p>
+									<p class="f-13 mb-2"><i class="ti ti-circle-filled text-warning me-1"></i>Permission
+									</p>
 									<p class="f-13 fw-medium text-gray-9 mb-2">2%</p>
 								</div>
 								<div class="d-flex align-items-center justify-content-between mb-2">
 									<p class="f-13 mb-2"><i class="ti ti-circle-filled text-danger me-1"></i>Absent</p>
 									<p class="f-13 fw-medium text-gray-9 mb-2">15%</p>
 								</div>
-								<div class="bg-light br-5 box-shadow-xs p-2 pb-0 d-flex align-items-center justify-content-between flex-wrap">
+								<div
+									class="bg-light br-5 box-shadow-xs p-2 pb-0 d-flex align-items-center justify-content-between flex-wrap">
 									<div class="d-flex align-items-center">
 										<p class="mb-2 me-2">Total Absenties</p>
 										<div class="avatar-list-stacked avatar-group-sm mb-2">
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/profiles/avatar-27.jpg" alt="img">
+												<img class="border border-white" src="assets/img/profiles/avatar-27.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/profiles/avatar-30.jpg" alt="img">
+												<img class="border border-white" src="assets/img/profiles/avatar-30.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
 												<img src="assets/img/profiles/avatar-14.jpg" alt="img">
@@ -384,12 +430,14 @@
 											<span class="avatar avatar-rounded">
 												<img src="assets/img/profiles/avatar-29.jpg" alt="img">
 											</span>
-											<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10" href="javascript:void(0);">
+											<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10"
+												href="javascript:void(0);">
 												+1
 											</a>
 										</div>
 									</div>
-									<a href="leaves.php" class="fs-13 link-primary text-decoration-underline mb-2">View Details</a>
+									<a href="leaves.php" class="fs-13 link-primary text-decoration-underline mb-2">View
+										Details</a>
 								</div>
 							</div>
 						</div>
@@ -403,31 +451,40 @@
 								<h5 class="mb-2">Clock-In/Out</h5>
 								<div class="d-flex align-items-center">
 									<div class="dropdown mb-2">
-										<a href="javascript:void(0);" class="dropdown-toggle btn btn-white btn-sm d-inline-flex align-items-center border-0 fs-13 me-2" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="dropdown-toggle btn btn-white btn-sm d-inline-flex align-items-center border-0 fs-13 me-2"
+											data-bs-toggle="dropdown">
 											All Departments
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">Finance</a>
+												<a href="javascript:void(0);"
+													class="dropdown-item rounded-1">Finance</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">Development</a>
+												<a href="javascript:void(0);"
+													class="dropdown-item rounded-1">Development</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">Marketing</a>
+												<a href="javascript:void(0);"
+													class="dropdown-item rounded-1">Marketing</a>
 											</li>
 										</ul>
 									</div>
 									<div class="dropdown mb-2">
-										<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="btn btn-white border btn-sm d-inline-flex align-items-center"
+											data-bs-toggle="dropdown">
 											<i class="ti ti-calendar me-1"></i>Today
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Month</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Month</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Week</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Week</a>
 											</li>
 											<li>
 												<a href="javascript:void(0);" class="dropdown-item rounded-1">Today</a>
@@ -442,7 +499,8 @@
 										class="d-flex align-items-center justify-content-between mb-3 p-2 border border-dashed br-5">
 										<div class="d-flex align-items-center">
 											<a href="javascript:void(0);" class="avatar flex-shrink-0">
-												<img src="assets/img/profiles/avatar-24.jpg" class="rounded-circle border border-2" alt="img">
+												<img src="assets/img/profiles/avatar-24.jpg"
+													class="rounded-circle border border-2" alt="img">
 											</a>
 											<div class="ms-2">
 												<h6 class="fs-14 fw-medium text-truncate">Daniel Esbella</h6>
@@ -450,14 +508,18 @@
 											</div>
 										</div>
 										<div class="d-flex align-items-center">
-											<a href="javascript:void(0);" class="link-default me-2"><i class="ti ti-clock-share"></i></a>
-											<span class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i class="ti ti-circle-filled fs-5 me-1"></i>09:15</span>
+											<a href="javascript:void(0);" class="link-default me-2"><i
+													class="ti ti-clock-share"></i></a>
+											<span
+												class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i
+													class="ti ti-circle-filled fs-5 me-1"></i>09:15</span>
 										</div>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mb-3 p-2 border br-5">
 										<div class="d-flex align-items-center">
 											<a href="javascript:void(0);" class="avatar flex-shrink-0">
-												<img src="assets/img/profiles/avatar-23.jpg" class="rounded-circle border border-2" alt="img">
+												<img src="assets/img/profiles/avatar-23.jpg"
+													class="rounded-circle border border-2" alt="img">
 											</a>
 											<div class="ms-2">
 												<h6 class="fs-14 fw-medium">Doglas Martini</h6>
@@ -465,15 +527,19 @@
 											</div>
 										</div>
 										<div class="d-flex align-items-center">
-											<a href="javascript:void(0);" class="link-default me-2"><i class="ti ti-clock-share"></i></a>
-											<span class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i class="ti ti-circle-filled fs-5 me-1"></i>09:36</span>
+											<a href="javascript:void(0);" class="link-default me-2"><i
+													class="ti ti-clock-share"></i></a>
+											<span
+												class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i
+													class="ti ti-circle-filled fs-5 me-1"></i>09:36</span>
 										</div>
 									</div>
 									<div class="mb-3 p-2 border br-5">
 										<div class="d-flex align-items-center justify-content-between">
 											<div class="d-flex align-items-center">
 												<a href="javascript:void(0);" class="avatar flex-shrink-0">
-													<img src="assets/img/profiles/avatar-27.jpg" class="rounded-circle border border-2" alt="img">
+													<img src="assets/img/profiles/avatar-27.jpg"
+														class="rounded-circle border border-2" alt="img">
 												</a>
 												<div class="ms-2">
 													<h6 class="fs-14 fw-medium text-truncate">Brian Villalobos</h6>
@@ -481,44 +547,61 @@
 												</div>
 											</div>
 											<div class="d-flex align-items-center">
-												<a href="javascript:void(0);" class="link-default me-2"><i class="ti ti-clock-share"></i></a>
-												<span class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i class="ti ti-circle-filled fs-5 me-1"></i>09:15</span>
+												<a href="javascript:void(0);" class="link-default me-2"><i
+														class="ti ti-clock-share"></i></a>
+												<span
+													class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i
+														class="ti ti-circle-filled fs-5 me-1"></i>09:15</span>
 											</div>
 										</div>
 										<div
 											class="d-flex align-items-center justify-content-between flex-wrap mt-2 border br-5 p-2 pb-0">
 											<div>
-												<p class="mb-1 d-inline-flex align-items-center"><i class="ti ti-circle-filled text-success fs-5 me-1"></i>Clock In</p>
+												<p class="mb-1 d-inline-flex align-items-center"><i
+														class="ti ti-circle-filled text-success fs-5 me-1"></i>Clock In
+												</p>
 												<h6 class="fs-13 fw-normal mb-2">10:30 AM</h6>
 											</div>
 											<div>
-												<p class="mb-1 d-inline-flex align-items-center"><i class="ti ti-circle-filled text-danger fs-5 me-1"></i>Clock Out</p>
+												<p class="mb-1 d-inline-flex align-items-center"><i
+														class="ti ti-circle-filled text-danger fs-5 me-1"></i>Clock Out
+												</p>
 												<h6 class="fs-13 fw-normal mb-2">09:45 AM</h6>
 											</div>
 											<div>
-												<p class="mb-1 d-inline-flex align-items-center"><i class="ti ti-circle-filled text-warning fs-5 me-1"></i>Production</p>
+												<p class="mb-1 d-inline-flex align-items-center"><i
+														class="ti ti-circle-filled text-warning fs-5 me-1"></i>Production
+												</p>
 												<h6 class="fs-13 fw-normal mb-2">09:21 Hrs</h6>
 											</div>
 										</div>
 									</div>
 								</div>
 								<h6 class="mb-2">Late</h6>
-								<div class="d-flex align-items-center justify-content-between mb-3 p-2 border border-dashed br-5">
+								<div
+									class="d-flex align-items-center justify-content-between mb-3 p-2 border border-dashed br-5">
 									<div class="d-flex align-items-center">
 										<span class="avatar flex-shrink-0">
-											<img src="assets/img/profiles/avatar-29.jpg" class="rounded-circle border border-2" alt="img">
+											<img src="assets/img/profiles/avatar-29.jpg"
+												class="rounded-circle border border-2" alt="img">
 										</span>
 										<div class="ms-2">
-											<h6 class="fs-14 fw-medium text-truncate">Anthony Lewis <span class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i class="ti ti-clock-hour-11 me-1"></i>30 Min</span></h6>
+											<h6 class="fs-14 fw-medium text-truncate">Anthony Lewis <span
+													class="fs-10 fw-medium d-inline-flex align-items-center badge badge-success"><i
+														class="ti ti-clock-hour-11 me-1"></i>30 Min</span></h6>
 											<p class="fs-13">Marketing Head</p>
 										</div>
 									</div>
 									<div class="d-flex align-items-center">
-										<a href="javascript:void(0);" class="link-default me-2"><i class="ti ti-clock-share"></i></a>
-										<span class="fs-10 fw-medium d-inline-flex align-items-center badge badge-danger"><i class="ti ti-circle-filled fs-5 me-1"></i>08:35</span>
+										<a href="javascript:void(0);" class="link-default me-2"><i
+												class="ti ti-clock-share"></i></a>
+										<span
+											class="fs-10 fw-medium d-inline-flex align-items-center badge badge-danger"><i
+												class="ti ti-circle-filled fs-5 me-1"></i>08:35</span>
 									</div>
 								</div>
-								<a href="attendance-report.php" class="btn btn-light btn-md w-100">View All Attendance</a>
+								<a href="attendance-report.php" class="btn btn-light btn-md w-100">View All
+									Attendance</a>
 							</div>
 						</div>
 					</div>
@@ -536,12 +619,17 @@
 								<a href="job-list.php" class="btn btn-light btn-md mb-2">View All</a>
 							</div>
 							<div class="card-body">
-								<ul class="nav nav-tabs tab-style-1 nav-justified d-sm-flex d-block p-0 mb-4" role="tablist">
+								<ul class="nav nav-tabs tab-style-1 nav-justified d-sm-flex d-block p-0 mb-4"
+									role="tablist">
 									<li class="nav-item" role="presentation">
-										<a class="nav-link fw-medium" data-bs-toggle="tab" data-bs-target="#openings" aria-current="page" href="#openings" aria-selected="true" role="tab">Openings</a>
+										<a class="nav-link fw-medium" data-bs-toggle="tab" data-bs-target="#openings"
+											aria-current="page" href="#openings" aria-selected="true"
+											role="tab">Openings</a>
 									</li>
 									<li class="nav-item" role="presentation">
-										<a class="nav-link fw-medium active" data-bs-toggle="tab" data-bs-target="#applicants" href="#applicants" aria-selected="false" tabindex="-1" role="tab">Applicants</a>
+										<a class="nav-link fw-medium active" data-bs-toggle="tab"
+											data-bs-target="#applicants" href="#applicants" aria-selected="false"
+											tabindex="-1" role="tab">Applicants</a>
 									</li>
 								</ul>
 								<div class="tab-content">
@@ -549,61 +637,81 @@
 										<div class="d-flex align-items-center justify-content-between mb-4">
 											<div class="d-flex align-items-center">
 												<a href="#" class="avatar overflow-hidden flex-shrink-0 bg-gray-100">
-													<img src="assets/img/icons/apple.svg" class="img-fluid rounded-circle w-auto h-auto" alt="img">
+													<img src="assets/img/icons/apple.svg"
+														class="img-fluid rounded-circle w-auto h-auto" alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="javascript:void(0);">Senior IOS Developer</a></p>
+													<p class="text-dark fw-medium text-truncate mb-0"><a
+															href="javascript:void(0);">Senior IOS Developer</a></p>
 													<span class="fs-12">No of Openings : 25 </span>
 												</div>
 											</div>
-											<a href="javascript:void(0);" class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i class="ti ti-edit"></i></a>
+											<a href="javascript:void(0);"
+												class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i
+													class="ti ti-edit"></i></a>
 										</div>
 										<div class="d-flex align-items-center justify-content-between mb-4">
 											<div class="d-flex align-items-center">
 												<a href="#" class="avatar overflow-hidden flex-shrink-0 bg-gray-100">
-													<img src="assets/img/icons/php.svg" class="img-fluid w-auto h-auto" alt="img">
+													<img src="assets/img/icons/php.svg" class="img-fluid w-auto h-auto"
+														alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="javascript:void(0);">Junior PHP Developer</a></p>
+													<p class="text-dark fw-medium text-truncate mb-0"><a
+															href="javascript:void(0);">Junior PHP Developer</a></p>
 													<span class="fs-12">No of Openings : 20 </span>
 												</div>
 											</div>
-											<a href="javascript:void(0);" class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i class="ti ti-edit"></i></a>
+											<a href="javascript:void(0);"
+												class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i
+													class="ti ti-edit"></i></a>
 										</div>
 										<div class="d-flex align-items-center justify-content-between mb-4">
 											<div class="d-flex align-items-center">
 												<a href="#" class="avatar overflow-hidden flex-shrink-0 bg-gray-100">
-													<img src="assets/img/icons/react.svg" class="img-fluid w-auto h-auto" alt="img">
+													<img src="assets/img/icons/react.svg"
+														class="img-fluid w-auto h-auto" alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="javascript:void(0);">Junior React Developer </a></p>
+													<p class="text-dark fw-medium text-truncate mb-0"><a
+															href="javascript:void(0);">Junior React Developer </a></p>
 													<span class="fs-12">No of Openings : 30 </span>
 												</div>
 											</div>
-											<a href="javascript:void(0);" class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i class="ti ti-edit"></i></a>
+											<a href="javascript:void(0);"
+												class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i
+													class="ti ti-edit"></i></a>
 										</div>
 										<div class="d-flex align-items-center justify-content-between mb-0">
 											<div class="d-flex align-items-center">
 												<a href="#" class="avatar overflow-hidden flex-shrink-0 bg-gray-100">
-													<img src="assets/img/icons/laravel-icon.svg" class="img-fluid w-auto h-auto" alt="img">
+													<img src="assets/img/icons/laravel-icon.svg"
+														class="img-fluid w-auto h-auto" alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="javascript:void(0);">Senior Laravel Developer</a></p>
+													<p class="text-dark fw-medium text-truncate mb-0"><a
+															href="javascript:void(0);">Senior Laravel Developer</a></p>
 													<span class="fs-12">No of Openings : 40 </span>
 												</div>
 											</div>
-											<a href="javascript:void(0);" class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i class="ti ti-edit"></i></a>
+											<a href="javascript:void(0);"
+												class="btn btn-light btn-sm p-0 btn-icon d-flex align-items-center justify-content-center"><i
+													class="ti ti-edit"></i></a>
 										</div>
 									</div>
 									<div class="tab-pane fade show active" id="applicants">
 										<div class="d-flex align-items-center justify-content-between mb-4">
 											<div class="d-flex align-items-center">
 												<a href="#" class="avatar overflow-hidden flex-shrink-0">
-													<img src="assets/img/users/user-09.jpg" class="img-fluid rounded-circle" alt="img">
+													<img src="assets/img/users/user-09.jpg"
+														class="img-fluid rounded-circle" alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="#">Brian Villalobos</a></p>
-													<span class="fs-13 d-inline-flex align-items-center">Exp : 5+ Years<i class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
+													<p class="text-dark fw-medium text-truncate mb-0"><a href="#">Brian
+															Villalobos</a></p>
+													<span class="fs-13 d-inline-flex align-items-center">Exp : 5+
+														Years<i
+															class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
 												</div>
 											</div>
 											<span class="badge badge-secondary badge-xs">UI/UX Designer</span>
@@ -611,11 +719,15 @@
 										<div class="d-flex align-items-center justify-content-between mb-4">
 											<div class="d-flex align-items-center">
 												<a href="#" class="avatar overflow-hidden flex-shrink-0">
-													<img src="assets/img/users/user-32.jpg" class="img-fluid rounded-circle" alt="img">
+													<img src="assets/img/users/user-32.jpg"
+														class="img-fluid rounded-circle" alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="#">Anthony Lewis</a></p>
-													<span class="fs-13 d-inline-flex align-items-center">Exp : 4+ Years<i class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
+													<p class="text-dark fw-medium text-truncate mb-0"><a
+															href="#">Anthony Lewis</a></p>
+													<span class="fs-13 d-inline-flex align-items-center">Exp : 4+
+														Years<i
+															class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
 												</div>
 											</div>
 											<span class="badge badge-info badge-xs">Python Developer</span>
@@ -623,23 +735,32 @@
 										<div class="d-flex align-items-center justify-content-between mb-4">
 											<div class="d-flex align-items-center">
 												<a href="#" class="avatar overflow-hidden flex-shrink-0">
-													<img src="assets/img/users/user-32.jpg" class="img-fluid rounded-circle" alt="img">
+													<img src="assets/img/users/user-32.jpg"
+														class="img-fluid rounded-circle" alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="#">Stephan Peralt</a></p>
-													<span class="fs-13 d-inline-flex align-items-center">Exp : 6+ Years<i class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
+													<p class="text-dark fw-medium text-truncate mb-0"><a
+															href="#">Stephan Peralt</a></p>
+													<span class="fs-13 d-inline-flex align-items-center">Exp : 6+
+														Years<i
+															class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
 												</div>
 											</div>
 											<span class="badge badge-pink badge-xs">Android Developer</span>
 										</div>
 										<div class="d-flex align-items-center justify-content-between mb-0">
 											<div class="d-flex align-items-center">
-												<a href="javascript:void(0);" class="avatar overflow-hidden flex-shrink-0">
-													<img src="assets/img/users/user-34.jpg" class="img-fluid rounded-circle" alt="img">
+												<a href="javascript:void(0);"
+													class="avatar overflow-hidden flex-shrink-0">
+													<img src="assets/img/users/user-34.jpg"
+														class="img-fluid rounded-circle" alt="img">
 												</a>
 												<div class="ms-2 overflow-hidden">
-													<p class="text-dark fw-medium text-truncate mb-0"><a href="javascript:void(0);">Doglas Martini</a></p>
-													<span class="fs-13 d-inline-flex align-items-center">Exp : 2+ Years<i class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
+													<p class="text-dark fw-medium text-truncate mb-0"><a
+															href="javascript:void(0);">Doglas Martini</a></p>
+													<span class="fs-13 d-inline-flex align-items-center">Exp : 2+
+														Years<i
+															class="ti ti-circle-filled fs-4 mx-2 text-primary"></i>USA</span>
 												</div>
 											</div>
 											<span class="badge badge-purple badge-xs">React Developer</span>
@@ -672,10 +793,12 @@
 												<td>
 													<div class="d-flex align-items-center">
 														<a href="javascript:void(0);" class="avatar">
-															<img src="assets/img/users/user-32.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-32.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="javascript:void(0);">Anthony Lewis</a></h6>
+															<h6 class="fw-medium"><a href="javascript:void(0);">Anthony
+																	Lewis</a></h6>
 															<span class="fs-12">Finance</span>
 														</div>
 													</div>
@@ -690,7 +813,8 @@
 												<td>
 													<div class="d-flex align-items-center">
 														<a href="#" class="avatar">
-															<img src="assets/img/users/user-09.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-09.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
 															<h6 class="fw-medium"><a href="#">Brian Villalobos</a></h6>
@@ -699,14 +823,16 @@
 													</div>
 												</td>
 												<td>
-													<span class="badge badge-danger-transparent badge-xs">Development</span>
+													<span
+														class="badge badge-danger-transparent badge-xs">Development</span>
 												</td>
 											</tr>
 											<tr>
 												<td>
 													<div class="d-flex align-items-center">
 														<a href="#" class="avatar">
-															<img src="assets/img/users/user-01.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-01.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
 															<h6 class="fw-medium"><a href="#">Stephan Peralt</a></h6>
@@ -722,10 +848,12 @@
 												<td>
 													<div class="d-flex align-items-center">
 														<a href="javascript:void(0);" class="avatar">
-															<img src="assets/img/users/user-34.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-34.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="javascript:void(0);">Doglas Martini</a></h6>
+															<h6 class="fw-medium"><a href="javascript:void(0);">Doglas
+																	Martini</a></h6>
 															<span class="fs-12">Project Manager</span>
 														</div>
 													</div>
@@ -738,16 +866,19 @@
 												<td class="border-0">
 													<div class="d-flex align-items-center">
 														<a href="javascript:void(0);" class="avatar">
-															<img src="assets/img/users/user-37.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-37.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="javascript:void(0);">Anthony Lewis</a></h6>
+															<h6 class="fw-medium"><a href="javascript:void(0);">Anthony
+																	Lewis</a></h6>
 															<span class="fs-12">UI/UX Designer</span>
 														</div>
 													</div>
 												</td>
 												<td class="border-0">
-													<span class="badge badge-pink-transparent badge-xs">UI/UX Design</span>
+													<span class="badge badge-pink-transparent badge-xs">UI/UX
+														Design</span>
 												</td>
 											</tr>
 										</tbody>
@@ -765,22 +896,29 @@
 								<h5 class="mb-2">Todo</h5>
 								<div class="d-flex align-items-center">
 									<div class="dropdown mb-2 me-2">
-										<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="btn btn-white border btn-sm d-inline-flex align-items-center"
+											data-bs-toggle="dropdown">
 											<i class="ti ti-calendar me-1"></i>Today
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Month</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Month</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Week</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Week</a>
 											</li>
 											<li>
 												<a href="javascript:void(0);" class="dropdown-item rounded-1">Today</a>
 											</li>
 										</ul>
 									</div>
-									<a href="#" class="btn btn-primary btn-icon btn-xs rounded-circle d-flex align-items-center justify-content-center p-0 mb-2" data-bs-toggle="modal" data-bs-target="#add_todo"><i class="ti ti-plus fs-16"></i></a>
+									<a href="#"
+										class="btn btn-primary btn-icon btn-xs rounded-circle d-flex align-items-center justify-content-center p-0 mb-2"
+										data-bs-toggle="modal" data-bs-target="#add_todo"><i
+											class="ti ti-plus fs-16"></i></a>
 								</div>
 							</div>
 							<div class="card-body">
@@ -795,7 +933,8 @@
 									<i class="ti ti-grid-dots me-2"></i>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" id="todo2">
-										<label class="form-check-label fw-medium" for="todo2">Add Meeting to Client</label>
+										<label class="form-check-label fw-medium" for="todo2">Add Meeting to
+											Client</label>
 									</div>
 								</div>
 								<div class="d-flex align-items-center todo-item border p-2 br-5 mb-2">
@@ -823,7 +962,8 @@
 									<i class="ti ti-grid-dots me-2"></i>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" id="todo6">
-										<label class="form-check-label fw-medium" for="todo6">Add Policy for Increment </label>
+										<label class="form-check-label fw-medium" for="todo6">Add Policy for Increment
+										</label>
 									</div>
 								</div>
 							</div>
@@ -842,18 +982,23 @@
 								<h5 class="mb-2">Sales Overview</h5>
 								<div class="d-flex align-items-center">
 									<div class="dropdown mb-2">
-										<a href="javascript:void(0);" class="dropdown-toggle btn btn-white border-0 btn-sm d-inline-flex align-items-center fs-13 me-2" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="dropdown-toggle btn btn-white border-0 btn-sm d-inline-flex align-items-center fs-13 me-2"
+											data-bs-toggle="dropdown">
 											All Departments
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">UI/UX Designer</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">UI/UX
+													Designer</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">HR Manager</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">HR
+													Manager</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">Junior Tester</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">Junior
+													Tester</a>
 											</li>
 										</ul>
 									</div>
@@ -862,8 +1007,10 @@
 							<div class="card-body pb-0">
 								<div class="d-flex align-items-center justify-content-between flex-wrap">
 									<div class="d-flex align-items-center mb-1">
-										<p class="fs-13 text-gray-9 me-3 mb-0"><i class="ti ti-square-filled me-2 text-primary"></i>Income</p>
-										<p class="fs-13 text-gray-9 mb-0"><i class="ti ti-square-filled me-2 text-gray-2"></i>Expenses</p>
+										<p class="fs-13 text-gray-9 me-3 mb-0"><i
+												class="ti ti-square-filled me-2 text-primary"></i>Income</p>
+										<p class="fs-13 text-gray-9 mb-0"><i
+												class="ti ti-square-filled me-2 text-gray-2"></i>Expenses</p>
 									</div>
 									<p class="fs-13 mb-1">Last Updated at 11:30PM</p>
 								</div>
@@ -880,12 +1027,15 @@
 								<h5 class="mb-2">Invoices</h5>
 								<div class="d-flex align-items-center">
 									<div class="dropdown mb-2">
-										<a href="javascript:void(0);" class="dropdown-toggle btn btn-white btn-sm d-inline-flex align-items-center fs-13 me-2 border-0" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="dropdown-toggle btn btn-white btn-sm d-inline-flex align-items-center fs-13 me-2 border-0"
+											data-bs-toggle="dropdown">
 											Invoices
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">Invoices</a>
+												<a href="javascript:void(0);"
+													class="dropdown-item rounded-1">Invoices</a>
 											</li>
 											<li>
 												<a href="javascript:void(0);" class="dropdown-item rounded-1">Paid</a>
@@ -896,15 +1046,19 @@
 										</ul>
 									</div>
 									<div class="dropdown mb-2">
-										<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="btn btn-white border btn-sm d-inline-flex align-items-center"
+											data-bs-toggle="dropdown">
 											<i class="ti ti-calendar me-1"></i>This Week
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Month</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Month</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Week</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Week</a>
 											</li>
 											<li>
 												<a href="javascript:void(0);" class="dropdown-item rounded-1">Today</a>
@@ -921,11 +1075,15 @@
 												<td class="px-0">
 													<div class="d-flex align-items-center">
 														<a href="invoice-details.php" class="avatar">
-															<img src="assets/img/users/user-39.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-39.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="invoice-details.php">Redesign Website</a></h6>
-															<span class="fs-13 d-inline-flex align-items-center">#INVOO2<i class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Logistics</span>
+															<h6 class="fw-medium"><a href="invoice-details.php">Redesign
+																	Website</a></h6>
+															<span
+																class="fs-13 d-inline-flex align-items-center">#INVOO2<i
+																	class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Logistics</span>
 														</div>
 													</div>
 												</td>
@@ -934,18 +1092,25 @@
 													<h6 class="fw-medium">$3560</h6>
 												</td>
 												<td class="px-0 text-end">
-													<span class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
+													<span
+														class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i
+															class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
 												</td>
 											</tr>
 											<tr>
 												<td class="px-0">
 													<div class="d-flex align-items-center">
 														<a href="invoice-details.php" class="avatar">
-															<img src="assets/img/users/user-40.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-40.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="invoice-details.php">Module Completion</a></h6>
-															<span class="fs-13 d-inline-flex align-items-center">#INVOO5<i class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Yip Corp</span>
+															<h6 class="fw-medium"><a href="invoice-details.php">Module
+																	Completion</a></h6>
+															<span
+																class="fs-13 d-inline-flex align-items-center">#INVOO5<i
+																	class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Yip
+																Corp</span>
 														</div>
 													</div>
 												</td>
@@ -954,18 +1119,25 @@
 													<h6 class="fw-medium">$4175</h6>
 												</td>
 												<td class="px-0 text-end">
-													<span class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
+													<span
+														class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i
+															class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
 												</td>
 											</tr>
 											<tr>
 												<td class="px-0">
 													<div class="d-flex align-items-center">
 														<a href="invoice-details.php" class="avatar">
-															<img src="assets/img/users/user-55.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-55.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="invoice-details.php">Change on Emp Module</a></h6>
-															<span class="fs-13 d-inline-flex align-items-center">#INVOO3<i class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Ignis LLP</span>
+															<h6 class="fw-medium"><a href="invoice-details.php">Change
+																	on Emp Module</a></h6>
+															<span
+																class="fs-13 d-inline-flex align-items-center">#INVOO3<i
+																	class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Ignis
+																LLP</span>
 														</div>
 													</div>
 												</td>
@@ -974,18 +1146,25 @@
 													<h6 class="fw-medium">$6985</h6>
 												</td>
 												<td class="px-0 text-end">
-													<span class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
+													<span
+														class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i
+															class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
 												</td>
 											</tr>
 											<tr>
 												<td class="px-0">
 													<div class="d-flex align-items-center">
 														<a href="invoice-details.php" class="avatar">
-															<img src="assets/img/users/user-42.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-42.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="invoice-details.php">Changes on the Board</a></h6>
-															<span class="fs-13 d-inline-flex align-items-center">#INVOO2<i class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Ignis LLP</span>
+															<h6 class="fw-medium"><a href="invoice-details.php">Changes
+																	on the Board</a></h6>
+															<span
+																class="fs-13 d-inline-flex align-items-center">#INVOO2<i
+																	class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>Ignis
+																LLP</span>
 														</div>
 													</div>
 												</td>
@@ -994,18 +1173,25 @@
 													<h6 class="fw-medium">$1457</h6>
 												</td>
 												<td class="px-0 text-end">
-													<span class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
+													<span
+														class="badge badge-danger-transparent badge-xs d-inline-flex align-items-center"><i
+															class="ti ti-circle-filled fs-5 me-1"></i>Unpaid</span>
 												</td>
 											</tr>
 											<tr>
 												<td class="px-0">
 													<div class="d-flex align-items-center">
 														<a href="invoice-details.php" class="avatar">
-															<img src="assets/img/users/user-44.jpg" class="img-fluid rounded-circle" alt="img">
+															<img src="assets/img/users/user-44.jpg"
+																class="img-fluid rounded-circle" alt="img">
 														</a>
 														<div class="ms-2">
-															<h6 class="fw-medium"><a href="invoice-details.php">Hospital Management</a></h6>
-															<span class="fs-13 d-inline-flex align-items-center">#INVOO6<i class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>HCL Corp</span>
+															<h6 class="fw-medium"><a href="invoice-details.php">Hospital
+																	Management</a></h6>
+															<span
+																class="fs-13 d-inline-flex align-items-center">#INVOO6<i
+																	class="ti ti-circle-filled fs-4 mx-1 text-primary"></i>HCL
+																Corp</span>
 														</div>
 													</div>
 												</td>
@@ -1014,7 +1200,9 @@
 													<h6 class="fw-medium">$6458</h6>
 												</td>
 												<td class="px-0 text-end">
-													<span class="badge badge-success-transparent badge-xs d-inline-flex align-items-center"><i class="ti ti-circle-filled fs-5 me-1"></i>Paid</span>
+													<span
+														class="badge badge-success-transparent badge-xs d-inline-flex align-items-center"><i
+															class="ti ti-circle-filled fs-5 me-1"></i>Paid</span>
 												</td>
 											</tr>
 										</tbody>
@@ -1037,15 +1225,19 @@
 								<h5 class="mb-2">Projects</h5>
 								<div class="d-flex align-items-center">
 									<div class="dropdown mb-2">
-										<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="btn btn-white border btn-sm d-inline-flex align-items-center"
+											data-bs-toggle="dropdown">
 											<i class="ti ti-calendar me-1"></i>This Week
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Month</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Month</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Week</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Week</a>
 											</li>
 											<li>
 												<a href="javascript:void(0);" class="dropdown-item rounded-1">Today</a>
@@ -1071,30 +1263,36 @@
 											<tr>
 												<td><a href="project-details.php" class="link-default">PRO-001</a></td>
 												<td>
-													<h6 class="fw-medium"><a href="project-details.php">Office Management App</a></h6>
+													<h6 class="fw-medium"><a href="project-details.php">Office
+															Management App</a></h6>
 												</td>
 												<td>
 													<div class="avatar-list-stacked avatar-group-sm">
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-02.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-02.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-03.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-03.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-05.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-05.jpg" alt="img">
 														</span>
 													</div>
 												</td>
 												<td>
 													<p class="mb-1">15/255 Hrs</p>
-													<div class="progress progress-xs w-100" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+													<div class="progress progress-xs w-100" role="progressbar"
+														aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
 														<div class="progress-bar bg-primary" style="width: 40%"></div>
 													</div>
 												</td>
 												<td>12/09/2024</td>
 												<td>
-													<span class="badge badge-danger d-inline-flex align-items-center badge-xs">
+													<span
+														class="badge badge-danger d-inline-flex align-items-center badge-xs">
 														<i class="ti ti-point-filled me-1"></i>High
 													</span>
 												</td>
@@ -1102,33 +1300,40 @@
 											<tr>
 												<td><a href="project-details.php" class="link-default">PRO-002</a></td>
 												<td>
-													<h6 class="fw-medium"><a href="project-details.php">Clinic Management </a></h6>
+													<h6 class="fw-medium"><a href="project-details.php">Clinic
+															Management </a></h6>
 												</td>
 												<td>
 													<div class="avatar-list-stacked avatar-group-sm">
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-06.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-06.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-07.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-07.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-08.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-08.jpg" alt="img">
 														</span>
-														<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium" href="javascript:void(0);">
+														<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium"
+															href="javascript:void(0);">
 															+1
 														</a>
 													</div>
 												</td>
 												<td>
 													<p class="mb-1">15/255 Hrs</p>
-													<div class="progress progress-xs w-100" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+													<div class="progress progress-xs w-100" role="progressbar"
+														aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
 														<div class="progress-bar bg-primary" style="width: 40%"></div>
 													</div>
 												</td>
 												<td>24/10/2024</td>
 												<td>
-													<span class="badge badge-success d-inline-flex align-items-center badge-xs">
+													<span
+														class="badge badge-success d-inline-flex align-items-center badge-xs">
 														<i class="ti ti-point-filled me-1"></i>Low
 													</span>
 												</td>
@@ -1136,30 +1341,36 @@
 											<tr>
 												<td><a href="project-details.php" class="link-default">PRO-003</a></td>
 												<td>
-													<h6 class="fw-medium"><a href="project-details.php">Educational Platform</a></h6>
+													<h6 class="fw-medium"><a href="project-details.php">Educational
+															Platform</a></h6>
 												</td>
 												<td>
 													<div class="avatar-list-stacked avatar-group-sm">
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-06.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-06.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-08.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-08.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-09.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-09.jpg" alt="img">
 														</span>
 													</div>
 												</td>
 												<td>
 													<p class="mb-1">40/255 Hrs</p>
-													<div class="progress progress-xs w-100" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+													<div class="progress progress-xs w-100" role="progressbar"
+														aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
 														<div class="progress-bar bg-primary" style="width: 50%"></div>
 													</div>
 												</td>
 												<td>18/02/2024</td>
 												<td>
-													<span class="badge badge-pink d-inline-flex align-items-center badge-xs">
+													<span
+														class="badge badge-pink d-inline-flex align-items-center badge-xs">
 														<i class="ti ti-point-filled me-1"></i>Medium
 													</span>
 												</td>
@@ -1167,30 +1378,36 @@
 											<tr>
 												<td><a href="project-details.php" class="link-default">PRO-004</a></td>
 												<td>
-													<h6 class="fw-medium"><a href="project-details.php">Chat & Call Mobile App</a></h6>
+													<h6 class="fw-medium"><a href="project-details.php">Chat & Call
+															Mobile App</a></h6>
 												</td>
 												<td>
 													<div class="avatar-list-stacked avatar-group-sm">
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-11.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-11.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-12.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-12.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-13.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-13.jpg" alt="img">
 														</span>
 													</div>
 												</td>
 												<td>
 													<p class="mb-1">35/155 Hrs</p>
-													<div class="progress progress-xs w-100" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+													<div class="progress progress-xs w-100" role="progressbar"
+														aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
 														<div class="progress-bar bg-primary" style="width: 50%"></div>
 													</div>
 												</td>
 												<td>19/02/2024</td>
 												<td>
-													<span class="badge badge-danger d-inline-flex align-items-center badge-xs">
+													<span
+														class="badge badge-danger d-inline-flex align-items-center badge-xs">
 														<i class="ti ti-point-filled me-1"></i>High
 													</span>
 												</td>
@@ -1198,30 +1415,36 @@
 											<tr>
 												<td><a href="project-details.php" class="link-default">PRO-005</a></td>
 												<td>
-													<h6 class="fw-medium"><a href="project-details.php">Travel Planning Website</a></h6>
+													<h6 class="fw-medium"><a href="project-details.php">Travel Planning
+															Website</a></h6>
 												</td>
 												<td>
 													<div class="avatar-list-stacked avatar-group-sm">
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-17.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-17.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-18.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-18.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-19.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-19.jpg" alt="img">
 														</span>
 													</div>
 												</td>
 												<td>
 													<p class="mb-1">50/235 Hrs</p>
-													<div class="progress progress-xs w-100" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+													<div class="progress progress-xs w-100" role="progressbar"
+														aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
 														<div class="progress-bar bg-primary" style="width: 50%"></div>
 													</div>
 												</td>
 												<td>18/02/2024</td>
 												<td>
-													<span class="badge badge-pink d-inline-flex align-items-center badge-xs">
+													<span
+														class="badge badge-pink d-inline-flex align-items-center badge-xs">
 														<i class="ti ti-point-filled me-1"></i>Medium
 													</span>
 												</td>
@@ -1229,64 +1452,78 @@
 											<tr>
 												<td><a href="project-details.php" class="link-default">PRO-006</a></td>
 												<td>
-													<h6 class="fw-medium"><a href="project-details.php">Service Booking Software</a></h6>
+													<h6 class="fw-medium"><a href="project-details.php">Service Booking
+															Software</a></h6>
 												</td>
 												<td>
 													<div class="avatar-list-stacked avatar-group-sm">
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-06.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-06.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-08.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-08.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-09.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-09.jpg" alt="img">
 														</span>
 													</div>
 												</td>
 												<td>
 													<p class="mb-1">40/255 Hrs</p>
-													<div class="progress progress-xs w-100" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+													<div class="progress progress-xs w-100" role="progressbar"
+														aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
 														<div class="progress-bar bg-primary" style="width: 50%"></div>
 													</div>
 												</td>
 												<td>20/02/2024</td>
 												<td>
-													<span class="badge badge-success d-inline-flex align-items-center badge-xs">
+													<span
+														class="badge badge-success d-inline-flex align-items-center badge-xs">
 														<i class="ti ti-point-filled me-1"></i>Low
 													</span>
 												</td>
 											</tr>
 											<tr>
-												<td class="border-0"><a href="project-details.php" class="link-default">PRO-008</a></td>
+												<td class="border-0"><a href="project-details.php"
+														class="link-default">PRO-008</a></td>
 												<td class="border-0">
-													<h6 class="fw-medium"><a href="project-details.php">Travel Planning Website</a></h6>
+													<h6 class="fw-medium"><a href="project-details.php">Travel Planning
+															Website</a></h6>
 												</td>
 												<td class="border-0">
 													<div class="avatar-list-stacked avatar-group-sm">
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-15.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-15.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-16.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-16.jpg" alt="img">
 														</span>
 														<span class="avatar avatar-rounded">
-															<img class="border border-white" src="assets/img/profiles/avatar-17.jpg" alt="img">
+															<img class="border border-white"
+																src="assets/img/profiles/avatar-17.jpg" alt="img">
 														</span>
-														<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium" href="javascript:void(0);">
+														<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium"
+															href="javascript:void(0);">
 															+2
 														</a>
 													</div>
 												</td>
 												<td class="border-0">
 													<p class="mb-1">15/255 Hrs</p>
-													<div class="progress progress-xs w-100" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
+													<div class="progress progress-xs w-100" role="progressbar"
+														aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
 														<div class="progress-bar bg-primary" style="width: 45%"></div>
 													</div>
 												</td>
 												<td class="border-0">17/10/2024</td>
 												<td class="border-0">
-													<span class="badge badge-pink d-inline-flex align-items-center badge-xs">
+													<span
+														class="badge badge-pink d-inline-flex align-items-center badge-xs">
 														<i class="ti ti-point-filled me-1"></i>Medium
 													</span>
 												</td>
@@ -1306,15 +1543,19 @@
 								<h5 class="mb-2">Tasks Statistics</h5>
 								<div class="d-flex align-items-center">
 									<div class="dropdown mb-2">
-										<a href="javascript:void(0);" class="btn btn-white border btn-sm d-inline-flex align-items-center" data-bs-toggle="dropdown">
+										<a href="javascript:void(0);"
+											class="btn btn-white border btn-sm d-inline-flex align-items-center"
+											data-bs-toggle="dropdown">
 											<i class="ti ti-calendar me-1"></i>This Week
 										</a>
 										<ul class="dropdown-menu  dropdown-menu-end p-3">
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Month</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Month</a>
 											</li>
 											<li>
-												<a href="javascript:void(0);" class="dropdown-item rounded-1">This Week</a>
+												<a href="javascript:void(0);" class="dropdown-item rounded-1">This
+													Week</a>
 											</li>
 											<li>
 												<a href="javascript:void(0);" class="dropdown-item rounded-1">Today</a>
@@ -1333,19 +1574,23 @@
 								</div>
 								<div class="d-flex align-items-center flex-wrap">
 									<div class="border-end text-center me-2 pe-2 mb-3">
-										<p class="fs-13 d-inline-flex align-items-center mb-1"><i class="ti ti-circle-filled fs-10 me-1 text-warning"></i>Ongoing</p>
+										<p class="fs-13 d-inline-flex align-items-center mb-1"><i
+												class="ti ti-circle-filled fs-10 me-1 text-warning"></i>Ongoing</p>
 										<h5>24%</h5>
 									</div>
 									<div class="border-end text-center me-2 pe-2 mb-3">
-										<p class="fs-13 d-inline-flex align-items-center mb-1"><i class="ti ti-circle-filled fs-10 me-1 text-info"></i>On Hold </p>
+										<p class="fs-13 d-inline-flex align-items-center mb-1"><i
+												class="ti ti-circle-filled fs-10 me-1 text-info"></i>On Hold </p>
 										<h5>10%</h5>
 									</div>
 									<div class="border-end text-center me-2 pe-2 mb-3">
-										<p class="fs-13 d-inline-flex align-items-center mb-1"><i class="ti ti-circle-filled fs-10 me-1 text-danger"></i>Overdue</p>
+										<p class="fs-13 d-inline-flex align-items-center mb-1"><i
+												class="ti ti-circle-filled fs-10 me-1 text-danger"></i>Overdue</p>
 										<h5>16%</h5>
 									</div>
 									<div class="text-center me-2 pe-2 mb-3">
-										<p class="fs-13 d-inline-flex align-items-center mb-1"><i class="ti ti-circle-filled fs-10 me-1 text-success"></i>Ongoing</p>
+										<p class="fs-13 d-inline-flex align-items-center mb-1"><i
+												class="ti ti-circle-filled fs-10 me-1 text-success"></i>Ongoing</p>
 										<h5>40%</h5>
 									</div>
 								</div>
@@ -1377,27 +1622,35 @@
 									<span class="badge badge-secondary badge-xs mb-1">UI/ UX Designer</span>
 									<h6 class="mb-2 text-truncate">Interview Candidates - UI/UX Designer</h6>
 									<div class="d-flex align-items-center flex-wrap">
-										<p class="fs-13 mb-1 me-2"><i class="ti ti-calendar-event me-2"></i>Thu, 15 Feb 2025</p>
-										<p class="fs-13 mb-1"><i class="ti ti-clock-hour-11 me-2"></i>01:00 PM - 02:20 PM</p>
+										<p class="fs-13 mb-1 me-2"><i class="ti ti-calendar-event me-2"></i>Thu, 15 Feb
+											2025</p>
+										<p class="fs-13 mb-1"><i class="ti ti-clock-hour-11 me-2"></i>01:00 PM - 02:20
+											PM</p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between border-top mt-2 pt-3">
 										<div class="avatar-list-stacked avatar-group-sm">
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-49.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-49.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-13.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-13.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-11.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-11.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-22.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-22.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-58.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-58.jpg"
+													alt="img">
 											</span>
-											<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium" href="javascript:void(0);">
+											<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium"
+												href="javascript:void(0);">
 												+3
 											</a>
 										</div>
@@ -1408,27 +1661,35 @@
 									<span class="badge badge-dark badge-xs mb-1">IOS Developer</span>
 									<h6 class="mb-2 text-truncate">Interview Candidates - IOS Developer</h6>
 									<div class="d-flex align-items-center flex-wrap">
-										<p class="fs-13 mb-1 me-2"><i class="ti ti-calendar-event me-2"></i>Thu, 15 Feb 2025</p>
-										<p class="fs-13 mb-1"><i class="ti ti-clock-hour-11 me-2"></i>02:00 PM - 04:20 PM</p>
+										<p class="fs-13 mb-1 me-2"><i class="ti ti-calendar-event me-2"></i>Thu, 15 Feb
+											2025</p>
+										<p class="fs-13 mb-1"><i class="ti ti-clock-hour-11 me-2"></i>02:00 PM - 04:20
+											PM</p>
 									</div>
 									<div class="d-flex align-items-center justify-content-between border-top mt-2 pt-3">
 										<div class="avatar-list-stacked avatar-group-sm">
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-49.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-49.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-13.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-13.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-11.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-11.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-22.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-22.jpg"
+													alt="img">
 											</span>
 											<span class="avatar avatar-rounded">
-												<img class="border border-white" src="assets/img/users/user-58.jpg" alt="img">
+												<img class="border border-white" src="assets/img/users/user-58.jpg"
+													alt="img">
 											</span>
-											<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium" href="javascript:void(0);">
+											<a class="avatar bg-primary avatar-rounded text-fixed-white fs-10 fw-medium"
+												href="javascript:void(0);">
 												+3
 											</a>
 										</div>
@@ -1452,14 +1713,17 @@
 									<div class="d-flex justify-content-between">
 										<div class="d-flex align-items-center w-100">
 											<a href="javscript:void(0);" class="avatar  flex-shrink-0">
-												<img src="assets/img/users/user-38.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-38.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 flex-fill">
 												<div class="d-flex align-items-center justify-content-between">
-													<h6 class="fs-medium text-truncate"><a href="javscript:void(0);">Matt Morgan</a></h6>
+													<h6 class="fs-medium text-truncate"><a
+															href="javscript:void(0);">Matt Morgan</a></h6>
 													<p class="fs-13">05:30 PM</p>
 												</div>
-												<p class="fs-13">Added New Project <span class="text-primary">HRMS Dashboard</span></p>
+												<p class="fs-13">Added New Project <span class="text-primary">HRMS
+														Dashboard</span></p>
 											</div>
 										</div>
 									</div>
@@ -1468,11 +1732,13 @@
 									<div class="d-flex justify-content-between">
 										<div class="d-flex align-items-center w-100">
 											<a href="javscript:void(0);" class="avatar  flex-shrink-0">
-												<img src="assets/img/users/user-01.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-01.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 flex-fill">
 												<div class="d-flex align-items-center justify-content-between">
-													<h6 class="fs-medium text-truncate"><a href="javscript:void(0);">Jay Ze</a></h6>
+													<h6 class="fs-medium text-truncate"><a href="javscript:void(0);">Jay
+															Ze</a></h6>
 													<p class="fs-13">05:00 PM</p>
 												</div>
 												<p class="fs-13">Commented on Uploaded Document</p>
@@ -1484,11 +1750,13 @@
 									<div class="d-flex justify-content-between">
 										<div class="d-flex align-items-center w-100">
 											<a href="javscript:void(0);" class="avatar  flex-shrink-0">
-												<img src="assets/img/users/user-19.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-19.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 flex-fill">
 												<div class="d-flex align-items-center justify-content-between">
-													<h6 class="fs-medium text-truncate"><a href="javscript:void(0);">Mary Donald</a></h6>
+													<h6 class="fs-medium text-truncate"><a
+															href="javscript:void(0);">Mary Donald</a></h6>
 													<p class="fs-13">05:30 PM</p>
 												</div>
 												<p class="fs-13">Approved Task Projects</p>
@@ -1500,11 +1768,13 @@
 									<div class="d-flex justify-content-between">
 										<div class="d-flex align-items-center w-100">
 											<a href="javscript:void(0);" class="avatar  flex-shrink-0">
-												<img src="assets/img/users/user-11.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-11.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 flex-fill">
 												<div class="d-flex align-items-center justify-content-between">
-													<h6 class="fs-medium text-truncate"><a href="javscript:void(0);">George David</a></h6>
+													<h6 class="fs-medium text-truncate"><a
+															href="javscript:void(0);">George David</a></h6>
 													<p class="fs-13">06:00 PM</p>
 												</div>
 												<p class="fs-13">Requesting Access to Module Tickets</p>
@@ -1516,11 +1786,13 @@
 									<div class="d-flex justify-content-between">
 										<div class="d-flex align-items-center w-100">
 											<a href="javscript:void(0);" class="avatar  flex-shrink-0">
-												<img src="assets/img/users/user-20.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-20.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 flex-fill">
 												<div class="d-flex align-items-center justify-content-between">
-													<h6 class="fs-medium text-truncate"><a href="javscript:void(0);">Aaron Zeen</a></h6>
+													<h6 class="fs-medium text-truncate"><a
+															href="javscript:void(0);">Aaron Zeen</a></h6>
 													<p class="fs-13">06:30 PM</p>
 												</div>
 												<p class="fs-13">Downloaded App Reportss</p>
@@ -1532,11 +1804,13 @@
 									<div class="d-flex justify-content-between">
 										<div class="d-flex align-items-center w-100">
 											<a href="javscript:void(0);" class="avatar  flex-shrink-0">
-												<img src="assets/img/users/user-08.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-08.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 flex-fill">
 												<div class="d-flex align-items-center justify-content-between">
-													<h6 class="fs-medium text-truncate"><a href="javscript:void(0);">Hendry Daniel</a></h6>
+													<h6 class="fs-medium text-truncate"><a
+															href="javscript:void(0);">Hendry Daniel</a></h6>
 													<p class="fs-13">05:30 PM</p>
 												</div>
 												<p class="fs-13">Completed New Project <span>HMS</span></p>
@@ -1562,14 +1836,16 @@
 									<div class="d-flex align-items-center justify-content-between">
 										<div class="d-flex align-items-center">
 											<a href="javascript:void(0);" class="avatar">
-												<img src="assets/img/users/user-38.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-38.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 overflow-hidden">
 												<h6 class="fs-medium ">Andrew Jermia</h6>
 												<p class="fs-13">IOS Developer</p>
 											</div>
 										</div>
-										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i class="ti ti-cake me-1"></i>Send</a>
+										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i
+												class="ti ti-cake me-1"></i>Send</a>
 									</div>
 								</div>
 								<h6 class="mb-2">Tomorow</h6>
@@ -1577,28 +1853,33 @@
 									<div class="d-flex align-items-center justify-content-between">
 										<div class="d-flex align-items-center">
 											<a href="javascript:void(0);" class="avatar">
-												<img src="assets/img/users/user-10.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-10.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 overflow-hidden">
 												<h6 class="fs-medium"><a href="javascript:void(0);">Mary Zeen</a></h6>
 												<p class="fs-13">UI/UX Designer</p>
 											</div>
 										</div>
-										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i class="ti ti-cake me-1"></i>Send</a>
+										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i
+												class="ti ti-cake me-1"></i>Send</a>
 									</div>
 								</div>
 								<div class="bg-light p-2 border border-dashed rounded-top mb-3">
 									<div class="d-flex align-items-center justify-content-between">
 										<div class="d-flex align-items-center">
 											<a href="javascript:void(0);" class="avatar">
-												<img src="assets/img/users/user-09.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-09.jpg" class="rounded-circle"
+													alt="img">
 											</a>
 											<div class="ms-2 overflow-hidden">
-												<h6 class="fs-medium "><a href="javascript:void(0);">Antony Lewis</a></h6>
+												<h6 class="fs-medium "><a href="javascript:void(0);">Antony Lewis</a>
+												</h6>
 												<p class="fs-13">Android Developer</p>
 											</div>
 										</div>
-										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i class="ti ti-cake me-1"></i>Send</a>
+										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i
+												class="ti ti-cake me-1"></i>Send</a>
 									</div>
 								</div>
 								<h6 class="mb-2">25 Jan 2025</h6>
@@ -1606,14 +1887,16 @@
 									<div class="d-flex align-items-center justify-content-between">
 										<div class="d-flex align-items-center">
 											<span class="avatar">
-												<img src="assets/img/users/user-12.jpg" class="rounded-circle" alt="img">
+												<img src="assets/img/users/user-12.jpg" class="rounded-circle"
+													alt="img">
 											</span>
 											<div class="ms-2 overflow-hidden">
 												<h6 class="fs-medium ">Doglas Martini</h6>
 												<p class="fs-13">.Net Developer</p>
 											</div>
 										</div>
-										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i class="ti ti-cake me-1"></i>Send</a>
+										<a href="javascript:void(0);" class="btn btn-secondary btn-xs"><i
+												class="ti ti-cake me-1"></i>Send</a>
 									</div>
 								</div>
 							</div>
@@ -1639,7 +1922,8 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h4 class="modal-title">Add New Todo</h4>
-						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal"
+							aria-label="Close">
 							<i class="ti ti-x"></i>
 						</button>
 					</div>
@@ -1719,6 +2003,46 @@
 
 
 	</div>
+
+	<!-- Change Password -->
+	<div class="modal fade custom-modal" id="change-password">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content doctor-profile">
+				<div class="modal-header d-flex align-items-center justify-content-between border-bottom">
+					<h5 class="modal-title">Change Password</h5>
+					<a href="javascript:void(0);" data-bs-dismiss="modal" aria-label="Close"><i
+							class="ti ti-circle-x-filled fs-20"></i></a>
+				</div>
+				<div class="modal-body p-4">
+					<form id="changePassword">
+						<div class="mb-3">
+							<label class="form-label">Current Password<span class="text-danger">*</span></label>
+							<div class="pass-group">
+								<input type="password" class="pass-inputs form-control" name="password" required>
+								<span class="ti toggle-passwords ti-eye-off"></span>
+								<input type="hidden" name="type" value="changePassword">
+							</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Confirm New Password<span class="text-danger">*</span></label>
+							<div class="pass-group">
+								<input type="password" class="form-control pass-inputa" name="cpassword" required>
+								<span class="ti toggle-passworda ti-eye-off"></span>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer border-top">
+					<div class="acc-submit">
+						<a href="javascript:void(0);" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</a>
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Change Password -->
+
 	<!-- end main wrapper-->
 	<!-- JAVASCRIPT -->
 	<?php include 'layouts/vendor-scripts.php'; ?>
@@ -1748,6 +2072,36 @@
 				}
 			});
 		}
+
+		$('#changePassword').submit(function(event) {
+			event.preventDefault();
+			var formData = new FormData(this);
+			$.ajax({
+				url: 'settings/api/userApi.php',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					notyf.success(response.message);
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		});
+
+		$(function() {
+			if (<?php echo password_verify('uniqueMap', $_SESSION['userDetails']['password']) ?>) {
+				$('#change-password').modal('show');
+			}
+		});
 	</script>
 </body>
 

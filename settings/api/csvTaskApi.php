@@ -89,8 +89,8 @@ try {
                 $check->execute();
                 $result = $check->fetch(PDO::FETCH_ASSOC);
                 if (!$result) {
-                    $sql = $conn->prepare("INSERT INTO `tasks`(`task_id`, `project_id`, `area_sqkm`, `estimated_hour` , `vector_status`) VALUES (? , ? , ? , ? , ?)");
-                    $sql->execute([$data[0], $_POST['project_id'], floatval($data[2]), floatval($data[1]) , $vector]);
+                    $sql = $conn->prepare("INSERT INTO `tasks`(`task_id`, `project_id`, `area_sqkm`, `estimated_hour` ) VALUES (? , ? , ? , ? )");
+                    $sql->execute([$data[0], $_POST['project_id'], floatval($data[2]), floatval($data[1])]);
                 } else {
                     $already[] = $data[0];
                 }

@@ -46,19 +46,7 @@
 						<a class="nav-link active" href="profile-settings.php"><i class="ti ti-settings me-2"></i>General Settings</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="bussiness-settings.php"><i class="ti ti-world-cog me-2"></i>Website Settings</a>
-					</li>
-					<li class="nav-item">
 						<a class="nav-link" href="salary-settings.php"><i class="ti ti-device-ipad-horizontal-cog me-2"></i>App Settings</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="email-settings.php"><i class="ti ti-server-cog me-2"></i>System Settings</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="payment-gateways.php"><i class="ti ti-settings-dollar me-2"></i>Financial Settings</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="custom-css.php"><i class="ti ti-settings-2 me-2"></i>Other Settings</a>
 					</li>
 				</ul>
 				<div class="row">
@@ -68,8 +56,6 @@
 								<div class="d-flex flex-column list-group settings-list">
 									<a href="profile-settings.php" class="d-inline-flex align-items-center rounded py-2 px-3">Profile Settings</a>
 									<a href="security-settings.php" class="d-inline-flex align-items-center rounded active py-2 px-3"><i class="ti ti-arrow-badge-right me-2"></i>Security Settings</a>
-									<a href="notification-settings.php" class="d-inline-flex align-items-center rounded py-2 px-3">Notifications</a>
-									<a href="connected-apps.php" class="d-inline-flex align-items-center rounded py-2 px-3">Connected Apps</a>
 								</div>
 							</div>
 						</div>

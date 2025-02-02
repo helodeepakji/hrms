@@ -2,8 +2,10 @@
 include __DIR__ . '/../database/conn.php';
 session_start();
 header("Access-Control-Allow-Origin: *");
+$user_id = $_SESSION['userId'];
 
-function validateAndFormatDate($date) {
+function validateAndFormatDate($date)
+{
     $formats = ['d/m/Y', 'd-m-Y', 'Y-m-d']; // Possible date formats
     foreach ($formats as $format) {
         $d = DateTime::createFromFormat($format, $date);
@@ -46,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterEmployee') 
 
         // Loop through the results and display the project details
         http_response_code(200);
-        foreach ($users as $user) { 
+        foreach ($users as $user) {
 
             echo '
             <tr>
@@ -56,47 +58,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterEmployee') 
                     </div>
                 </td>
                 <td><a
-                        href="employee-details.php?id='.base64_encode($user['id']).'">'. $user['employee_id'].'</a>
+                        href="employee-details.php?id=' . base64_encode($user['id']) . '">' . $user['employee_id'] . '</a>
                 </td>
                 <td>
                     <div class="d-flex align-items-center">
-                        <a href="employee-details.php?id='.base64_encode($user['id']).'"
+                        <a href="employee-details.php?id=' . base64_encode($user['id']) . '"
                             class="avatar avatar-md" data-bs-toggle="modal"
                             data-bs-target="#view_details"><img
                                 src="assets/img/users/user-32.jpg"
                                 class="img-fluid rounded-circle" alt="img"></a>
                         <div class="ms-2">
                             <p class="text-dark mb-0"><a
-                                    href="employee-details.php?id='. base64_encode($user['id']) .'"
+                                    href="employee-details.php?id=' . base64_encode($user['id']) . '"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#view_details">'. $user['name'].'</a>
+                                    data-bs-target="#view_details">' . $user['name'] . '</a>
                             </p>
-                            <span class="fs-12">'. ucfirst($user['role']).'</span>
+                            <span class="fs-12">' . ucfirst($user['role']) . '</span>
                         </div>
                     </div>
                 </td>
-                <td>'. ucfirst($user['gender']) .'</td>
-                <td>'. $user['email'] .'</td>
-                <td>'. $user['mobile'].'</td>
+                <td>' . ucfirst($user['gender']) . '</td>
+                <td>' . $user['email'] . '</td>
+                <td>' . $user['mobile'] . '</td>
                 <td>
-                    '. date('d M, Y', strtotime($user['dob'])).'
+                    ' . date('d M, Y', strtotime($user['dob'])) . '
                 </td>
-                <td>'. date('d M, Y', strtotime($user['joining_date'])) .'</td>
+                <td>' . date('d M, Y', strtotime($user['joining_date'])) . '</td>
                 <td>
                     <span
-                        class="badge badge-'. ($user['is_terminated'] == 1 ? 'danger' : 'success' ).' d-inline-flex align-items-center badge-xs">
+                        class="badge badge-' . ($user['is_terminated'] == 1 ? 'danger' : 'success') . ' d-inline-flex align-items-center badge-xs">
                         <i
-                            class="ti ti-point-filled me-1"></i>'.( $user['is_terminated'] == 1 ? 'Terminated' : 'Active').'
+                            class="ti ti-point-filled me-1"></i>' . ($user['is_terminated'] == 1 ? 'Terminated' : 'Active') . '
                     </span>
                 </td>
                 <td>
                     <div class="action-icon d-inline-flex">
                         <a href="#" class="me-2" data-bs-toggle="modal"
                             data-bs-target="#edit_employee"
-                            onclick="getEmployee('.$user['id'].')"><i
+                            onclick="getEmployee(' . $user['id'] . ')"><i
                                 class="ti ti-edit"></i></a>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"
-                            onclick="deleteEmployee('.$user['id'].')"><i
+                            onclick="deleteEmployee(' . $user['id'] . ')"><i
                                 class="ti ti-trash"></i></a>
                     </div>
                 </td>
@@ -151,7 +153,19 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addEmployee")
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $result = $sql->execute([
-        $employee_id, $name, $role_id, $phone, $email, $correspondence_address, $permanent_address, $dob, $joining_date, $marital_status, $gender, $emergency_contact, $password
+        $employee_id,
+        $name,
+        $role_id,
+        $phone,
+        $email,
+        $correspondence_address,
+        $permanent_address,
+        $dob,
+        $joining_date,
+        $marital_status,
+        $gender,
+        $emergency_contact,
+        $password
     ]);
 
     if ($result) {
@@ -160,6 +174,32 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addEmployee")
     } else {
         http_response_code(500);
         echo json_encode(['message' => 'Something went wrong while adding the employee.', 'status' => 500]);
+    }
+}
+
+if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "changePassword")) {
+    if ($_POST['password'] != '' && $_POST['cpassword'] != '') {
+
+        if($_POST['password'] == $_POST['cpassword']){
+            http_response_code(500);
+            echo json_encode(['message' => 'Password And Confirm Password is not same.', 'status' => 500]);
+            exit;
+        }
+
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $sql = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $result = $sql->execute([$password , $user_id ]);
+
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(['message' => 'Employee added successfully!', 'status' => 200]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['message' => 'Something went wrong while adding the employee.', 'status' => 500]);
+        }
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Fill All Required Fields.', 'status' => 500]);
     }
 }
 
@@ -212,10 +252,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['type'] === 'addUserDetails'
 }
 
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "getEmployee")) {
-    if($_GET['id'] == ''){
+    if ($_GET['id'] == '') {
         http_response_code(400);
-            echo json_encode(['message' => "The field id is required.", "status" => 400]);
-            exit;
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
     }
     $check = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
     $check->execute([$_GET['id']]);
@@ -224,7 +264,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "getEmployee")) 
         http_response_code(200);
         echo json_encode($result);
         exit;
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(['message' => 'Employee not found!', 'status' => 400]);
     }
@@ -232,7 +272,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "getEmployee")) 
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "editEmployee")) {
     // Required fields
-    $requiredFields = ['name', 'role_id', 'employee_id', 'phone', 'email', 'emergency_contact', 'joining_date', 'dob', 'correspondence_address', 'permanent_address', 'gender', 'marital_status' , 'id'];
+    $requiredFields = ['name', 'role_id', 'employee_id', 'phone', 'email', 'emergency_contact', 'joining_date', 'dob', 'correspondence_address', 'permanent_address', 'gender', 'marital_status', 'id'];
 
     // Check for missing fields
     foreach ($requiredFields as $field) {
@@ -286,7 +326,19 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "editEmployee"
         WHERE `id` = ?
     ");
     $result = $sql->execute([
-        $employee_id, $name, $role_id, $phone, $email, $correspondence_address, $permanent_address, $dob, $joining_date, $marital_status, $gender, $emergency_contact, $id
+        $employee_id,
+        $name,
+        $role_id,
+        $phone,
+        $email,
+        $correspondence_address,
+        $permanent_address,
+        $dob,
+        $joining_date,
+        $marital_status,
+        $gender,
+        $emergency_contact,
+        $id
     ]);
 
     if ($result) {
@@ -333,10 +385,10 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addEducation"
 }
 
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "getEducation")) {
-    if($_GET['user_id'] == ''){
+    if ($_GET['user_id'] == '') {
         http_response_code(400);
-            echo json_encode(['message' => "The field id is required.", "status" => 400]);
-            exit;
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
     }
     $check = $conn->prepare("SELECT * FROM `education` WHERE `user_id` = ?");
     $check->execute([$_GET['user_id']]);
@@ -345,10 +397,10 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "getEducation"))
 }
 
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "getExperience")) {
-    if($_GET['user_id'] == ''){
+    if ($_GET['user_id'] == '') {
         http_response_code(400);
-            echo json_encode(['message' => "The field id is required.", "status" => 400]);
-            exit;
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
     }
     $check = $conn->prepare("SELECT * FROM `experience` WHERE `user_id` = ?");
     $check->execute([$_GET['user_id']]);
@@ -394,25 +446,25 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addExperience
 }
 
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "deleteEmployee")) {
-    if($_GET['user_id'] == ''){
+    if ($_GET['user_id'] == '') {
         http_response_code(400);
-            echo json_encode(['message' => "The field id is required.", "status" => 400]);
-            exit;
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
     }
 
     $delete = $conn->prepare('DELETE FROM `experience` WHERE `user_id` = ?');
     $delete->execute([$_GET['user_id']]);
-    
+
     $delete = $conn->prepare('DELETE FROM `education` WHERE `user_id` = ?');
     $delete->execute([$_GET['user_id']]);
-    
+
     $delete = $conn->prepare('DELETE FROM `users` WHERE `id` = ?');
     $result = $delete->execute([$_GET['user_id']]);
-    if($result){
+    if ($result) {
         http_response_code(200);
         echo json_encode(['message' => "Successfull Delete.", "status" => 400]);
         exit;
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(['message' => "Employee not found.", "status" => 400]);
         exit;
@@ -420,19 +472,19 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "deleteEmployee"
 }
 
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "passwordReset")) {
-    if($_GET['user_id'] == ''){
+    if ($_GET['user_id'] == '') {
         http_response_code(400);
-            echo json_encode(['message' => "The field id is required.", "status" => 400]);
-            exit;
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
     }
     $password = password_hash('uniqueMap', PASSWORD_DEFAULT);
     $user = $conn->prepare('UPDATE `users` SET `password` = ? WHERE `id` = ?');
-    $result = $user->execute([$password,$_GET['user_id']]);
-    if($result){
+    $result = $user->execute([$password, $_GET['user_id']]);
+    if ($result) {
         http_response_code(200);
         echo json_encode(['message' => "Successfull Password Reset.", "status" => 400]);
         exit;
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(['message' => "Employee not found.", "status" => 400]);
         exit;
@@ -440,10 +492,10 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "passwordReset")
 }
 
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "changeStatus")) {
-    if($_GET['user_id'] == ''){
+    if ($_GET['user_id'] == '') {
         http_response_code(400);
-            echo json_encode(['message' => "The field id is required.", "status" => 400]);
-            exit;
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
     }
 
     $check = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
@@ -456,12 +508,12 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "changeStatus"))
     }
     $status = $result['is_terminated'] == 1 ? 0 : 1;
     $user = $conn->prepare('UPDATE `users` SET `is_terminated` = ? WHERE `id` = ?');
-    $result = $user->execute([$status,$_GET['user_id']]);
-    if($result){
+    $result = $user->execute([$status, $_GET['user_id']]);
+    if ($result) {
         http_response_code(200);
         echo json_encode(['message' => "Successfull Change Status.", "status" => 400]);
         exit;
-    }else{
+    } else {
         http_response_code(400);
         echo json_encode(['message' => "Employee not found.", "status" => 400]);
         exit;
