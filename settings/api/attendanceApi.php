@@ -8,9 +8,16 @@ $user_id = $_SESSION['userId'];
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'clockOut')) {
     $currentTime = new DateTime();
+    
     $sql = $conn->prepare('SELECT * FROM `attendance` WHERE date = CURDATE() AND `user_id` = ?');
     $sql->execute([$user_id]);
     $result = $sql->fetch(PDO::FETCH_ASSOC);
+
+    if (!$result) {
+        $sql = $conn->prepare('SELECT * FROM `attendance` WHERE date = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND `user_id` = ?');
+        $sql->execute([$user_id]);
+        $result = $sql->fetch(PDO::FETCH_ASSOC);
+    }
 
     if ($result) {
         if ($result['clock_out_time']) {
@@ -18,31 +25,21 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'clockOut')) {
             echo json_encode(array("message" => 'Already clocked out', "status" => 404));
             exit;
         } else {
-            // Convert clock_in_time to a timestamp
             $TclockInTime = strtotime($result['clock_in_time']);
 
-            // Current timestamp for clock_out_time
             $TclockOutTime = time();
             $formattedClockOutTime = date('Y-m-d H:i:s', $TclockOutTime);
 
-            // Calculate time difference in seconds
             $timeDifferenceSeconds = $TclockOutTime - $TclockInTime;
 
-            // Convert seconds to hours (with precision to 2 decimal points)
             $timeDifferenceHours = round($timeDifferenceSeconds / 3600, 2);
 
-            // Check if not allowed
             $not_allowed = ($timeDifferenceHours < 5) ? 1 : 0;
 
-            // Update attendance record
             $sql = $conn->prepare(
-                'UPDATE attendance 
-                 SET clock_out_time = ?, 
-                     `not_allowed` = ?, 
-                     `hours` = ? 
-                 WHERE `date` = CURDATE() AND `user_id` = ?'
+                'UPDATE attendance SET clock_out_time = ?, `not_allowed` = ?, `hours` = ? WHERE `id` = ?'
             );
-            $sql->execute([$formattedClockOutTime, $not_allowed, $timeDifferenceHours, $user_id]);
+            $sql->execute([$formattedClockOutTime, $not_allowed, $timeDifferenceHours, $result['id']]);
 
             http_response_code(200);
             echo json_encode(array("message" => 'Clock out successful', "status" => 200));
@@ -63,11 +60,14 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterAttandac
         `attendance`.*, 
         `users`.`name` AS `user_name`, 
         `users`.`employee_id`, 
-        `role`.`name` AS `role_name`
+        `role`.`name` AS `role_name`,
+        `shift`.`name` AS `shift_name`
     FROM 
         `attendance`
     JOIN 
         `users` ON `attendance`.`user_id` = `users`.`id`
+    LEFT JOIN
+        `shift` ON `attendance`.`shift_id` = `shift`.`id`
     JOIN 
         `role` ON `users`.`role_id` = `role`.`id`
     WHERE 
@@ -138,7 +138,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterAttandac
         echo '</td>';
         echo '<td>' . date('h:i A', strtotime($row['clock_in_time'])) . '</td>';
         echo '<td>' .$attendance_clock_out  . ' <br> '.$status.'</td>';
-        echo '<td>30 Min</td>';
+        echo '<td>'.$row['shift_name'].'</td>';
         echo '<td>'.round($eff['taken_time'],2).'Min / '.round($eff['total_time'],2).'Min</td>';
         echo '<td>';
         echo '<span class="badge badge-success d-inline-flex align-items-center">';
@@ -158,11 +158,14 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
         `attendance`.*, 
         `users`.`name` AS `user_name`, 
         `users`.`employee_id`, 
-        `role`.`name` AS `role_name`
+        `role`.`name` AS `role_name`,
+        `shift`.`name` AS `shift_name`
     FROM 
         `attendance`
     JOIN 
         `users` ON `attendance`.`user_id` = `users`.`id`
+    LEFT JOIN
+        `shift` ON `attendance`.`shift_id` = `shift`.`id`
     JOIN 
         `role` ON `users`.`role_id` = `role`.`id`
     WHERE 
@@ -236,7 +239,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'myFilterAttand
         echo '</td>';
         echo '<td>' . date('h:i A', strtotime($row['clock_in_time'])) . '</td>';
         echo '<td>' . ($row['clock_out_time'] != '' ?  $attendance_clock_out : ($attendance_clock_out == '' ? $regulazation : $status)) . '</td>';
-        echo '<td>30 Min</td>';
+        echo '<td>'.$row['shift_name'].'</td>';
         echo '<td>'.round($eff['taken_time'],2).'Min / '.round($eff['total_time'],2).'Min</td>';
         echo '<td>';
         echo '<span class="badge badge-success d-inline-flex align-items-center">';

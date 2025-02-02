@@ -1,28 +1,36 @@
-<?php include 'layouts/session.php'; ?>
+<?php include 'layouts/session.php';
+
+$page_name = 'total-efficiency';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+?>
 <?php include 'layouts/head-main.php'; ?>
+
 <head>
-<title>Smarthr Admin Template</title>
- <?php include 'layouts/title-meta.php'; ?>
- <?php include 'layouts/head-css.php'; ?>
-<!-- Bootstrap Tagsinput CSS -->
-<link rel="stylesheet" href="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
+	<title>Smarthr Admin Template</title>
+	<?php include 'layouts/title-meta.php'; ?>
+	<?php include 'layouts/head-css.php'; ?>
+	<!-- Bootstrap Tagsinput CSS -->
+	<link rel="stylesheet" href="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
 </head>
+
 <body>
-<div id="global-loader" style="display: none;">
+	<div id="global-loader" style="display: none;">
 		<div class="page-loader"></div>
 	</div>
 
-    <div class="main-wrapper">
-    <?php include 'layouts/menu.php'; ?>
+	<div class="main-wrapper">
+		<?php include 'layouts/menu.php'; ?>
 
-	<!-- Page Wrapper -->
-	<div class="page-wrapper">
+		<!-- Page Wrapper -->
+		<div class="page-wrapper">
 			<div class="content">
 
 				<!-- Breadcrumb -->
 				<div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
 					<div class="my-auto mb-2">
-						<h2 class="mb-1">Performance Appraisal</h2>
+						<h2 class="mb-1">Total Efficiency</h2>
 						<nav>
 							<ol class="breadcrumb mb-0">
 								<li class="breadcrumb-item">
@@ -31,15 +39,11 @@
 								<li class="breadcrumb-item">
 									Performance
 								</li>
-								<li class="breadcrumb-item active" aria-current="page">Performance Appraisal</li>
+								<li class="breadcrumb-item active" aria-current="page">Total Efficiency</li>
 							</ol>
 						</nav>
 					</div>
 					<div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-						
-						<div class="mb-2">
-							<a href="#" data-bs-toggle="modal" data-bs-target="#add_performance_appraisal" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add Appraisal</a>
-						</div>
 						<div class="head-icons ms-2">
 							<a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
 								<i class="ti ti-chevrons-up"></i>
@@ -52,30 +56,15 @@
 				<!-- Performance Indicator list -->
 				<div class="card">
 					<div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
-						<h5>Performance Appraisal List</h5>
+						<h5>Total Efficiency List</h5>
 						<div class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
-							
-							<div class="dropdown">
-								<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-									Sort By : Last 7 Days
-								</a>
-								<ul class="dropdown-menu  dropdown-menu-end p-3">
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1">Recently Added</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1">Ascending</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1">Desending</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1">Last Month</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1">Last 7 Days</a>
-									</li>
-								</ul>
+							<div class="me-3">
+								<div class="input-icon-end position-relative">
+									<input id="dateRange" type="text" class="form-control date-range bookingrange" placeholder="dd/mm/yyyy - dd/mm/yyyy">
+									<span class="input-icon-addon">
+										<i class="ti ti-chevron-down"></i>
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -273,7 +262,7 @@
 											</div>
 										</td>
 									</tr>
-									
+
 								</tbody>
 							</table>
 						</div>
@@ -313,7 +302,7 @@
 											<option>Brian Villalobos</option>
 											<option>Harvey Smith</option>
 										</select>
-									</div>	
+									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="mb-3">
@@ -329,12 +318,12 @@
 								<div class="col-md-6">
 									<ul class="nav appraisal-tab nav-pills mb-3" id="pills-tab" role="tablist">
 										<li class="nav-item" role="presentation">
-										  <button class="nav-link border   active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#technical" type="button" role="tab" aria-selected="true">Technical</button>
+											<button class="nav-link border   active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#technical" type="button" role="tab" aria-selected="true">Technical</button>
 										</li>
 										<li class="nav-item" role="presentation">
-										  <button class="nav-link border" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#organization" type="button" role="tab" aria-selected="false">Organizational</button>
+											<button class="nav-link border" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#organization" type="button" role="tab" aria-selected="false">Organizational</button>
 										</li>
-									  </ul>
+									</ul>
 								</div>
 								<div class="col-md-12">
 									<div class="tab-content appraisal-tab-content" id="pills-tabContent">
@@ -473,7 +462,7 @@
 																		</select>
 																	</td>
 																</tr>
-																
+
 															</tbody>
 														</table>
 													</div>
@@ -615,14 +604,14 @@
 																		</select>
 																	</td>
 																</tr>
-																
+
 															</tbody>
 														</table>
 													</div>
 												</div>
 											</div>
 										</div>
-									  </div>								
+									</div>
 								</div>
 								<div class="col-md-12">
 									<div class="mb-3">
@@ -651,7 +640,7 @@
 			<div class="modal-dialog modal-dialog-centered modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title">Edit  Appraisal</h4>
+						<h4 class="modal-title">Edit Appraisal</h4>
 						<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
 							<i class="ti ti-x"></i>
 						</button>
@@ -668,7 +657,7 @@
 											<option>Brian Villalobos</option>
 											<option>Harvey Smith</option>
 										</select>
-									</div>	
+									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="mb-3">
@@ -684,12 +673,12 @@
 								<div class="col-md-6">
 									<ul class="nav appraisal-tab nav-pills mb-3" id="pills-tab2" role="tablist">
 										<li class="nav-item" role="presentation">
-										  <button class="nav-link border   active" id="pills-home-tab2" data-bs-toggle="pill" data-bs-target="#edit_technical" type="button" role="tab" aria-selected="true">Technical</button>
+											<button class="nav-link border   active" id="pills-home-tab2" data-bs-toggle="pill" data-bs-target="#edit_technical" type="button" role="tab" aria-selected="true">Technical</button>
 										</li>
 										<li class="nav-item" role="presentation">
-										  <button class="nav-link border" id="pills-profile-tab2" data-bs-toggle="pill" data-bs-target="#edit_organization" type="button" role="tab" aria-selected="false">Organizational</button>
+											<button class="nav-link border" id="pills-profile-tab2" data-bs-toggle="pill" data-bs-target="#edit_organization" type="button" role="tab" aria-selected="false">Organizational</button>
 										</li>
-									  </ul>
+									</ul>
 								</div>
 								<div class="col-md-12">
 									<div class="tab-content appraisal-tab-content" id="pills-tabContent2">
@@ -828,7 +817,7 @@
 																		</select>
 																	</td>
 																</tr>
-																
+
 															</tbody>
 														</table>
 													</div>
@@ -970,14 +959,14 @@
 																		</select>
 																	</td>
 																</tr>
-																
+
 															</tbody>
 														</table>
 													</div>
 												</div>
 											</div>
 										</div>
-									  </div>								
+									</div>
 								</div>
 								<div class="col-md-12">
 									<div class="mb-3">
@@ -1023,12 +1012,13 @@
 
 
 
-    </div>
-<!-- end main wrapper-->
-<!-- JAVASCRIPT -->
-<?php include 'layouts/vendor-scripts.php'; ?>
-<!-- Bootstrap Tagsinput JS -->
-<script src="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+	</div>
+	<!-- end main wrapper-->
+	<!-- JAVASCRIPT -->
+	<?php include 'layouts/vendor-scripts.php'; ?>
+	<!-- Bootstrap Tagsinput JS -->
+	<script src="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 
 </body>
+
 </html>

@@ -749,22 +749,7 @@
 								<li class="menu-title"><span>ADMINISTRATION</span></li>
 				<li>
 					<ul>
-					<?php if ($roleId == 1 || in_array('assets', $pageAccessList) || in_array('asset-categories', $pageAccessList)) { ?>
-						<li class="submenu">
-							<a href="javascript:void(0);" class="<?php echo ($page == 'assets.php' || $page == 'asset-categories.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-cash"></i><span>Assets</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-							<?php if ($roleId == 1 || in_array('assets', $pageAccessList)) { ?>
-								<li><a href="assets.php" class="<?php echo ($page == 'assets.php') ? 'active' : ''; ?>">Assets</a></li>
-								<?php } ?>
-								<?php if ($roleId == 1 || in_array('asset-categories', $pageAccessList)) { ?>
-								<li><a href="asset-categories.php" class="<?php echo ($page == 'asset-categories.php') ? 'active' : ''; ?>">Asset Categories</a></li>
-								<?php } ?>
-							</ul>
-						</li>
-						<?php } ?>
+					
 						<li class="submenu">
 							<a href="javascript:void(0);" class="<?php echo ($page == 'knowledgebase.php' || $page == 'activity.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-headset"></i><span>Help & Supports</span>

@@ -60,12 +60,6 @@ $page = end($link_array);
 					<i class="ti ti-layout-grid-remove"></i>
 				</a>
 			</div>
-			<div class="me-3">
-				<a href="chat.php" class="btn btn-menubar position-relative">
-					<i class="ti ti-brand-hipchat"></i>
-					<span class="badge bg-info rounded-pill d-flex align-items-center justify-content-center header-badge">5</span>
-				</a>
-			</div>
 			<div class="me-3 notification-item">
 				<a href="activity.php" class="btn btn-menubar position-relative me-1">
 					<i class="ti ti-bell"></i>
@@ -94,7 +88,7 @@ $page = end($link_array);
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
-								<li><a href="index.php" class="<?php echo ($page == 'index.php') ? 'active' : ''; ?>">Admin Dashboard</a></li>
+								<li><a href="index.php" class="<?php echo ($page == 'index.php') ? 'active' : ''; ?>">Dashboard</a></li>
 								<li><a href="employee-dashboard.php" class="<?php echo ($page == 'employee-dashboard.php') ? 'active' : ''; ?>">Employee Dashboard</a></li>
 								<li><a href="deals-dashboard.php" class="<?php echo ($page == 'deals-dashboard.php') ? 'active' : ''; ?>">Deals Dashboard</a></li>
 								<li><a href="leads-dashboard.php" class="<?php echo ($page == 'leads-dashboard.php') ? 'active' : ''; ?>">Leads Dashboard</a></li>
@@ -128,20 +122,6 @@ $page = end($link_array);
 								<li><a href="invoices.php" class="<?php echo ($page == 'invoices.php') ? 'active' : ''; ?>">Invoices</a></li>
 							</ul>
 						</li>
-						<li class="submenu">
-							<a href="#" class=" <?php echo ($page == 'dashboard.php' || $page == 'companies.php' || $page == 'subscription.php' || $page == 'packages.php' || $page == 'domain.php' || $page == 'purchase-transaction.php') ? 'active subdrop' : ''; ?>">
-								<i class="ti ti-user-star"></i><span>Super Admin</span>
-								<span class="menu-arrow"></span>
-							</a>
-							<ul>
-								<li><a href="dashboard.php" class="<?php echo ($page == 'dashboard.php') ? 'active' : ''; ?>">Dashboard</a></li>
-								<li><a href="companies.php" class="<?php echo ($page == 'companies.php') ? 'active' : ''; ?>">Companies</a></li>
-								<li><a href="subscription.php" class="<?php echo ($page == 'subscription.php') ? 'active' : ''; ?>">Subscriptions</a></li>
-								<li><a href="packages.php" class="<?php echo ($page == 'packages.php') ? 'active' : ''; ?>">Packages</a></li>
-								<li><a href="domain.php" class="<?php echo ($page == 'domain.php') ? 'active' : ''; ?>">Domain</a></li>
-								<li><a href="purchase-transaction.php" class="<?php echo ($page == 'purchase-transaction.php') ? 'active' : ''; ?>">Purchase Transaction</a></li>
-							</ul>
-						</li>
 					</ul>
 				</li>
 				<li class="menu-title"><span>PROJECTS</span></li>
@@ -155,11 +135,11 @@ $page = end($link_array);
 							<ul>
 								<li><a href="projects.php" class="<?php echo ($page == 'projects.php') ? 'active' : ''; ?>">Projects</a></li>
 								<?php if (in_array('my-projects', $pageAccessList)) { ?>
-								<li><a href="my-projects.php" class="<?php echo ($page == 'my-projects.php') ? 'active' : ''; ?>">My Projects</a></li>
+									<li><a href="my-projects.php" class="<?php echo ($page == 'my-projects.php') ? 'active' : ''; ?>">My Projects</a></li>
 								<?php } ?>
 								<li><a href="tasks.php" class="<?php echo ($page == 'tasks.php') ? 'active' : ''; ?>">Tasks</a></li>
 								<?php if (in_array('my-tasks', $pageAccessList)) { ?>
-								<li><a href="my-tasks.php" class="<?php echo ($page == 'my-tasks.php') ? 'active' : ''; ?>">My Tasks</a></li>
+									<li><a href="my-tasks.php" class="<?php echo ($page == 'my-tasks.php') ? 'active' : ''; ?>">My Tasks</a></li>
 								<?php } ?>
 								<li><a href="task-board.php" class="<?php echo ($page == 'task-board.php') ? 'active' : ''; ?>">Task Board</a></li>
 							</ul>
@@ -215,7 +195,7 @@ $page = end($link_array);
 										<?php } ?>
 										<li><a href="my-leaves.php" class="<?php echo ($page == 'my-leaves.php') ? 'active' : ''; ?>">My Leave</a></li>
 										<?php if ($roleId == 1 || in_array('leave-bonus', $pageAccessList)) { ?>
-										<li><a href="leave-bonus.php" class="<?php echo ($page == 'leave-bonus.php') ? 'active' : ''; ?>">Leave Bonus</a></li>
+											<li><a href="leave-bonus.php" class="<?php echo ($page == 'leave-bonus.php') ? 'active' : ''; ?>">Leave Bonus</a></li>
 										<?php } ?>
 									</ul>
 								</li>
@@ -228,17 +208,18 @@ $page = end($link_array);
 							</ul>
 						</li>
 						<li class="submenu">
-							<a href="javascript:void(0);" class=" <?php echo ($page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'performance-appraisal.php' || $page == 'efficiency-tracking.php' || $page == 'my-efficiency.php') ? 'active subdrop' : ''; ?>">
+							<a href="javascript:void(0);" class=" <?php echo ($page == 'performance-indicator.php' || $page == 'performance-review.php' || $page == 'total-efficiency.php' || $page == 'efficiency-tracking.php' || $page == 'my-efficiency.php') ? 'active subdrop' : ''; ?>">
 								<i class="ti ti-school"></i><span>Performance</span>
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
 								<li><a href="performance-indicator.php" class="<?php echo ($page == 'performance-indicator.php') ? 'active' : ''; ?>">Performance Indicator</a></li>
 								<li><a href="performance-review.php" class="<?php echo ($page == 'performance-review.php') ? 'active' : ''; ?>">Performance Review</a></li>
-								<li><a href="performance-appraisal.php" class="<?php echo ($page == 'performance-appraisal.php') ? 'active' : ''; ?>">Performance Appraisal</a></li>
-								
+								<?php if ($roleId == 1 || in_array('total-efficiency', $pageAccessList)) { ?>
+									<li><a href="total-efficiency.php" class="<?php echo ($page == 'total-efficiency.php') ? 'active' : ''; ?>">Total Efficiency</a></li>
+								<?php } ?>
 								<?php if ($roleId == 1 || in_array('efficiency-tracking', $pageAccessList)) { ?>
-								<li><a href="efficiency-tracking.php" class="<?php echo ($page == 'efficiency-tracking.php') ? 'active' : ''; ?>">Efficiency Track</a></li>
+									<li><a href="efficiency-tracking.php" class="<?php echo ($page == 'efficiency-tracking.php') ? 'active' : ''; ?>">Efficiency Track</a></li>
 								<?php } ?>
 								<li><a href="my-efficiency.php" class="<?php echo ($page == 'my-efficiency.php') ? 'active' : ''; ?>">My Efficiency</a></li>
 							</ul>
@@ -254,6 +235,22 @@ $page = end($link_array);
 								<li><a href="training-type.php" class="<?php echo ($page == 'training-type.php') ? 'active' : ''; ?>">Training Type</a></li>
 							</ul>
 						</li>
+						<?php if ($roleId == 1 || in_array('assets', $pageAccessList) || in_array('asset-categories', $pageAccessList)) { ?>
+							<li class="submenu">
+								<a href="javascript:void(0);" class="<?php echo ($page == 'assets.php' || $page == 'asset-categories.php') ? 'active subdrop' : ''; ?>">
+									<i class="ti ti-cash"></i><span>Assets</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul>
+									<?php if ($roleId == 1 || in_array('assets', $pageAccessList)) { ?>
+										<li><a href="assets.php" class="<?php echo ($page == 'assets.php') ? 'active' : ''; ?>">Assets</a></li>
+									<?php } ?>
+									<?php if ($roleId == 1 || in_array('asset-categories', $pageAccessList)) { ?>
+										<li><a href="asset-categories.php" class="<?php echo ($page == 'asset-categories.php') ? 'active' : ''; ?>">Asset Categories</a></li>
+									<?php } ?>
+								</ul>
+							</li>
+						<?php } ?>
 					</ul>
 				</li>
 				<li class="menu-title"><span>RECRUITMENT</span></li>
@@ -327,11 +324,11 @@ $page = end($link_array);
 							</a>
 						</li>
 						<?php if ($roleId == 1 || in_array('pages', $pageAccessList)) { ?>
-						<li>
-							<a href="pages.php">
-								<i class="ti ti-lock"></i><span>Authication</span>
-							</a>
-						</li>
+							<li>
+								<a href="pages.php">
+									<i class="ti ti-lock"></i><span>Authication</span>
+								</a>
+							</li>
 						<?php } ?>
 						<li class="<?php echo ($page == 'gallery.php') ? 'active' : ''; ?>">
 							<a href="gallery.php">

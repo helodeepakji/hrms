@@ -3,6 +3,15 @@
 	$sql = $conn->prepare('SELECT * FROM `attendance` WHERE date = CURDATE() AND `user_id` = ?');
     $sql->execute([$userId]);
     $attendance = $sql->fetch(PDO::FETCH_ASSOC);
+
+	$total_runing = $conn->prepare("SELECT COUNT(`id`) as `total_runing` FROM `assign` WHERE `status` = 'working' AND `user_id` = ?");
+	$total_runing->execute([$userId]);
+	$total_runing = $total_runing->fetch(PDO::FETCH_ASSOC);
+
+	$total_pending = $conn->prepare("SELECT COUNT(`id`) as `total_pending` FROM `assign` WHERE `status` = 'pending' AND `user_id` = ?");
+	$total_pending->execute([$userId]);
+	$total_pending = $total_pending->fetch(PDO::FETCH_ASSOC);
+
 ?>
 <?php include 'layouts/head-main.php'; ?>
 
@@ -25,7 +34,7 @@
 				<!-- Breadcrumb -->
 				<div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
 					<div class="my-auto mb-2">
-						<h2 class="mb-1">Admin Dashboard</h2>
+						<h2 class="mb-1">Dashboard</h2>
 						<nav>
 							<ol class="breadcrumb mb-0">
 								<li class="breadcrumb-item">
@@ -34,26 +43,11 @@
 								<li class="breadcrumb-item">
 									Dashboard
 								</li>
-								<li class="breadcrumb-item active" aria-current="page">Admin Dashboard</li>
+								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
 							</ol>
 						</nav>
 					</div>
 					<div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-						<div class="me-2 mb-2">
-							<div class="dropdown">
-								<a href="javascript:void(0);" class="dropdown-toggle btn btn-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
-									<i class="ti ti-file-export me-1"></i>Export
-								</a>
-								<ul class="dropdown-menu  dropdown-menu-end p-3">
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1"><i class="ti ti-file-type-pdf me-1"></i>Export as PDF</a>
-									</li>
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item rounded-1"><i class="ti ti-file-type-xls me-1"></i>Export as Excel </a>
-									</li>
-								</ul>
-							</div>
-						</div>
 						<div class="mb-2">
 							<div class="input-icon w-120 position-relative">
 								<span class="input-icon-addon">
@@ -103,9 +97,9 @@
 										<span class="avatar rounded-circle bg-primary mb-2">
 											<i class="ti ti-calendar-share fs-16"></i>
 										</span>
-										<h6 class="fs-13 fw-medium text-default mb-1">Attendance Overview</h6>
-										<h3 class="mb-3">120/154 <span class="fs-12 fw-medium text-success"><i class="fa-solid fa-caret-up me-1"></i>+2.1%</span></h3>
-										<a href="attendance-employee.php" class="link-default">View Details</a>
+										<h6 class="fs-13 fw-medium text-default mb-1">Pending Task</h6>
+										<h3 class="mb-3"><?php echo $total_pending['total_pending'] ?></h3>
+										<a href="task-board.php" class="link-default">View Details</a>
 									</div>
 								</div>
 							</div>
@@ -115,9 +109,9 @@
 										<span class="avatar rounded-circle bg-secondary mb-2">
 											<i class="ti ti-browser fs-16"></i>
 										</span>
-										<h6 class="fs-13 fw-medium text-default mb-1">Total No of Project's</h6>
-										<h3 class="mb-3">90/125 <span class="fs-12 fw-medium text-danger"><i class="fa-solid fa-caret-down me-1"></i>-2.1%</span></h3>
-										<a href="projects.php" class="link-default">View All</a>
+										<h6 class="fs-13 fw-medium text-default mb-1">Runing Task</h6>
+										<h3 class="mb-3"><?php echo $total_runing['total_runing'] ?></h3>
+										<a href="task-board.php" class="link-default">View All</a>
 									</div>
 								</div>
 							</div>

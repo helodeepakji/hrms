@@ -12,13 +12,16 @@ $sql = $conn->prepare('
         `attendance`.*, 
         `users`.`name` AS `user_name`, 
         `users`.`employee_id`, 
-        `role`.`name` AS `role_name`
+        `role`.`name` AS `role_name`,
+		`shift`.`name` AS `shift_name`
     FROM 
         `attendance`
     JOIN 
         `users` ON `attendance`.`user_id` = `users`.`id`
     JOIN 
         `role` ON `users`.`role_id` = `role`.`id`
+	LEFT JOIN
+        `shift` ON `attendance`.`shift_id` = `shift`.`id`
 	 WHERE 
         `attendance`.`date` >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
     ORDER BY 
@@ -186,7 +189,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 												<br>
 												<?php echo $status ?>
 											</td>
-											<td>30 Min</td>
+											<td><?php echo $value['shift_name'] ?></td>
 											<td><?php echo round($eff['taken_time'],2) ?>Min / <?php echo round($eff['total_time'],2) ?>Min</td>
 											<td>
 												<span class="badge badge-success d-inline-flex align-items-center">

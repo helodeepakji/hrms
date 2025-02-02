@@ -19,9 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$check = $conn->prepare("SELECT * FROM `attendance` WHERE `date` = ?  AND `user_id` = ?");
 			$check->execute([date("Y-m-d"), $user['id']]);
 			$check = $check->fetch(PDO::FETCH_ASSOC);
+
+			$shift = $conn->prepare("SELECT weekly_roster.*, shift.start_time FROM weekly_roster JOIN shift ON weekly_roster.shift_id = shift.id  WHERE weekly_roster.week_start <= ? AND weekly_roster.week_end >= ? AND weekly_roster.user_id = ?");
+			$shift->execute([date("Y-m-d"), date("Y-m-d"), $user['id']]);
+			$shift = $shift->fetch(PDO::FETCH_ASSOC);
+
+
 			if (!$check) {
-				$attendance = $conn->prepare("INSERT INTO `attendance`(`user_id`) VALUES ( ? )");
-				$attendance->execute([$user['id']]);
+				$attendance = $conn->prepare("INSERT INTO `attendance`(`user_id`,`shift_id`) VALUES ( ? , ?)");
+				$attendance->execute([$user['id'], $shift['id']]);
 			}
 
 			header("Location: index.php");
