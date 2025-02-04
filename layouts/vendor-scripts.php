@@ -135,5 +135,24 @@
 	<script src="assets/js/theme-colorpicker.js"></script>
 	<script>
 		var notyf = new Notyf({ position: { x: 'right', y: 'top'} });
+
+		function seenNotification(){
+			$.ajax({
+				url: 'settings/api/notificationApi.php',
+				type: 'POST',
+				data: {
+					type : 'seenNotification'
+				},
+				dataType: 'json',
+				success: function(response) {
+					location.reload();
+				},
+				error: function(xhr, status, error) {
+					var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong.";
+					notyf.error(errorMessage);
+				}
+			});
+		}
+
 	</script>
 	

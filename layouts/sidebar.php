@@ -194,7 +194,7 @@ $page = end($link_array);
 								<li><a href="performance-review.php" class="<?php // echo ($page == 'performance-review.php') ? 'active' : ''; 
 																			?>">Review</a></li> -->
 								<?php if ($roleId == 1 || in_array('total-efficiency', $pageAccessList)) { ?>
-									<li><a href="total-efficiency.php" class="<?php echo ($page == 'total-efficiency.php') ? 'active' : ''; ?>">Total Efficiency</a></li>
+									<!-- <li><a href="total-efficiency.php" class="<?php // echo ($page == 'total-efficiency.php') ? 'active' : ''; ?>">Total Efficiency</a></li> -->
 								<?php } ?>
 								<?php if ($roleId == 1 || in_array('efficiency-tracking', $pageAccessList)) { ?>
 									<li><a href="efficiency-tracking.php" class="<?php echo ($page == 'efficiency-tracking.php') ? 'active' : ''; ?>">Efficiency Track</a></li>
