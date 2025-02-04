@@ -220,7 +220,7 @@
 
 			<!-- Footer -->
 			<div class="footer d-sm-flex align-items-center justify-content-between bg-white border-top p-3">
-				<p class="mb-0">2014 - 2025 &copy; SmartHR.</p>
+				<p class="mb-0">2014 - 2025 &copy; UniqueMaps</p>
 				<p>Designed & Developed By <a href="#" class="text-primary">Dreams</a></p>
 			</div>
 			<!-- /Footer -->

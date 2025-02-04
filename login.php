@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 								<form action="<?php echo $_SERVER['SELF'] ?>" class="vh-100" method="post">
 									<div class="vh-100 d-flex flex-column justify-content-between p-4 pb-0">
 										<div class=" mx-auto mb-5 text-center">
-											<img src="assets/img/logo.svg"
+											<img src="assets/img/LOGO.png"
 												class="img-fluid" alt="Logo">
 										</div>
 										<div class="">
