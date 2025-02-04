@@ -1,6 +1,11 @@
 <?php
 include 'layouts/session.php';
 
+$page_name = 'projects';
+if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
+	echo '<script>window.location.href = "index.php"</script>';
+}
+
 $project = $conn->prepare("SELECT `projects`.*, `users`.`name`, `users`.`profile` 
     FROM `projects` 
     LEFT JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` 

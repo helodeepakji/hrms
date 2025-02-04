@@ -122,6 +122,9 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'filterAttandac
         } else {
             $status = '';
         }
+        if ($roleId != 1 && !(in_array('attendance-regulation', $pageAccessList))) {
+            $status = '';
+        }
 
         $eff = $conn->prepare("SELECT SUM(taken_time) as taken_time , SUM(total_time) as total_time FROM `efficiency` WHERE user_id = ? AND DATE(created_at) = ?");
         $eff->execute([$row['user_id'], $row['date']]);

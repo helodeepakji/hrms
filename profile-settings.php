@@ -98,20 +98,20 @@
 											<div class="col-md-6">
 												<div class="row align-items-center mb-3">
 													<div class="col-md-4">
-														<label class="form-label mb-md-0">First Name</label>
+														<label class="form-label mb-md-0">Full Name</label>
 													</div>
 													<div class="col-md-8">
-														<input type="text" class="form-control">
+														<input type="text" class="form-control" value="<?php echo $_SESSION['userDetails']['mobile'] ?>" readonly>
 													</div>
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="row align-items-center mb-3">
 													<div class="col-md-4">
-														<label class="form-label mb-md-0">Last Name</label>
+														<label class="form-label mb-md-0">Gender</label>
 													</div>
 													<div class="col-md-8">
-														<input type="text" class="form-control">
+														<input type="text" class="form-control" value="<?php echo $_SESSION['userDetails']['gender'] ?>" readonly>
 													</div>
 												</div>
 											</div>
@@ -121,7 +121,7 @@
 														<label class="form-label mb-md-0">Email</label>
 													</div>
 													<div class="col-md-8">
-														<input type="text" class="form-control">
+														<input type="text" class="form-control" value="<?php echo $_SESSION['userDetails']['email'] ?>" readonly>
 													</div>
 												</div>
 											</div>
@@ -131,7 +131,7 @@
 														<label class="form-label mb-md-0">Phone</label>
 													</div>
 													<div class="col-md-8">
-														<input type="text" class="form-control">
+														<input type="text" class="form-control" value="<?php echo $_SESSION['userDetails']['mobile'] ?>" readonly>
 													</div>
 												</div>
 											</div>
@@ -213,10 +213,6 @@
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="d-flex align-items-center justify-content-end">
-										<button type="button" class="btn btn-outline-light border me-3">Cancel</button>
-										<button type="submit" class="btn btn-primary">Save</button>
 									</div>
 								</form>
 							</div>

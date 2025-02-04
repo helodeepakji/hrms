@@ -91,8 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterEmployee') 
                             class="ti ti-point-filled me-1"></i>' . ($user['is_terminated'] == 1 ? 'Terminated' : 'Active') . '
                     </span>
                 </td>
-                <td>
-                    <div class="action-icon d-inline-flex">
+                <td>';
+            if ($roleId == 1 || (in_array('employee-action', $pageAccessList))) {
+                echo '<div class="action-icon d-inline-flex">
                         <a href="#" class="me-2" data-bs-toggle="modal"
                             data-bs-target="#edit_employee"
                             onclick="getEmployee(' . $user['id'] . ')"><i
@@ -100,7 +101,109 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterEmployee') 
                         <a href="#" data-bs-toggle="modal" data-bs-target="#delete_modal"
                             onclick="deleteEmployee(' . $user['id'] . ')"><i
                                 class="ti ti-trash"></i></a>
+                    </div>';
+            }
+            echo '
+                </td>
+            </tr>';
+        }
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['type'] == 'FilterCandiates') {
+    // Get filter values from POST request
+    $role = $_POST['role'] ?? '';
+    $status = $_POST['status'] ?? '';
+
+    // Start building the SQL query
+    $sql = "SELECT `users`.*, `job`.`job-title` AS `role` FROM `users` JOIN `job` ON `job`.`id` = `users`.`role_id`  WHERE 1 = 1";
+    $params = [];
+
+    if (!empty($role)) {
+
+        $sql .= ' AND `users`.`role_id` = ?';
+        $params[] = $role;
+    }
+
+    if (!empty($status)) {
+        $sql .= ' AND `users`.`is_terminated` = ?';
+        $params[] = $status;
+    }else{
+        $sql .= ' AND `users`.`is_terminated` = 3';
+    }
+
+    $sql .= ' ORDER BY `users`.`id` DESC';
+
+    // Prepare and execute the SQL query
+    try {
+        $query = $conn->prepare($sql);
+        $query->execute($params);
+
+        // Fetch all the results
+        $users = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        // Loop through the results and display the project details
+        http_response_code(200);
+        foreach ($users as $user) {
+
+            echo '
+            <tr>
+                <td>
+                    <div class="form-check form-check-md">
+                        <input class="form-check-input" type="checkbox">
                     </div>
+                </td>
+                <td><a
+                        href="employee-details.php?id=' . base64_encode($user['id']) . '">' . $user['employee_id'] . '</a>
+                </td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <a href="employee-details.php?id=' . base64_encode($user['id']) . '"
+                            class="avatar avatar-md" data-bs-toggle="modal"
+                            data-bs-target="#view_details"><img
+                                src="assets/img/users/user-32.jpg"
+                                class="img-fluid rounded-circle" alt="img"></a>
+                        <div class="ms-2">
+                            <p class="text-dark mb-0"><a
+                                    href="employee-details.php?id=' . base64_encode($user['id']) . '"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#view_details">' . $user['name'] . '</a>
+                            </p>
+                            <span class="fs-12">' . ucfirst($user['role']) . '</span>
+                        </div>
+                    </div>
+                </td>
+                <td>' . ucfirst($user['gender']) . '</td>
+                <td>' . $user['email'] . '</td>
+                <td>' . $user['mobile'] . '</td>
+                <td>
+                    ' . date('d M, Y', strtotime($user['dob'])) . '
+                </td>
+                <td>' . date('d M, Y', strtotime($user['joining_date'])) . '</td>
+                <td>
+                    <span
+                        class="badge badge-' . ($user['is_terminated'] == 1 ? 'danger' : 'success') . ' d-inline-flex align-items-center badge-xs"  data-bs-toggle="modal"
+                            data-bs-target="#changeStatus" onclick="changeStatus('.$user['id'].' , \''.$user['job-status'].'\')">
+                        <i
+                            class="ti ti-point-filled me-1"></i>' . ucfirst($user['job-status']) . '
+                    </span>
+                </td>
+                <td>';
+            if ($roleId == 1 || (in_array('candidates-action', $pageAccessList))) {
+                $id = $result['is_terminated'] == 3 ? 'delete_modal' : 'job_modal';
+                echo '<div class="action-icon d-inline-flex">
+                        <a href="#" class="me-2" data-bs-toggle="modal"
+                            data-bs-target="#edit_employee"
+                            onclick="getEmployee(' . $user['id'] . ')"><i
+                                class="ti ti-edit"></i></a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#'.$id.'"
+                            onclick="deleteEmployee(' . $user['id'] . ')"><i
+                                class="ti ti-trash"></i></a>
+                    </div>';
+            }
+            echo '
                 </td>
             </tr>';
         }
@@ -177,10 +280,71 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addEmployee")
     }
 }
 
+if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "addCandidates")) {
+    // Required fields
+    $requiredFields = ['name', 'job_id' , 'phone', 'email', 'emergency_contact', 'dob', 'correspondence_address', 'permanent_address', 'gender', 'marital_status'];
+
+    // Check for missing fields
+    foreach ($requiredFields as $field) {
+        if (empty($_POST[$field])) {
+            http_response_code(400);
+            echo json_encode(['message' => "The field '{$field}' is required.", "status" => 400]);
+            exit;
+        }
+    }
+
+    // Extract data
+    $name = $_POST['name'];
+    $role_id = $_POST['job_id'];
+    $employee_id = 'Job-seeker';
+    $phone = $_POST['phone'];
+    $email = $_POST['email'];
+    $emergency_contact = $_POST['emergency_contact'];
+    $joining_date = date('Y-m-d');
+    $dob = date('Y-m-d', strtotime($_POST['dob']));
+    $correspondence_address = $_POST['correspondence_address'];
+    $permanent_address = $_POST['permanent_address'];
+    $gender = $_POST['gender'];
+    $marital_status = $_POST['marital_status'];
+    $password = password_hash('uniqueMap', PASSWORD_DEFAULT);
+
+
+    // Insert new employee
+    $sql = $conn->prepare("
+        INSERT INTO `users` 
+        (`employee_id`, `name`, `role_id`, `mobile`, `email`, `correspondence_address`, `permanent_address`, `dob`, `joining_date`, `marital_status`, `gender`, `emergency_contact`, `password` , `is_terminated` , `job-status`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , 2 , ?)
+    ");
+    $result = $sql->execute([
+        $employee_id,
+        $name,
+        $role_id,
+        $phone,
+        $email,
+        $correspondence_address,
+        $permanent_address,
+        $dob,
+        $joining_date,
+        $marital_status,
+        $gender,
+        $emergency_contact,
+        $password,
+        'applied'
+    ]);
+
+    if ($result) {
+        http_response_code(200);
+        echo json_encode(['message' => 'Employee added successfully!', 'status' => 200]);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Something went wrong while adding the employee.', 'status' => 500]);
+    }
+}
+
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "changePassword")) {
     if ($_POST['password'] != '' && $_POST['cpassword'] != '') {
 
-        if($_POST['password'] == $_POST['cpassword']){
+        if ($_POST['password'] == $_POST['cpassword']) {
             http_response_code(500);
             echo json_encode(['message' => 'Password And Confirm Password is not same.', 'status' => 500]);
             exit;
@@ -188,7 +352,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "changePasswor
 
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $sql = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-        $result = $sql->execute([$password , $user_id ]);
+        $result = $sql->execute([$password, $user_id]);
 
         if ($result) {
             http_response_code(200);
@@ -471,6 +635,37 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "deleteEmployee"
     }
 }
 
+if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "rejectCandidates")) {
+    if ($_GET['user_id'] == '') {
+        http_response_code(400);
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
+    }
+
+    $check = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+    $check->execute([$_GET['user_id']]);
+    $result = $check->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $status = $result['is_terminated'] == 3 ? 2 : 3;
+
+        $delete = $conn->prepare('UPDATE `users` SET `is_terminated` = ? WHERE `id` = ?');
+        $result = $delete->execute([$status , $_GET['user_id']]);
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(['message' => "Successfull Rejected.", "status" => 400]);
+            exit;
+        } else {
+            http_response_code(400);
+            echo json_encode(['message' => "Employee not found.", "status" => 400]);
+            exit;
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(['message' => 'Employee not found!', 'status' => 400]);
+    }
+
+}
+
 if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "passwordReset")) {
     if ($_GET['user_id'] == '') {
         http_response_code(400);
@@ -509,6 +704,46 @@ if (($_SERVER['REQUEST_METHOD'] === 'GET') && ($_GET['type'] == "changeStatus"))
     $status = $result['is_terminated'] == 1 ? 0 : 1;
     $user = $conn->prepare('UPDATE `users` SET `is_terminated` = ? WHERE `id` = ?');
     $result = $user->execute([$status, $_GET['user_id']]);
+    if ($result) {
+        http_response_code(200);
+        echo json_encode(['message' => "Successfull Change Status.", "status" => 400]);
+        exit;
+    } else {
+        http_response_code(400);
+        echo json_encode(['message' => "Employee not found.", "status" => 400]);
+        exit;
+    }
+}
+
+
+if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['type'] == "changeJobStatus")) {
+    if ($_POST['id'] == '' && $_POST['job-status'] != '') {
+        http_response_code(400);
+        echo json_encode(['message' => "The field id is required.", "status" => 400]);
+        exit;
+    }
+
+    $check = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+    $check->execute([$_POST['id']]);
+    $result = $check->fetch(PDO::FETCH_ASSOC);
+    if (!$result) {
+        http_response_code(400);
+        echo json_encode(['message' => 'User not exists. Please check.', "status" => 400]);
+        exit;
+    }
+
+    if($_POST['job-status'] == 'onboard'){
+        if ($_POST['emp_id'] == '' ) {
+            http_response_code(400);
+            echo json_encode(['message' => "Add Employee to OnBoard.", "status" => 400]);
+            exit;
+        }
+        $user = $conn->prepare('UPDATE `users` SET `employee_id` = ? , `is_terminated` = 0 WHERE `id` = ?');
+        $result = $user->execute([$_POST['emp_id'] , $_POST['id']]);
+    }
+
+    $user = $conn->prepare('UPDATE `users` SET `job-status` = ? WHERE `id` = ?');
+    $result = $user->execute([$_POST['job-status'], $_POST['id']]);
     if ($result) {
         http_response_code(200);
         echo json_encode(['message' => "Successfull Change Status.", "status" => 400]);

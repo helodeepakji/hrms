@@ -20,4 +20,15 @@ if (substr($_SERVER['SERVER_NAME'], 0, 4) === 'www.') {
   exit();
 }
 
+session_start();
+$userId = $_SESSION['userId'];
+$roleId = $_SESSION['roleId'];
+$role = $conn->prepare("SELECT `access_page` FROM `access` WHERE role_id = ?");
+$role->execute([$roleId]);
+$role = $role->fetch(PDO::FETCH_ASSOC);
+$pageAccessList = json_decode($role['access_page'],true);
+if (!is_array($pageAccessList)) {
+    $pageAccessList = [];
+}
+
 ?>

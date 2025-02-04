@@ -3,7 +3,7 @@ include 'layouts/session.php';
 
 $page_name = 'my-tasks';
 if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
-	echo '<script>window.location.href = "index.php"</script>';
+    echo '<script>window.location.href = "index.php"</script>';
 }
 
 $project = $conn->prepare("SELECT `projects`.*, `users`.`name` , `users`.`profile` FROM `projects` JOIN `project_assign` ON `project_assign`.`project_id` = `projects`.`id` JOIN `users` ON `users`.`id` = `project_assign`.`user_id` WHERE `projects`.`is_complete` = 0 AND `project_assign`.`user_id` = ? ORDER BY `projects`.`id` DESC");
@@ -68,15 +68,21 @@ $user = $user->fetchAll(PDO::FETCH_ASSOC);
                         </nav>
                     </div>
                     <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-                        <div class="mb-2 ms-2">
+                        <?php if ($roleId == 1 || (in_array('task-assign', $pageAccessList))) {
+                            echo '<div class="mb-2 ms-2">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#assign_task" class="btn btn-primary d-flex align-items-center" onclick="assignUser()"><i class="ti ti-circle-plus me-2"></i>Assign Tasks</a>
-                        </div>
+                        </div>';
+                        } ?>
+
                         <div class="mb-2 ms-2">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#add_task" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add Tasks</a>
                         </div>
-                        <div class="mb-2 ms-2">
+                        <?php if ($roleId == 1 || (in_array('upload-task', $pageAccessList))) {
+                            echo '<div class="mb-2 ms-2">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#upload_task" class="btn btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Upload Tasks</a>
-                        </div>
+                        </div>';
+                        } ?>
+
                         <div class="ms-2 head-icons">
                             <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
                                 <i class="ti ti-chevrons-up"></i>
