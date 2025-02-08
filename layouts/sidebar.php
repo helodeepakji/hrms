@@ -84,7 +84,6 @@ $page = end($link_array);
 
 								<i class="ti ti-smart-home"></i>
 								<span>Dashboard</span>
-								<span class="badge badge-danger fs-10 fw-medium text-white p-1">Hot</span>
 								<span class="menu-arrow"></span>
 							</a>
 							<ul>
@@ -125,9 +124,9 @@ $page = end($link_array);
 				<li class="menu-title"><span>HRM</span></li>
 				<li>
 					<ul>
-						<?php if ($roleId == 1 || in_array('employees', $pageAccessList) || in_array('termination', $pageAccessList) || in_array('employee-details', $pageAccessList) || in_array('role', $pageAccessList)) { ?>
+						<?php if ($roleId == 1 || in_array('employees', $pageAccessList) || in_array('termination', $pageAccessList) || in_array('employee-details', $pageAccessList) || in_array('role', $pageAccessList) || in_array('department', $pageAccessList)) { ?>
 							<li class="submenu">
-								<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'termination.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'role.php') ? 'active subdrop' : ''; ?>">
+								<a href="javascript:void(0);" class=" <?php echo ($page == 'employees.php' || $page == 'termination.php' || $page == 'employee-details.php' || $page == 'departments.php' || $page == 'role.php' || $page == 'department.php') ? 'active subdrop' : ''; ?>">
 									<i class="ti ti-users"></i><span>Employees</span>
 									<span class="menu-arrow"></span>
 								</a>
@@ -143,6 +142,9 @@ $page = end($link_array);
 									<?php } ?>
 									<?php if ($roleId == 1 || in_array('role', $pageAccessList)) { ?>
 										<li><a href="role.php" class="<?php echo ($page == 'role.php') ? 'active' : ''; ?>">Role</a></li>
+									<?php } ?>
+									<?php if ($roleId == 1 || in_array('department', $pageAccessList)) { ?>
+										<li><a href="department.php" class="<?php echo ($page == 'department.php') ? 'active' : ''; ?>">Department</a></li>
 									<?php } ?>
 								</ul>
 							</li>

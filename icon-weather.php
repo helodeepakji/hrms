@@ -1,7 +1,7 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
     <head>
-        <title>SmartHR - HRMS admin template</title>
+        <title>UniqueMaps - HRMS admin template</title>
         <?php include 'layouts/title-meta.php'; ?>
         <?php include 'layouts/head-css.php'; ?>
     </head>

@@ -12,7 +12,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-	<title>Smarthr Admin Template</title>
+	<title>UniqueMaps Admin Template</title>
 	<?php include 'layouts/title-meta.php'; ?>
 	<?php include 'layouts/head-css.php'; ?>
 	<!-- Bootstrap Tagsinput CSS -->
@@ -179,7 +179,7 @@ $role = $sql->fetchAll(PDO::FETCH_ASSOC);
 								<div class="col-md-12">
 									<div class="mb-3">
 										<label class="form-label">Role Name</label>
-										<input type="text" class="form-control" value="role_name" id="role_name">
+										<input type="text" class="form-control" value="role_name" id="role_name" name="role_name">
 									</div>
 								</div>
 							</div>

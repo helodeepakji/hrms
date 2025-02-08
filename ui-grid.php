@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>SmartHR - HRMS admin template</title>
+    <title>UniqueMaps - HRMS admin template</title>
 
     <?php include 'layouts/title-meta.php'; ?>
 

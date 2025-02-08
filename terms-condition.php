@@ -1,7 +1,7 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
 </head>
@@ -118,7 +118,7 @@
                         <div class="mb-3">
                             <h5 class="mb-2">Limitation of Liability</h5>
                             <p>
-                                In no event shall SmartHR be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the platform, even if we have been advised of the possibility of such damages.
+                                In no event shall UniqueMaps be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the platform, even if we have been advised of the possibility of such damages.
                             </p>
                         </div>
                         <div class="mb-3">

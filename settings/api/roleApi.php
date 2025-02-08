@@ -45,7 +45,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'updateRole')) 
         $user = $check->fetch(PDO::FETCH_ASSOC);
         if ($user) {
 
-            $sql = $conn->prepare("UPDATE `role` SET `role` =  ? WHERE id = ?");
+            $sql = $conn->prepare("UPDATE `role` SET `name` =  ? WHERE id = ?");
             $result = $sql->execute([$_POST['role_name'], $_POST['role_id']]);
             if ($result) {
                 http_response_code(200);
@@ -73,12 +73,12 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'updateRole')) 
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_POST['type'] == 'addRole')) {
     if ($_POST['role_name'] != '') {
-        $check = $conn->prepare("SELECT * FROM `role` WHERE `role` = ?");
+        $check = $conn->prepare("SELECT * FROM `role` WHERE `name` = ?");
         $check->execute([$_POST['role_name']]);
         $user = $check->fetch(PDO::FETCH_ASSOC);
         if (!$user) {
 
-            $sql = $conn->prepare("INSERT INTO `role` (`role`) VALUES (?)");
+            $sql = $conn->prepare("INSERT INTO `role` (`name`) VALUES (?)");
             $result = $sql->execute([$_POST['role_name']]);
             if ($result) {
                 http_response_code(200);

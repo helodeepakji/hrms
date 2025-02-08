@@ -1,7 +1,7 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
  <!-- Fancybox CSS -->
@@ -48,7 +48,7 @@
 					<div class="card-body">
 						<form action="search-result.php">
 							<div class="d-flex align-items-center">
-								<input type="text" class="form-control flex-fill me-3" value="SmartHR">
+								<input type="text" class="form-control flex-fill me-3" value="UniqueMaps">
 								<button type="submit" class="btn btn-primary">Search</button>
 							</div>
 						</form>
@@ -56,13 +56,13 @@
 				</div>
 				<div class="card">
 					<div class="card-body">
-						<h5 class="mb-3">Search result for "SmartHR"</h5>
+						<h5 class="mb-3">Search result for "UniqueMaps"</h5>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="card shadow-none">
 									<div class="card-body">
-										<a href="#" class="text-info text-truncate mb-2">https://themeforest.net/search/smarthr</a>
-										<p class="text-truncate line-clamb-2 mb-2">SmartHR - Html, Vue 3, Angular 17+ & Node HR Project Management & CRM Admin Dashboard Template</p>
+										<a href="#" class="text-info text-truncate mb-2">https://themeforest.net/search/UniqueMaps</a>
+										<p class="text-truncate line-clamb-2 mb-2">UniqueMaps - Html, Vue 3, Angular 17+ & Node HR Project Management & CRM Admin Dashboard Template</p>
 										<div class="d-flex align-items-center flex-wrap row-gap-2">
 											<span class="text-gray-9 me-3 pe-3 border-end">1.7K Sales</span>
 											<div class="text-gray-9 d-flex align-items-center me-3 pe-3 border-end">
@@ -81,8 +81,8 @@
 							<div class="col-md-6">
 								<div class="card shadow-none">
 									<div class="card-body">
-										<a href="#" class="text-info text-truncate mb-2">https://themeforest.net/item/smarthr-react-admin-template/28253842</a>
-										<p class="text-truncate line-clamb-2 mb-2">SmartHR - React 18+ & Html HRMS, Payroll, CRM and HR Project Management Admin Dashboard Template</p>
+										<a href="#" class="text-info text-truncate mb-2">https://themeforest.net/item/UniqueMaps-react-admin-template/28253842</a>
+										<p class="text-truncate line-clamb-2 mb-2">UniqueMaps - React 18+ & Html HRMS, Payroll, CRM and HR Project Management Admin Dashboard Template</p>
 										<div class="d-flex align-items-center flex-wrap row-gap-2">
 											<span class="text-gray-9 me-3 pe-3 border-end">513 Sales</span>
 											<div class="text-gray-9 d-flex align-items-center me-3 pe-3 border-end">
@@ -101,8 +101,8 @@
 							<div class="col-md-6">
 								<div class="card shadow-none">
 									<div class="card-body">
-										<a href="#" class="text-info text-truncate mb-2">https://themeforest.net/item/smarthr-laravel-admin-template/27532539</a>
-										<p class="text-truncate line-clamb-2 mb-2">SmartHR - Laravel 10 + Html HRMS, Payroll, CRM and HR Project Management Admin Dashboard Template</p>
+										<a href="#" class="text-info text-truncate mb-2">https://themeforest.net/item/UniqueMaps-laravel-admin-template/27532539</a>
+										<p class="text-truncate line-clamb-2 mb-2">UniqueMaps - Laravel 10 + Html HRMS, Payroll, CRM and HR Project Management Admin Dashboard Template</p>
 										<div class="d-flex align-items-center flex-wrap row-gap-2">
 											<span class="text-gray-9 me-3 pe-3 border-end">339 Sales</span>
 											<div class="text-gray-9 d-flex align-items-center me-3 pe-3 border-end">
@@ -122,7 +122,7 @@
 								<div class="card shadow-none">
 									<div class="card-body">
 										<a href="#" class="text-info text-truncate mb-2">https://themeforest.net/item/dhr-html-mobile-template/22227174</a>
-										<p class="text-truncate line-clamb-2 mb-2">SmartHR - HRMS, Payroll, and HR Project Management Mobile Template (Framework7 + Bootstrap + PWA)</p>
+										<p class="text-truncate line-clamb-2 mb-2">UniqueMaps - HRMS, Payroll, and HR Project Management Mobile Template (Framework7 + Bootstrap + PWA)</p>
 										<div class="d-flex align-items-center">
 											<span class="text-gray-9 me-3 pe-3 border-end">293 Sales</span>
 											<div class="text-gray-9 d-flex align-items-center me-3 pe-3 border-end">
@@ -206,7 +206,7 @@
 				</div>
 			</div>
 			<div class="footer d-sm-flex align-items-center justify-content-between border-top bg-white p-3">
-				<p class="mb-0">2014 - 2025 &copy; SmartHR.</p>
+				<p class="mb-0">2014 - 2025 &copy; UniqueMaps.</p>
 				<p>Designed &amp; Developed By <a href="javascript:void(0);" class="text-primary">Dreams</a></p>
 			</div>
 		</div>

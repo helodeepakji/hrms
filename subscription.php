@@ -1,7 +1,7 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
 </head>
@@ -650,10 +650,10 @@
 							<div class="col-md-7">
 								<p class="text-dark mb-2 fw-medium fs-16">Invoice From :</p>
 								<div>
-									<p class="mb-1">SmartHR</p>
+									<p class="mb-1">UniqueMaps</p>
 									<p class="mb-1">367 Hillcrest Lane, Irvine, California, 
 										United States</p>
-									<p class="mb-1">smarthr@example.com</p>
+									<p class="mb-1">UniqueMaps@example.com</p>
 								</div>
 							</div>
 							<div class="col-md-5">

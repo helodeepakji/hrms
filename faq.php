@@ -1,7 +1,7 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
 </head>
@@ -144,9 +144,9 @@
 											</div>
 										</td>
                                         <td>
-                                            <h6 class="fw-medium"><a href="#">Is the data stored in an SmartHR secure?</a></h6>
+                                            <h6 class="fw-medium"><a href="#">Is the data stored in an UniqueMaps secure?</a></h6>
                                         </td>
-                                        <td>Yes, SmartHR is design with advanced security measures, including data encryption</td>
+                                        <td>Yes, UniqueMaps is design with advanced security measures, including data encryption</td>
 										<td>Feature</td>										
 										<td>
 											<div class="action-icon d-inline-flex">
@@ -180,7 +180,7 @@
 											</div>
 										</td>
                                         <td>
-                                            <h6 class="fw-medium"><a href="#">How do I generate custom reports in the SmartHR?</a></h6>
+                                            <h6 class="fw-medium"><a href="#">How do I generate custom reports in the UniqueMaps?</a></h6>
                                         </td>
                                         <td>Custom reports can be generated using the reporting module within the HRMS</td>
 										<td>Reports</td>										
@@ -216,7 +216,7 @@
 											</div>
 										</td>
                                         <td>
-                                            <h6 class="fw-medium"><a href="#">How do I process payroll in the SmartHR?</a></h6>
+                                            <h6 class="fw-medium"><a href="#">How do I process payroll in the UniqueMaps?</a></h6>
                                         </td>
                                         <td>Reviewing employee hours and deductions and executing payments.</td>
 										<td>Payroll</td>										

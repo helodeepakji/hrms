@@ -8,7 +8,7 @@ if ($roleId != 1 && !(in_array($page_name, $pageAccessList))) {
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-	<title>Smarthr Admin Template</title>
+	<title>UniqueMaps Admin Template</title>
 	<?php include 'layouts/title-meta.php'; ?>
 	<?php include 'layouts/head-css.php'; ?>
 	<!-- Bootstrap Tagsinput CSS -->

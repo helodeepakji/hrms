@@ -1,7 +1,7 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
 </head>
@@ -32,7 +32,7 @@
 									</div>
 								</div>
 								<div class="mt-5 pb-4 text-center">
-									<p class="mb-0 text-gray-9">Copyright &copy; 2024 - Smarthr</p>
+									<p class="mb-0 text-gray-9">Copyright &copy; 2024 - UniqueMaps</p>
 								</div>
 							</div>
 						</form>

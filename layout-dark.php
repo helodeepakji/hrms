@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
  <!-- Bootstrap Tagsinput CSS -->

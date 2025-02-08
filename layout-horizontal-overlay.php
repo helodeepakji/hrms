@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en"  data-layout="horizontal-overlay">
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
 </head>

@@ -35,7 +35,7 @@ $totalPercentage = $totalPercentage['percentage'] ?? 0;
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
-    <title>Smarthr Admin Template</title>
+    <title>UniqueMaps Admin Template</title>
     <?php include 'layouts/title-meta.php'; ?>
     <?php include 'layouts/head-css.php'; ?>
     <!-- Owl carousel CSS -->

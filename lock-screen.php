@@ -1,7 +1,7 @@
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/head-main.php'; ?>
 <head>
-<title>Smarthr Admin Template</title>
+<title>UniqueMaps Admin Template</title>
  <?php include 'layouts/title-meta.php'; ?>
  <?php include 'layouts/head-css.php'; ?>
 </head>
@@ -42,7 +42,7 @@
 									<a href="#" class="me-3 text-gray-9">Help</a>
 								</div>
 								<div class="p-2 text-center">
-									<p class="mb-0 text-gray-9">Copyright &copy; 2024 - SmartHR</p>
+									<p class="mb-0 text-gray-9">Copyright &copy; 2024 - UniqueMaps</p>
 								</div>
 							</div>
 						</div>
